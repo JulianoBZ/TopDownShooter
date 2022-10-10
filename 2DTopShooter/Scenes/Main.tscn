@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Flag.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Player-All.tscn" type="PackedScene" id=3]
+
+[node name="Node" type="Node"]
+
+[node name="Player-All" parent="." instance=ExtResource( 3 )]
+position = Vector2( 227, 98 )
+
+[node name="Flag" parent="." instance=ExtResource( 2 )]
+position = Vector2( 340, 155 )
