@@ -10,3 +10,6 @@ position = Vector2( 227, 98 )
 
 [node name="Flag" parent="." instance=ExtResource( 2 )]
 position = Vector2( 340, 155 )
+
+[node name="Player-All2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 512, 109 )

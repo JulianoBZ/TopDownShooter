@@ -11,6 +11,7 @@ var selected_port
 var local_player_id = 0
 sync var players = {}
 sync var player_data = {}
+var world = preload("res://Maps/Map01.tscn").instance()
 
 func ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
@@ -53,7 +54,6 @@ func load_game():
 	rpc_id(1, "load_world")
 	
 sync func start_game():
-	var world = preload("res://Maps/Map01.tscn").instance()
 	get_tree().get_root().add_child(world)
 	get_tree().get_root().get_node("Lobby").queue_free()
 	

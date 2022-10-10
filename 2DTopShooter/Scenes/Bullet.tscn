@@ -8,6 +8,7 @@ radius = 5.99996
 height = 12.0001
 
 [node name="Bullet" type="RigidBody2D" groups=["bullet"]]
+collision_layer = 2
 contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 1 )
