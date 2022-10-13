@@ -11,16 +11,20 @@ config_version=4
 [application]
 
 config/name="2DTopShooter"
-run/main_scene="res://lobby/Lobby.tscn"
+run/main_scene="res://network2/Network_setup.tscn"
 config/icon="res://assets/icon.png"
 
 [autoload]
 
-Server="*res://server/server.gd"
-Save="*res://save/save.gd"
+Net="*res://network2/network.gd"
+Global="*res://Global.gd"
+Map="*res://Maps/Map.tscn"
+Players="*res://Players.tscn"
 
 [display]
 
+window/size/width=1366
+window/size/height=768
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
 

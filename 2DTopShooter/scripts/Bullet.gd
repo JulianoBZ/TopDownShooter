@@ -14,11 +14,12 @@ func _on_Bullet_body_entered(body):
 		body.add_collision_exception_with(body) 
 	
 	if flag != body && body.is_in_group("player"):
-		body.health -= damage
-		print("damaged "+str(body))
-		queue_free()
+		damage(flag,body)
 	
 	if flag != body:
 		queue_free()
-		
-	print(flag)
+
+remote func damage(attacker: Object,receiver: Object):
+		receiver.health -= damage
+		print(str(attacker)+" damaged "+str(receiver))
+		queue_free()
