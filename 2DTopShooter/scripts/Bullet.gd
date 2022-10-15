@@ -3,7 +3,14 @@ extends RigidBody2D
 onready var flag
 var damage = 10
 
-func _ready():
+var pos = Vector2()
+var rot
+var dir = Vector2()
+
+#func _ready():
+#	rpc_unreliable("spawn_bullet")
+
+func _process(delta):
 	pass
 
 func _on_Bullet_body_entered(body):
@@ -19,7 +26,17 @@ func _on_Bullet_body_entered(body):
 	if flag != body:
 		queue_free()
 
+#func spawn_bullet():
+#	var instance = Global.instance_node_at_location(self, Players, global_position)
+	#instance.name = str(id)
+	#instance.set_network_master(id)
+
+remote func update_position(pos):
+	global_position = pos
+	print(pos)
+
 remote func damage(attacker: Object,receiver: Object):
 		receiver.health -= damage
 		print(str(attacker)+" damaged "+str(receiver))
 		queue_free()
+

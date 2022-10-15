@@ -8,6 +8,9 @@ var client = null
 
 var ip_address = ""
 
+var network_object_name_index = 0 setget network_object_name_index_set
+puppet var puppet_network_object_name_index = 0 setget puppet_network_object_name_index_set
+
 func _ready():
 	if OS.get_name() == "Windows":
 		ip_address = IP.get_local_addresses()[3]
@@ -40,3 +43,11 @@ func _connected_to_server() -> void:
 func _server_disconnected() -> void:
 	print("Desconectado do servidor")
 
+func puppet_network_object_name_index_set(new_value):
+	network_object_name_index = new_value
+
+func network_object_name_index_set(new_value):
+	network_object_name_index = new_value
+	
+	if get_tree().is_network_server():
+		rset("puppet_network_object_name_index",network_object_name_index)

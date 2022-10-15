@@ -15,7 +15,6 @@ func _ready():
 
 func _player_connected(id):
 	print("Player: "+str(id)+" has connected")
-	
 	instance_player(id)
 
 func _player_disconnected(id):

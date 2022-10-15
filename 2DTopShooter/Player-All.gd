@@ -10,7 +10,6 @@ var alive = true
 var direction = Vector2()
 var lastdir = Vector2()
 onready var camera = get_node("Camera2D")
-
 #puppet var puppet_position = Vector2(0,0) #setget puppet_position_set
 #puppet var puppet_direction = Vector2()
 
@@ -22,9 +21,11 @@ func _ready():
 	Pname.text = "Player"
 
 func _process(delta):
+	if is_network_master():
+		camera.make_current()
 		var mouse_pos = get_global_mouse_position()
-		$Camera2D.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
-		$Camera2D.offset_v = (mouse_pos.y - position.y) / (768 / 3)
+		camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
+		camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		
 		if Input.is_action_pressed("Sprint"):
 			sprinting = true
@@ -69,8 +70,3 @@ remotesync func death():
 #	tween.interpolate_property(self, "global_position",global_rotation,puppet_position,0.1)
 #	tween.start()
 
-#func _on_Network_tick_rate_timeout():
-#	if is_network_master():
-#		rset_unreliable("puppet_position", global_position)
-#		rset_unreliable("puppet_direction", direction)
-#		rset_unreliable("puppet_rotation", player.rotation_degrees)

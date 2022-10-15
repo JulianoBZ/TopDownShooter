@@ -20,6 +20,7 @@ Net="*res://network2/network.gd"
 Global="*res://Global.gd"
 Map="*res://Maps/Map.tscn"
 Players="*res://Players.tscn"
+Bullets="*res://Bullets.tscn"
 
 [display]
 
