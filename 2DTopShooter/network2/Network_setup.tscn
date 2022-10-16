@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://network2/Network_setup.gd" type="Script" id=1]
+[ext_resource path="res://WeaponGroup.tres" type="ButtonGroup" id=2]
 
 [node name="Network_setup" type="Control"]
 anchor_right = 1.0
@@ -31,10 +32,9 @@ text = "Join Server"
 
 [node name="Server_IP_address" type="LineEdit" parent="Multiplayer_configure"]
 margin_left = 574.0
-margin_top = 388.0
+margin_top = 439.0
 margin_right = 861.0
-margin_bottom = 444.0
-text = "Enter IP Address"
+margin_bottom = 495.0
 align = 1
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Multiplayer_configure"]
@@ -47,5 +47,54 @@ margin_top = -138.0
 align = 1
 valign = 1
 
+[node name="Label" type="Label" parent="Multiplayer_configure"]
+margin_left = 621.0
+margin_top = 391.0
+margin_right = 817.0
+margin_bottom = 432.0
+text = "Enter IP Address:"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="weapon1" type="Label" parent="Multiplayer_configure"]
+margin_left = 609.0
+margin_top = 551.0
+margin_right = 805.0
+margin_bottom = 592.0
+text = "Rifle"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="weapon2" type="Label" parent="Multiplayer_configure"]
+margin_left = 610.0
+margin_top = 594.0
+margin_right = 806.0
+margin_bottom = 635.0
+text = "Shotgun"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="weaponbut1" type="Button" parent="Multiplayer_configure"]
+margin_left = 608.0
+margin_top = 556.0
+margin_right = 638.0
+margin_bottom = 586.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 2 )
+
+[node name="weaponbut2" type="Button" parent="Multiplayer_configure"]
+margin_left = 609.0
+margin_top = 598.0
+margin_right = 639.0
+margin_bottom = 628.0
+toggle_mode = true
+group = ExtResource( 2 )
+
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/weaponbut1" to="." method="_on_weaponbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/weaponbut2" to="." method="_on_weaponbut2_pressed"]

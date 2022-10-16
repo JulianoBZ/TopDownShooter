@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export var firetype = 1
+export var firetype = 2
 export var bullet_speed = 3000
 var speed = 200
 export var fire_rate = 0.1
@@ -27,7 +27,8 @@ var reloading_animation = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
+	can_fire = true
+	firetype = Global.firetype
 	if firetype == 1:
 		porcentagem = 3.333
 		#reload_timer.wait_time = 2.4
@@ -118,22 +119,23 @@ func _process(delta):
 			#can_fire = true
 			
 		if Input.is_action_pressed("fire") && can_fire && ammo_count > 0 && !sprinting && firetype == 2:
-			reloading = false
-			var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
-			"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
-			"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
-			var graus = -6
-			for x in bullets:
-				bullets[x].damage = damage
-				bullets[x].rotation_degrees = rotation_degrees
-				bullets[x].flag = get_parent()
-				bullets[x].position = $Bulletpoint.get_global_position()
-				bullets[x].rotation_degrees = rotation_degrees
-				bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
-				get_tree().get_root().add_child(bullets[x])
-				graus += 1
-			ammo_count -= 1
+			#reloading = false
+			#var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
+			#"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
+			#"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
+			#var graus = -6
+			#for x in bullets:
+			#	bullets[x].damage = damage
+			#	bullets[x].rotation_degrees = rotation_degrees
+			#	bullets[x].flag = get_parent()
+			#	bullets[x].position = $Bulletpoint.get_global_position()
+			#	bullets[x].rotation_degrees = rotation_degrees
+			#	bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
+			#	get_tree().get_root().add_child(bullets[x])
+			#	graus += 1
 			can_fire = false
+			rpc("spawn_shotgun", get_tree().get_network_unique_id())
+			ammo_count -= 1
 			yield(get_tree().create_timer(fire_rate2),"timeout")
 			can_fire = true
 #192.168.0.11
@@ -148,6 +150,24 @@ remotesync func spawn_bullet(id,tot_recoil):
 	Bullets.add_child(b)
 	b.set_network_master(id)
 	Net.network_object_name_index += 1
+
+remotesync func spawn_shotgun(id):
+	reloading = false
+	var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
+	"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
+	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
+	var graus = -6
+	for x in bullets:
+		bullets[x].damage = damage
+		bullets[x].rotation_degrees = rotation_degrees
+		bullets[x].flag = get_parent()
+		bullets[x].position = $Bulletpoint.get_global_position()
+		bullets[x].rotation_degrees = rotation_degrees
+		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
+		Bullets.add_child(bullets[x])
+		graus += 1
+		bullets[x].set_network_master(id)
+		Net.network_object_name_index += 1
 
 #por algum caralho de motivo essa merda ainda rotaciona outros player que não sejam o host, mas fodase ainda funciona
 remote func update_rotation(rot):
@@ -183,3 +203,12 @@ remote func update_rotation(rot):
 
 func _on_Timer_timeout():
 	reload_texture.visible = false
+
+func _on_PlayerAll_pdeath(player):
+	can_fire = false
+	self.visible = false
+
+
+func _on_PlayerAll_respawned():
+	can_fire = true
+	self.visible = true

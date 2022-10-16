@@ -103,6 +103,8 @@ script = ExtResource( 7 )
 wait_time = 0.05
 autostart = true
 
+[connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
+[connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
 
 [editable path="Player"]
