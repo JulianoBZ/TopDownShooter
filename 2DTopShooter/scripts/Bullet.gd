@@ -33,10 +33,16 @@ func _on_Bullet_body_entered(body):
 
 remote func update_position(pos):
 	global_position = pos
-	print(pos)
 
 remote func damage(attacker: Object,receiver: Object):
-		receiver.health -= damage
-		print(str(attacker)+" damaged "+str(receiver))
-		queue_free()
+	receiver.health -= damage
+	print(str(attacker)+" damaged "+str(receiver))
+	queue_free()
+	if receiver.health <= 0:
+		attacker.kills += 1
+		attacker.health += 30
+	#last_damage(attacker, receiver)
 
+#remote func last_damage(attacker: Object,receiver: Object):
+#	print(attacker , " " , receiver)
+	

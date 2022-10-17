@@ -16,6 +16,8 @@ var can_move = true
 #onready var tween = $Tween
 onready var spawns = get_tree().get_root().get_node("/root/Map").get_child(0).spawns
 var rng = RandomNumberGenerator.new()
+onready var killcount = $KillCount
+var kills = 0
 
 signal pdeath
 signal respawned
@@ -24,7 +26,6 @@ func _ready():
 	rng.randomize()
 	can_move = true
 	Pname.text = "Player"
-	print(spawns)
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
@@ -44,6 +45,8 @@ func _process(delta):
 		if health <= 0:
 			alive = false
 			rpc("death")
+		
+		killcount.text = str(kills)
 
 
 func _physics_process(delta):
@@ -72,11 +75,13 @@ remote func update_position(pos):
 
 remotesync func death():
 	can_move = false
+	$Corpo.disabled = true
 	emit_signal("pdeath",self)
 	yield(get_tree().create_timer(3),"timeout")
-	position = spawns[str(rng.randi_range(1,7))].position
+	position = spawns[str(rng.randi_range(1,spawns.size()))].position
 	health = 100
 	can_move = true
+	$Corpo.disabled = false
 	emit_signal("respawned")
 
 #func puppet_position_set(new_value):

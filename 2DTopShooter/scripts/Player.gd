@@ -83,7 +83,7 @@ func _process(delta):
 					yield(get_tree().create_timer(0.01),"timeout")
 					reload_texture.value += 1
 					if reload_texture.value == 60:
-						#reloading = false
+						reloading = false
 						reload_texture.visible = false
 						reload_texture.value = 0
 						ammo_count += 1
@@ -100,12 +100,14 @@ func _process(delta):
 		sprinting = get_parent().sprinting
 			
 		if Input.is_action_pressed("fire") && can_fire && ammo_count > 0 && !reloading && !sprinting && firetype == 1:
-			can_fire = false
-			rpc("spawn_bullet",get_tree().get_network_unique_id(),tot_recoil)
-			ammo_count -= 1
-			max_recoil += 2
-			yield(get_tree().create_timer(fire_rate),"timeout")
-			can_fire = true
+			if can_fire:
+				can_fire = false
+				rpc("spawn_bullet",get_tree().get_network_unique_id(),tot_recoil)
+				ammo_count -= 1
+				max_recoil += 2
+				yield(get_tree().create_timer(fire_rate),"timeout")
+				if alive == true:
+					can_fire = true
 			#var b = bullet.instance()
 			#b.flag = get_parent()
 			#b.position = $Bulletpoint.get_global_position()
@@ -137,8 +139,8 @@ func _process(delta):
 			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			ammo_count -= 1
 			yield(get_tree().create_timer(fire_rate2),"timeout")
-			can_fire = true
-#192.168.0.11
+			if alive == true:
+				can_fire = true
 
 remotesync func spawn_bullet(id,tot_recoil):
 	var b = bullet.instance()
@@ -156,7 +158,7 @@ remotesync func spawn_shotgun(id):
 	var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
 	"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
 	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
-	var graus = -6
+	var graus = -12
 	for x in bullets:
 		bullets[x].damage = damage
 		bullets[x].rotation_degrees = rotation_degrees
@@ -165,7 +167,7 @@ remotesync func spawn_shotgun(id):
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
 		Bullets.add_child(bullets[x])
-		graus += 1
+		graus += 2
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
 
@@ -199,16 +201,17 @@ remote func update_rotation(rot):
 #	direction = direction.normalized()
 #	#global_position += direction * speed * delta
 #	move_and_slide(direction * speed)
-	
 
 func _on_Timer_timeout():
 	reload_texture.visible = false
 
 func _on_PlayerAll_pdeath(player):
 	can_fire = false
-	self.visible = false
-
+	visible = false
+	alive = false
 
 func _on_PlayerAll_respawned():
 	can_fire = true
-	self.visible = true
+	visible = true
+	alive = true
+
