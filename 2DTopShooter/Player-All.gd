@@ -25,12 +25,15 @@ signal respawned
 func _ready():
 	rng.randomize()
 	can_move = true
-	Pname.text = "Player"
+	Pname.text = Global.player_name
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
+	print()
 	if is_network_master() && can_move:
+		rpc("hide_bars")
 		camera.make_current()
+		#print(camera.get_camera_position())
 		var mouse_pos = get_global_mouse_position()
 		camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
 		camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
@@ -83,6 +86,11 @@ remotesync func death():
 	can_move = true
 	$Corpo.disabled = false
 	emit_signal("respawned")
+
+remote func hide_bars():
+	player.vision.visible = false
+	$HealthBar.visible = false
+	$AmmoBar.visible = false
 
 #func puppet_position_set(new_value):
 #	puppet_position = new_value

@@ -19,8 +19,8 @@ config/icon="res://assets/icon.png"
 Net="*res://network2/network.gd"
 Global="*res://Global.gd"
 Map="*res://Maps/Map.tscn"
-Players="*res://Players.tscn"
 Bullets="*res://Bullets.tscn"
+Players="*res://Players.tscn"
 
 [display]
 

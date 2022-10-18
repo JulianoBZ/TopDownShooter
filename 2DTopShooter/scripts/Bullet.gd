@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 onready var flag
-var damage = 10
+var damage = 0
 
 var pos = Vector2()
 var rot
@@ -41,6 +41,8 @@ remote func damage(attacker: Object,receiver: Object):
 	if receiver.health <= 0:
 		attacker.kills += 1
 		attacker.health += 30
+		if attacker.health > 100:
+			attacker.health = 100
 	#last_damage(attacker, receiver)
 
 #remote func last_damage(attacker: Object,receiver: Object):

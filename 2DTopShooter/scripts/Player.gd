@@ -1,11 +1,12 @@
 extends KinematicBody2D
 
-export var firetype = 2
-export var bullet_speed = 3000
+export var firetype = 1
+export var bullet_speed = 3500
 var speed = 200
 export var fire_rate = 0.1
 export var fire_rate2 = 1.3
 var ammo_count = 30
+var ammo_max = 30
 var bullet = preload("res://Scenes/Bullet.tscn")
 var can_fire = true
 export var recoil = 0
@@ -15,33 +16,40 @@ var reloading = false
 var sprinting = false
 export var last_rec = 2
 var alive = true
-var damage = 8
+var damage = 0
 var is_master = true
 var porcentagem = 1
 export var tot_recoil = 0
 onready var reload_texture = get_parent().get_node("TextureProgress")
 onready var reload_timer = get_parent().get_node("TextureProgress/Timer")
 var reloading_animation = true
+onready var vision = $Visao
+onready var shell = preload("res://Scenes/shotgun_shell.tscn")
 
 #puppet var puppet_rotation = 0 setget puppet_position_set
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	vision.visible = false
 	can_fire = true
 	firetype = Global.firetype
 	if firetype == 1:
 		porcentagem = 3.333
+		damage = 15
+		ammo_max = 30
 		#reload_timer.wait_time = 2.4
 	if firetype == 2:
 		ammo_count = 8
-		damage = 8
+		damage = 6
 		porcentagem = 12.5
+		ammo_max = 8
 	#reload_timer.wait_time = reload_texture.value
 	pass # Replace with function body.
 
 
 func _process(delta):
 	if is_network_master():
+		#vision.visible = true
 		look_at(get_global_mouse_position())
 		rpc_unreliable("update_rotation", rotation_degrees)
 		
@@ -104,7 +112,7 @@ func _process(delta):
 				can_fire = false
 				rpc("spawn_bullet",get_tree().get_network_unique_id(),tot_recoil)
 				ammo_count -= 1
-				max_recoil += 2
+				max_recoil += 1
 				yield(get_tree().create_timer(fire_rate),"timeout")
 				if alive == true:
 					can_fire = true
@@ -138,7 +146,14 @@ func _process(delta):
 			can_fire = false
 			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			ammo_count -= 1
-			yield(get_tree().create_timer(fire_rate2),"timeout")
+			yield(get_tree().create_timer(fire_rate2/2),"timeout")
+			var s = shell.instance()
+			s.position = $Bulletpoint.get_global_position()
+			s.add_torque(15000)
+			s.rotation_degrees = rotation_degrees + 90
+			s.apply_impulse(Vector2(0,0),Vector2(30,0).rotated(rotation - deg2rad(90)))
+			Bullets.add_child(s)
+			yield(get_tree().create_timer(fire_rate2/2),"timeout")
 			if alive == true:
 				can_fire = true
 
@@ -146,6 +161,7 @@ remotesync func spawn_bullet(id,tot_recoil):
 	var b = bullet.instance()
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
+	b.damage = damage
 	b.position = $Bulletpoint.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
@@ -158,16 +174,17 @@ remotesync func spawn_shotgun(id):
 	var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
 	"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
 	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
-	var graus = -12
+	var graus = -6
 	for x in bullets:
 		bullets[x].damage = damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
+		bullets[x].damage = damage
 		bullets[x].position = $Bulletpoint.get_global_position()
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
 		Bullets.add_child(bullets[x])
-		graus += 2
+		graus += 1
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
 
@@ -211,6 +228,7 @@ func _on_PlayerAll_pdeath(player):
 	alive = false
 
 func _on_PlayerAll_respawned():
+	ammo_count = ammo_max
 	can_fire = true
 	visible = true
 	alive = true

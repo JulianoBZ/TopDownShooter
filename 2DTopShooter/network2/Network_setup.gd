@@ -6,6 +6,7 @@ var world = preload("res://Maps/FreeForAll1.tscn").instance()
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
 onready var device_ip_address = $Multiplayer_configure/CanvasLayer/Device_IP
+onready var playername = $Multiplayer_configure/NameText
 #onready var ffa1 = preload("res://Maps/FreeForAll1.tscn")
 #var spawns = {"1":world.get_node("Spawn1"),"2":world.get_node("Spawn2"),"3":world.get_node("Spawn3"),"4":world.get_node("Spawn4")
 #,"5":world.get_node("Spawn5"),"6":world.get_node("Spawn6"),"7":world.get_node("Spawn7")}
@@ -21,14 +22,14 @@ func _ready():
 	device_ip_address.text = Net.ip_address
 
 func _player_connected(id):
-	print("Player: "+str(id)+" has connected")
+	print("Player: "+str(playername.text)+" has connected")
 	instance_player(id)
 
 func _player_disconnected(id):
-	print("Player: "+str(id)+" has disconnected")
+	print("Player: "+str(playername.text)+" has disconnected")
 	
-	if Players.has_node(str(id)):
-		Players.get_node(str(id)).queue_free()
+	if Players.has_node(str(playername.text)):
+		Players.get_node(str(playername.text)).queue_free()
 
 func _on_Create_Server_pressed():
 	multiplayer_config_ui.hide()
@@ -52,8 +53,9 @@ func _connected_to_server():
 	instance_player(get_tree().get_network_unique_id())
 
 func instance_player(id):
+	Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(player, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
-	player_instance.name = str(id)
+	player_instance.name = str(playername.text)
 	player_instance.set_network_master(id)
 
 func _on_weaponbut1_pressed():
