@@ -9,7 +9,7 @@ onready var rnd = RandomNumberGenerator.new()
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	rnd.randomize()
-	yield(get_tree().create_timer(rnd.randf_range(0.5,1.5)),"timeout")
+	yield(get_tree().create_timer(rnd.randf_range(0.1,0.3)),"timeout")
 	$CollisionShape2D.disabled = true
 	mode = MODE_STATIC
 

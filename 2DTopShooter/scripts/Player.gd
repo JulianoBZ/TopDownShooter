@@ -24,7 +24,7 @@ onready var reload_texture = get_parent().get_node("TextureProgress")
 onready var reload_timer = get_parent().get_node("TextureProgress/Timer")
 var reloading_animation = true
 onready var vision = $Visao
-onready var shell = preload("res://Scenes/shotgun_shell.tscn")
+onready var shell = preload("res://Scenes/spent_casings.tscn")
 
 #puppet var puppet_rotation = 0 setget puppet_position_set
 
@@ -113,7 +113,9 @@ func _process(delta):
 				rpc("spawn_bullet",get_tree().get_network_unique_id(),tot_recoil)
 				ammo_count -= 1
 				max_recoil += 1
-				yield(get_tree().create_timer(fire_rate),"timeout")
+				yield(get_tree().create_timer(fire_rate/2),"timeout")
+				rpc("spawn_cartridge")
+				yield(get_tree().create_timer(fire_rate/2),"timeout")
 				if alive == true:
 					can_fire = true
 			#var b = bullet.instance()
@@ -147,15 +149,28 @@ func _process(delta):
 			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			ammo_count -= 1
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
-			var s = shell.instance()
-			s.position = $Bulletpoint.get_global_position()
-			s.add_torque(15000)
-			s.rotation_degrees = rotation_degrees + 90
-			s.apply_impulse(Vector2(0,0),Vector2(30,0).rotated(rotation - deg2rad(90)))
-			Bullets.add_child(s)
+			rpc("spawn_shell")
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
 			if alive == true:
 				can_fire = true
+
+remotesync func spawn_cartridge():
+	var s = shell.instance()
+	s.position = $Bulletpoint.get_global_position()
+	s.add_torque(250000)
+	s.rotation_degrees = rotation_degrees + 90
+	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(75,105))))
+	s.get_node("Casing").visible = true
+	Bullets.add_child(s)
+
+remotesync func spawn_shell():
+	var s = shell.instance()
+	s.position = $Bulletpoint.get_global_position()
+	s.add_torque(250000)
+	s.rotation_degrees = rotation_degrees + 90
+	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(75,105))))
+	s.get_node("Shell").visible = true
+	Bullets.add_child(s)
 
 remotesync func spawn_bullet(id,tot_recoil):
 	var b = bullet.instance()

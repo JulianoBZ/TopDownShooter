@@ -33,6 +33,7 @@ func _player_disconnected(id):
 
 func _on_Create_Server_pressed():
 	multiplayer_config_ui.hide()
+	device_ip_address.hide()
 	Net.create_server()
 	#var w = world.instance()
 	Map.add_child(world)
@@ -43,6 +44,7 @@ func _on_Create_Server_pressed():
 func _on_Join_Server_pressed():
 	if server_ip_address.text != "":
 		multiplayer_config_ui.hide()
+		device_ip_address.hide()
 		Net.ip_address = server_ip_address.text
 		Net.join_server()
 		#var w = world.instance()

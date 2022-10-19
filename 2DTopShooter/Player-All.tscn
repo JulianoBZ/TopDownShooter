@@ -103,6 +103,21 @@ margin_top = 12.0
 margin_right = -33.0
 margin_bottom = 29.0
 
+[node name="Esc_Menu" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+
+[node name="Panel" type="Panel" parent="Esc_Menu"]
+visible = false
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -411.0
+margin_top = -213.0
+margin_right = 413.0
+margin_bottom = 235.0
+
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]

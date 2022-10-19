@@ -13,10 +13,13 @@ onready var camera = get_node("Camera2D")
 #puppet var puppet_position = Vector2(0,0) #setget puppet_position_set
 #puppet var puppet_direction = Vector2()
 var can_move = true
+var camera_lock = false
+var esc_pressed = false
 #onready var tween = $Tween
 onready var spawns = get_tree().get_root().get_node("/root/Map").get_child(0).spawns
 var rng = RandomNumberGenerator.new()
 onready var killcount = $KillCount
+onready var Menu = $Esc_Menu/Panel
 var kills = 0
 
 signal pdeath
@@ -29,14 +32,15 @@ func _ready():
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
-	print()
 	if is_network_master() && can_move:
+		#Menu.rect_global_position = global_position
 		rpc("hide_bars")
 		camera.make_current()
 		#print(camera.get_camera_position())
-		var mouse_pos = get_global_mouse_position()
-		camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
-		camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
+		if camera_lock == false:
+			var mouse_pos = get_global_mouse_position()
+			camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
+			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		
 		if Input.is_action_pressed("Sprint"):
 			sprinting = true
@@ -48,6 +52,18 @@ func _process(delta):
 		if health <= 0:
 			alive = false
 			rpc("death")
+		
+		if Input.is_action_just_pressed("Esc_Menu"):
+			if esc_pressed:
+				camera_lock = false
+				Menu.visible = false
+				esc_pressed = false
+			else: 
+				camera.offset_h = 0
+				camera.offset_v = 0
+				Menu.visible = true
+				camera_lock = true
+				esc_pressed = true
 		
 		killcount.text = str(kills)
 

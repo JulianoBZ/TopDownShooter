@@ -21,7 +21,7 @@ func _on_Bullet_body_entered(body):
 		body.add_collision_exception_with(body) 
 	
 	if flag != body && body.is_in_group("player"):
-		damage(flag,body)
+		rpc("damage",flag,body)
 	
 	if flag != body:
 		queue_free()
@@ -34,7 +34,7 @@ func _on_Bullet_body_entered(body):
 remote func update_position(pos):
 	global_position = pos
 
-remote func damage(attacker: Object,receiver: Object):
+remotesync func damage(attacker: Object,receiver: Object):
 	receiver.health -= damage
 	print(str(attacker)+" damaged "+str(receiver))
 	queue_free()
