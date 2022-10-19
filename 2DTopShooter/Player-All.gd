@@ -55,15 +55,20 @@ func _process(delta):
 		
 		if Input.is_action_just_pressed("Esc_Menu"):
 			if esc_pressed:
+				print("Error")
 				camera_lock = false
 				Menu.visible = false
 				esc_pressed = false
+				can_move = true
+				player.can_fire = true
 			else: 
 				camera.offset_h = 0
 				camera.offset_v = 0
 				Menu.visible = true
 				camera_lock = true
 				esc_pressed = true
+				can_move = false
+				player.can_fire = false
 		
 		killcount.text = str(kills)
 

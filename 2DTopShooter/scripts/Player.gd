@@ -16,7 +16,8 @@ var reloading = false
 var sprinting = false
 export var last_rec = 2
 var alive = true
-var damage = 0
+var rifle_damage = 15
+var shotgun_damage = 7
 var is_master = true
 var porcentagem = 1
 export var tot_recoil = 0
@@ -25,6 +26,10 @@ onready var reload_timer = get_parent().get_node("TextureProgress/Timer")
 var reloading_animation = true
 onready var vision = $Visao
 onready var shell = preload("res://Scenes/spent_casings.tscn")
+onready var MenuPanel = get_parent().get_node("Esc_Menu/Panel")
+onready var weapon1 = MenuPanel.get_node("weaponbut1")
+onready var weapon2 = MenuPanel.get_node("weaponbut2")
+var desired_firetype = firetype
 
 #puppet var puppet_rotation = 0 setget puppet_position_set
 
@@ -35,14 +40,16 @@ func _ready():
 	firetype = Global.firetype
 	if firetype == 1:
 		porcentagem = 3.333
-		damage = 15
+		#damage = 15
 		ammo_max = 30
+		weapon1.pressed = true
 		#reload_timer.wait_time = 2.4
 	if firetype == 2:
 		ammo_count = 8
-		damage = 6
+		#damage = 4
 		porcentagem = 12.5
 		ammo_max = 8
+		weapon2.pressed = true
 	#reload_timer.wait_time = reload_texture.value
 	pass # Replace with function body.
 
@@ -176,7 +183,7 @@ remotesync func spawn_bullet(id,tot_recoil):
 	var b = bullet.instance()
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
-	b.damage = damage
+	b.damage = rifle_damage
 	b.position = $Bulletpoint.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
@@ -191,10 +198,9 @@ remotesync func spawn_shotgun(id):
 	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
 	var graus = -6
 	for x in bullets:
-		bullets[x].damage = damage
+		bullets[x].damage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
-		bullets[x].damage = damage
 		bullets[x].position = $Bulletpoint.get_global_position()
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
@@ -247,4 +253,15 @@ func _on_PlayerAll_respawned():
 	can_fire = true
 	visible = true
 	alive = true
+	firetype = desired_firetype 
 
+func _on_ApplyButton_pressed():
+	if weapon1.pressed == true:
+		desired_firetype = 1
+	if weapon2.pressed == true:
+		desired_firetype = 2
+	MenuPanel.visible = false
+	can_fire = true
+	get_parent().can_move = true
+	get_parent().esc_pressed = false
+	get_parent().camera_lock = false
