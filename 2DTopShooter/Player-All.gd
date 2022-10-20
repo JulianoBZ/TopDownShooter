@@ -6,6 +6,7 @@ var speed = 200
 var pos = Vector2()
 var sprinting = false
 var health = 100
+var vida = 100
 var alive = true
 var direction = Vector2()
 var lastdir = Vector2()
@@ -21,6 +22,9 @@ var rng = RandomNumberGenerator.new()
 onready var killcount = $KillCount
 onready var Menu = $Esc_Menu/Panel
 var kills = 0
+var prev_kills = kills
+onready var deathskull = preload("res://Scenes/DeadPlayer.tscn")
+var trysprint = false
 
 signal pdeath
 signal respawned
@@ -28,11 +32,14 @@ signal respawned
 func _ready():
 	rng.randomize()
 	can_move = true
-	Pname.text = Global.player_name
+	
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
 	if is_network_master() && can_move:
+		if kills > prev_kills:
+			prev_kills = kills
+			health += 30
 		#Menu.rect_global_position = global_position
 		rpc("hide_bars")
 		camera.make_current()
@@ -43,8 +50,8 @@ func _process(delta):
 			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		
 		if Input.is_action_pressed("Sprint"):
-			sprinting = true
 			speed = 400
+			trysprint = true
 		else:
 			sprinting = false
 			speed = 200
@@ -76,14 +83,23 @@ func _process(delta):
 func _physics_process(delta):
 	if is_network_master() && can_move:
 		direction = Vector2()
+		sprinting = false
 		if Input.is_action_pressed("up"):
 			direction.y -= 1
+			if trysprint == true:
+				sprinting = true
 		if Input.is_action_pressed("down"):
 			direction.y += 1
+			if trysprint == true:
+				sprinting = true
 		if Input.is_action_pressed("left"):
 			direction.x -= 1
+			if trysprint == true:
+				sprinting = true
 		if Input.is_action_pressed("right"):
 			direction.x += 1
+			if trysprint == true:
+				sprinting = true
 		if Input.is_action_just_pressed("kys"):
 			health = 0
 		direction = direction.normalized()
@@ -98,14 +114,23 @@ remote func update_position(pos):
 	position = pos
 
 remotesync func death():
+	var skull = deathskull.instance()
+	skull.position = position
+	Bullets.add_child(skull)
 	can_move = false
 	$Corpo.disabled = true
+	$KillCount.visible = false
+	$HealthBar.visible = false
+	$AmmoBar.visible = false
 	emit_signal("pdeath",self)
 	yield(get_tree().create_timer(3),"timeout")
 	position = spawns[str(rng.randi_range(1,spawns.size()))].position
 	health = 100
 	can_move = true
 	$Corpo.disabled = false
+	$KillCount.visible = true
+	$HealthBar.visible = true
+	$AmmoBar.visible = true
 	emit_signal("respawned")
 
 remote func hide_bars():
@@ -113,9 +138,9 @@ remote func hide_bars():
 	$HealthBar.visible = false
 	$AmmoBar.visible = false
 
+
 #func puppet_position_set(new_value):
 #	puppet_position = new_value
 #	
 #	tween.interpolate_property(self, "global_position",global_rotation,puppet_position,0.1)
 #	tween.start()
-

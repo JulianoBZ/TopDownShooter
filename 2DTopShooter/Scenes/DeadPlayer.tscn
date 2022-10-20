@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/510px-Skull_and_Crossbones.svg.png" type="Texture" id=1]
+
+[node name="DeadPlayer" type="Sprite"]
+scale = Vector2( 0.117647, 0.114286 )
+texture = ExtResource( 1 )

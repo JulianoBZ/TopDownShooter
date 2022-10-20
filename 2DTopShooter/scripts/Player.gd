@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 export var firetype = 1
-export var bullet_speed = 3500
+export var bullet_speed = 2500
 var speed = 200
 export var fire_rate = 0.1
 export var fire_rate2 = 1.3
@@ -29,7 +29,7 @@ onready var shell = preload("res://Scenes/spent_casings.tscn")
 onready var MenuPanel = get_parent().get_node("Esc_Menu/Panel")
 onready var weapon1 = MenuPanel.get_node("weaponbut1")
 onready var weapon2 = MenuPanel.get_node("weaponbut2")
-var desired_firetype = firetype
+var desired_firetype
 
 #puppet var puppet_rotation = 0 setget puppet_position_set
 
@@ -38,6 +38,7 @@ func _ready():
 	vision.visible = false
 	can_fire = true
 	firetype = Global.firetype
+	desired_firetype = firetype
 	if firetype == 1:
 		porcentagem = 3.333
 		#damage = 15
@@ -80,6 +81,11 @@ func _process(delta):
 				while(reloading):
 					yield(get_tree().create_timer(0.01),"timeout")
 					reload_texture.value += 1
+					if alive == false:
+						reloading = false
+						reload_texture.visible = false
+						reload_texture.value = 0
+						break
 					if reload_texture.value == 240:
 						reload_texture.visible = false
 						reload_texture.value = 0
@@ -97,6 +103,11 @@ func _process(delta):
 					reload_texture.visible = true
 					yield(get_tree().create_timer(0.01),"timeout")
 					reload_texture.value += 1
+					if alive == false:
+						reloading = false
+						reload_texture.visible = false
+						reload_texture.value = 0
+						break
 					if reload_texture.value == 60:
 						reloading = false
 						reload_texture.visible = false
@@ -198,6 +209,7 @@ remotesync func spawn_shotgun(id):
 	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
 	var graus = -6
 	for x in bullets:
+		bullets[x].name = "Bullet" + name + str(Net.network_object_name_index)
 		bullets[x].damage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
@@ -209,7 +221,6 @@ remotesync func spawn_shotgun(id):
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
 
-#por algum caralho de motivo essa merda ainda rotaciona outros player que não sejam o host, mas fodase ainda funciona
 remote func update_rotation(rot):
 	rotation_degrees = rot
 
@@ -249,11 +260,12 @@ func _on_PlayerAll_pdeath(player):
 	alive = false
 
 func _on_PlayerAll_respawned():
+	change_weapon(desired_firetype)
 	ammo_count = ammo_max
 	can_fire = true
 	visible = true
 	alive = true
-	firetype = desired_firetype 
+	#firetype = desired_firetype
 
 func _on_ApplyButton_pressed():
 	if weapon1.pressed == true:
@@ -265,3 +277,13 @@ func _on_ApplyButton_pressed():
 	get_parent().can_move = true
 	get_parent().esc_pressed = false
 	get_parent().camera_lock = false
+
+func change_weapon(desired_weapon):
+	if desired_weapon == 1:
+		porcentagem = 3.333
+		ammo_max = 30
+		firetype = 1
+	if desired_weapon == 2:
+		porcentagem = 12.5
+		ammo_max = 8
+		firetype = 2

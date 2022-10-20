@@ -18,4 +18,4 @@ func _ready():
 
 func _on_RigidBody2D_body_entered():
 	if is_in_group("bullet"):
-		queue_free()
+				queue_free()

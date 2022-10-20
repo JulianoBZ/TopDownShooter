@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player-All.gd" type="Script" id=2]
@@ -10,8 +10,11 @@
 [ext_resource path="res://assets/circle.png" type="Texture" id=8]
 [ext_resource path="res://MenuWeaponGroup.tres" type="ButtonGroup" id=9]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 31, 31.5 )
+[sub_resource type="CircleShape2D" id=1]
+radius = 29.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 29.0
 
 [node name="Player-All" type="KinematicBody2D" groups=["player"]]
 script = ExtResource( 2 )
@@ -35,6 +38,7 @@ tint_progress = Color( 0.482353, 1, 0.027451, 1 )
 wait_time = 2.4
 
 [node name="Sprite" type="Sprite" parent="."]
+visible = false
 light_mask = 0
 texture = ExtResource( 3 )
 
@@ -174,9 +178,15 @@ margin_right = 514.0
 margin_bottom = 435.0
 text = "Apply"
 
+[node name="Hibox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hibox"]
+shape = SubResource( 2 )
+
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="Player" method="_on_ApplyButton_pressed"]
+[connection signal="body_entered" from="Hibox" to="." method="_on_Hibox_body_entered"]
 
 [editable path="Player"]

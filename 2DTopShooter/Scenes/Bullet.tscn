@@ -4,8 +4,8 @@
 [ext_resource path="res://assets/photo_2022-09-27_20-14-34.jpg" type="Texture" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 5.99996
-height = 12.0001
+radius = 0.999996
+height = 6.00001
 
 [node name="Bullet" type="RigidBody2D" groups=["bullet"]]
 collision_layer = 2
@@ -15,9 +15,9 @@ contact_monitor = true
 script = ExtResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -0.106322, 0.12653 )
+position = Vector2( -0.0646086, 0.0222464 )
 rotation = 1.5708
-scale = Vector2( 0.00946982, 0.0245747 )
+scale = Vector2( 0.00148551, 0.008309 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
