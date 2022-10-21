@@ -7,6 +7,8 @@ var pos = Vector2()
 var rot
 var dir = Vector2()
 onready var trail = preload("res://Scenes/Bullet_Particle.tscn")
+var receiverint
+var receiverinst
 
 #func _ready():
 #	rpc_unreliable("spawn_bullet")
@@ -24,7 +26,7 @@ func _on_Bullet_body_entered(body):
 		body.add_collision_exception_with(body) 
 	
 	if flag != body && body.is_in_group("player"):
-		rpc("damage",flag,body)
+		damage(flag,body)
 	
 	if flag != body:
 		queue_free()
@@ -33,27 +35,11 @@ remote func update_position(pos):
 	global_position = pos
 
 remotesync func damage(attacker: Object,receiver: Object):
-	if get_tree().is_network_server():
-		print(str(attacker)+" damaged "+str(receiver))
-		receiver.health -= damage
-		#print(str(attacker)+" damaged "+str(receiver))
-		if receiver.health <= 0:
-			attacker.kills += 1
-			#attacker.health += 30
-			if attacker.health > 100:
-				attacker.health = 100
+	print(str(attacker)+" damaged "+str(receiver))
+	receiver.health -= damage
+	if receiver.health <= 0:
+		attacker.kills += 1
 		queue_free()
-	else:
-		print(str(attacker)+" damaged "+str(receiver))
-		receiver.health -= damage
-		#print(str(attacker)+" damaged "+str(receiver))
-		if receiver.health <= 0:
-			attacker.kills += 1
-			#attacker.health += 30
-			if attacker.health > 100:
-				attacker.health = 100
-		queue_free()
-	#last_damage(attacker, receiver)
 
 #remote func last_damage(attacker: Object,receiver: Object):
 #	print(attacker , " " , receiver)

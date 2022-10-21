@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 2, 6 )
 
-[node name="Node2D" type="RigidBody2D"]
+[node name="Cartridge" type="RigidBody2D"]
 rotation = 1.5708
 collision_layer = 0
 collision_mask = 0

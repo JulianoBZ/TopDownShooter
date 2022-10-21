@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player-All.gd" type="Script" id=2]
@@ -11,9 +11,6 @@
 [ext_resource path="res://MenuWeaponGroup.tres" type="ButtonGroup" id=9]
 
 [sub_resource type="CircleShape2D" id=1]
-radius = 29.0
-
-[sub_resource type="CircleShape2D" id=2]
 radius = 29.0
 
 [node name="Player-All" type="KinematicBody2D" groups=["player"]]
@@ -178,15 +175,19 @@ margin_right = 514.0
 margin_bottom = 435.0
 text = "Apply"
 
-[node name="Hibox" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hibox"]
-shape = SubResource( 2 )
+[node name="debug" type="RichTextLabel" parent="Esc_Menu/Panel"]
+anchor_left = 0.194
+anchor_top = 0.187
+anchor_right = 0.404
+anchor_bottom = 0.424
+margin_left = 0.143997
+margin_top = 0.223999
+margin_right = 0.103973
+margin_bottom = 0.0479889
 
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="Player" method="_on_ApplyButton_pressed"]
-[connection signal="body_entered" from="Hibox" to="." method="_on_Hibox_body_entered"]
 
 [editable path="Player"]

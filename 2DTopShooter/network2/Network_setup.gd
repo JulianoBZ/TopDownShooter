@@ -55,9 +55,9 @@ func _connected_to_server():
 	instance_player(get_tree().get_network_unique_id())
 
 func instance_player(id):
-	Global.player_name = str(playername.text)
+	#Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(player, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
-	#player_instance.name = "Player: " + str(playername.text)
+	#player_instance.name = "Player: " + str(id)
 	player_instance.set_network_master(id)
 
 func _on_weaponbut1_pressed():

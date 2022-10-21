@@ -37,9 +37,7 @@ func _ready():
 
 func _process(delta):
 	if is_network_master() && can_move:
-		if kills > prev_kills:
-			prev_kills = kills
-			health += 30
+		rpc("on_kill")
 		#Menu.rect_global_position = global_position
 		rpc("hide_bars")
 		camera.make_current()
@@ -138,6 +136,12 @@ remote func hide_bars():
 	$HealthBar.visible = false
 	$AmmoBar.visible = false
 
+remotesync func on_kill():
+	if kills > prev_kills:
+		prev_kills = kills
+		health += 30
+	if health > 100:
+		health = 100
 
 #func puppet_position_set(new_value):
 #	puppet_position = new_value

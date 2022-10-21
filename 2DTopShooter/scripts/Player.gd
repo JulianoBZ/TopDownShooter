@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 export var firetype = 1
-export var bullet_speed = 2500
+export var bullet_speed = 2000
 var speed = 200
 export var fire_rate = 0.1
 export var fire_rate2 = 1.3

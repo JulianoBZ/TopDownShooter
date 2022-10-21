@@ -12,6 +12,8 @@ func _ready():
 	yield(get_tree().create_timer(rnd.randf_range(0.1,0.3)),"timeout")
 	$CollisionShape2D.disabled = true
 	mode = MODE_STATIC
+	yield(get_tree().create_timer(120),"timeout")
+	queue_free()
 
 
 func _process(delta):

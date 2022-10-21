@@ -8,6 +8,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
 
+[node name="Debug" type="RichTextLabel" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
 [node name="Multiplayer_configure" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
