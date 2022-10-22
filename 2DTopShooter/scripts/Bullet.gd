@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 onready var flag
-var damage = 0
+var damage = 10
 
 var pos = Vector2()
 var rot

@@ -14,7 +14,7 @@ var Pammo_count = 30
 var Pammo_max = 30
 var Sammo_count = 15
 var Sammo_max = 15
-var clips = 1
+var clips = 4
 var PrelAux = 0
 var SrelAux = 0
 var Preserve = 120
@@ -94,6 +94,12 @@ func _ready():
 
 func _process(delta):
 	if is_network_master():
+		#Limit weapon ammo
+		if Preserve > Pammo_max*clips:
+			Preserve = Pammo_max*clips
+		if Sreserve > Sammo_max*clips:
+			Sreserve = Sammo_max*clips
+		
 		#Change Weapon Slots
 		if Input.is_action_just_pressed("wep1"):
 			active_weapon = 1
@@ -386,7 +392,7 @@ remotesync func Shooting(source):
 func _on_Timer_timeout():
 	reload_texture.visible = false
 
-func _on_PlayerAll_pdeath(player):
+func _on_PlayerAll_pdeath():
 	can_fire = false
 	visible = false
 	alive = false
