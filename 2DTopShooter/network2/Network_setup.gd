@@ -61,7 +61,13 @@ func instance_player(id):
 	player_instance.set_network_master(id)
 
 func _on_weaponbut1_pressed():
-	Global.firetype = 1
+	Global.primary = 1
 
 func _on_weaponbut2_pressed():
-	Global.firetype = 2
+	Global.primary = 2
+
+func _on_Sweaponbut1_pressed():
+	Global.secondary = 1
+
+func _on_Sweaponbut2_pressed():
+	Global.secondary = 2

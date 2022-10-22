@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://network2/Network_setup.gd" type="Script" id=1]
-[ext_resource path="res://WeaponGroup.tres" type="ButtonGroup" id=2]
+[ext_resource path="res://PrimaryWeaponGroup.tres" type="ButtonGroup" id=2]
+[ext_resource path="res://SecondaryWeaponGroup.tres" type="ButtonGroup" id=3]
 
 [node name="Network_setup" type="Control"]
 anchor_right = 1.0
@@ -108,14 +109,54 @@ pressed = true
 group = ExtResource( 2 )
 
 [node name="weaponbut2" type="Button" parent="Multiplayer_configure"]
-margin_left = 609.0
+margin_left = 608.0
 margin_top = 598.0
-margin_right = 639.0
+margin_right = 638.0
 margin_bottom = 628.0
 toggle_mode = true
 group = ExtResource( 2 )
+
+[node name="Sweapon1" type="Label" parent="Multiplayer_configure"]
+margin_left = 820.0
+margin_top = 553.0
+margin_right = 1016.0
+margin_bottom = 594.0
+rect_pivot_offset = Vector2( -684, -122 )
+text = "Pistol"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Sweapon2" type="Label" parent="Multiplayer_configure"]
+margin_left = 821.0
+margin_top = 596.0
+margin_right = 1017.0
+margin_bottom = 637.0
+text = "Revolver"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Sweaponbut1" type="Button" parent="Multiplayer_configure"]
+margin_left = 819.0
+margin_top = 558.0
+margin_right = 849.0
+margin_bottom = 588.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 3 )
+
+[node name="Sweaponbut2" type="Button" parent="Multiplayer_configure"]
+margin_left = 819.0
+margin_top = 600.0
+margin_right = 849.0
+margin_bottom = 630.0
+toggle_mode = true
+group = ExtResource( 3 )
 
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/weaponbut1" to="." method="_on_weaponbut1_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/weaponbut2" to="." method="_on_weaponbut2_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Sweaponbut1" to="." method="_on_Sweaponbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Sweaponbut2" to="." method="_on_Sweaponbut2_pressed"]

@@ -46,6 +46,7 @@ func _process(delta):
 			var mouse_pos = get_global_mouse_position()
 			camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
 			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
+		#$Health.rect_position = camera.get_camera_position()
 		
 		if Input.is_action_pressed("Sprint"):
 			speed = 400
@@ -135,6 +136,7 @@ remote func hide_bars():
 	player.vision.visible = false
 	$HealthBar.visible = false
 	$AmmoBar.visible = false
+	$Ammo.visible = false
 
 remotesync func on_kill():
 	if kills > prev_kills:

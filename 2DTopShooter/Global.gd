@@ -1,6 +1,7 @@
 extends Node
 
-export var firetype = 1
+export var primary = 1
+export var secondary = 1
 export var player_name = "Player"
 
 func instance_node_at_location(node: Object, parent: Object, location: Vector2):

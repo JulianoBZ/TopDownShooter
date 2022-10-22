@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://assets/photo_2022-06-23_15-24-11.jpg" type="Texture" id=1]
 [ext_resource path="res://scripts/Player.gd" type="Script" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://assets/luz2.png" type="Texture" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
+
+[sub_resource type="AudioStreamGenerator" id=2]
 
 [node name="Player" type="KinematicBody2D" groups=["player"]]
 position = Vector2( -1, 0 )
@@ -44,3 +46,8 @@ shape = SubResource( 1 )
 
 [node name="Bulletpoint" type="Node2D" parent="."]
 position = Vector2( 36, 0 )
+
+[node name="ShotSound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource( 2 )
+volume_db = -15.0
+attenuation = 8.57418
