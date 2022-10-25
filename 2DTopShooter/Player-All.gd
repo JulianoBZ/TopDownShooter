@@ -3,6 +3,7 @@ extends KinematicBody2D
 onready var Pname = $Name
 onready var player = $Player
 var frame = 2
+var desired_frame = 2
 var speed = 200
 var base_speed = 200
 var pos = Vector2()
@@ -28,7 +29,11 @@ var kills = 0
 var prev_kills = kills
 onready var deathskull = preload("res://Scenes/DeadPlayer.tscn")
 onready var ammo_crate = preload("res://Scenes/Ammo_pickup.tscn")
+onready var Classbut1 = get_node("Esc_Menu/Panel/Classbut1")
+onready var Classbut2 = get_node("Esc_Menu/Panel/Classbut2")
+onready var Classbut3 = get_node("Esc_Menu/Panel/Classbut3")
 var trysprint = false
+var lastdamage
 
 signal pdeath
 signal respawned
@@ -36,12 +41,26 @@ signal respawned
 func _ready():
 	rng.randomize()
 	can_move = true
-	rpc("set_stats",frame)
+	if Global.frame == 1:
+		frame = 1
+		Classbut1.pressed = true
+		desired_frame = 1
+	if Global.frame == 2:
+		frame = 2
+		Classbut2.pressed = true
+		desired_frame = 2
+	if Global.frame == 3:
+		frame = 3
+		Classbut3.pressed = true
+		desired_frame = 3
+	set_stats(frame)
+	
 	
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
 	if is_network_master() && can_move:
+		print(desired_frame)
 		rpc("on_kill")
 		#Menu.rect_global_position = global_position
 		rpc("hide_bars")
@@ -118,25 +137,30 @@ remote func update_position(pos):
 	position = pos
 
 remotesync func death():
+	lastdamage.kills += 1
+	
 	var skull = deathskull.instance()
 	skull.position = position
 	var ammo = ammo_crate.instance()
 	ammo.position = position
 	Bullets.add_child(ammo)
 	Bullets.add_child(skull)
+	
 	can_move = false
 	$Corpo.disabled = true
 	$KillCount.visible = false
-	$HealthBar.visible = false
+	#$HealthBar.visible = false
 	emit_signal("pdeath")
+	
 	yield(get_tree().create_timer(3),"timeout")
 	position = spawns[str(rng.randi_range(1,spawns.size()))].position
 	health = max_health
 	can_move = true
+	set_stats(desired_frame)
 	yield(get_tree().create_timer(0.1),"timeout")
 	$Corpo.disabled = false
 	$KillCount.visible = true
-	$HealthBar.visible = true
+	#$HealthBar.visible = true
 	emit_signal("respawned")
 
 remote func hide_bars():
@@ -152,25 +176,39 @@ remotesync func on_kill():
 	if health > max_health:
 		health = max_health
 
-remotesync func set_stats(frame):
+func set_stats(frame):
 	if frame == 1:
-		speed = 100
-		base_speed = 100
-		health = 175
-		max_health = 175
+		speed = 300
+		base_speed = 300
+		health = 50
+		max_health = 50
 	if frame == 2:
 		speed = 200
 		base_speed = 200
 		health = 100
 		max_health = 100
 	if frame == 3:
-		speed = 300
-		base_speed = 300
-		health = 50
-		max_health = 50
+		speed = 100
+		base_speed = 100
+		health = 175
+		max_health = 175
+
 
 #func puppet_position_set(new_value):
 #	puppet_position = new_value
 #	
 #	tween.interpolate_property(self, "global_position",global_rotation,puppet_position,0.1)
 #	tween.start()
+
+
+func _on_ApplyButton_pressed():
+	if Classbut1.pressed == true:
+		desired_frame = 1
+	if Classbut2.pressed == true:
+		desired_frame = 2
+	if Classbut3.pressed == true:
+		desired_frame = 3
+	
+	can_move = true
+	esc_pressed = false
+	camera_lock = false

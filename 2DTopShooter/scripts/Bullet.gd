@@ -37,10 +37,9 @@ remote func update_position(pos):
 remotesync func damage(attacker: Object,receiver: Object):
 	print(str(attacker)+" damaged "+str(receiver))
 	receiver.health -= damage
-	if receiver.health <= 0:
-		attacker.kills += 1
-		queue_free()
-
+	receiver.lastdamage = attacker
+	queue_free()
+	
 #remote func last_damage(attacker: Object,receiver: Object):
 #	print(attacker , " " , receiver)
 	

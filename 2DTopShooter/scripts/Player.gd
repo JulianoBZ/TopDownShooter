@@ -49,6 +49,7 @@ onready var Sweapon2 = MenuPanel.get_node("Sweaponbut2")
 var desired_primary
 var desired_secondary
 var desired_melee
+var desired_frame
 var active_weapon = 1
 var ejected = false
 
@@ -90,6 +91,7 @@ func _ready():
 		Sporcentagem = 16.666666
 		Sweapon2.pressed = true
 		Sreserve = Sammo_max * clips
+
 
 
 func _process(delta):
@@ -400,6 +402,9 @@ func _on_PlayerAll_pdeath():
 func _on_PlayerAll_respawned():
 	change_weapon(desired_primary,desired_secondary)
 	Pammo_count = Pammo_max
+	Preserve = Pammo_max * clips
+	Sammo_count = Sammo_max
+	Sreserve = Sammo_max * clips
 	can_fire = true
 	visible = true
 	alive = true
@@ -414,11 +419,12 @@ func _on_ApplyButton_pressed():
 		desired_secondary = 1
 	if Sweapon2.pressed == true:
 		desired_secondary = 2
+	
 	MenuPanel.visible = false
 	can_fire = true
-	get_parent().can_move = true
-	get_parent().esc_pressed = false
-	get_parent().camera_lock = false
+	#get_parent().can_move = true
+	#get_parent().esc_pressed = false
+	#get_parent().camera_lock = false
 
 func change_weapon(desired_p,desired_s):
 	if desired_p == 1:

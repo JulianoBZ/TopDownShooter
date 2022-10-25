@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://network2/Network_setup.gd" type="Script" id=1]
 [ext_resource path="res://PrimaryWeaponGroup.tres" type="ButtonGroup" id=2]
 [ext_resource path="res://SecondaryWeaponGroup.tres" type="ButtonGroup" id=3]
+[ext_resource path="res://ClassChoice.tres" type="ButtonGroup" id=4]
 
 [node name="Network_setup" type="Control"]
 anchor_right = 1.0
@@ -108,6 +109,61 @@ toggle_mode = true
 pressed = true
 group = ExtResource( 2 )
 
+[node name="class1" type="Label" parent="Multiplayer_configure"]
+margin_left = 159.0
+margin_top = 483.0
+margin_right = 355.0
+margin_bottom = 524.0
+text = "Light"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut1" type="Button" parent="Multiplayer_configure"]
+margin_left = 158.0
+margin_top = 488.0
+margin_right = 188.0
+margin_bottom = 518.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 4 )
+
+[node name="class2" type="Label" parent="Multiplayer_configure"]
+margin_left = 159.0
+margin_top = 537.0
+margin_right = 355.0
+margin_bottom = 578.0
+text = "Medium"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut2" type="Button" parent="Multiplayer_configure"]
+margin_left = 158.0
+margin_top = 542.0
+margin_right = 188.0
+margin_bottom = 572.0
+toggle_mode = true
+group = ExtResource( 4 )
+
+[node name="class3" type="Label" parent="Multiplayer_configure"]
+margin_left = 159.0
+margin_top = 587.0
+margin_right = 355.0
+margin_bottom = 628.0
+text = "Heavy"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut3" type="Button" parent="Multiplayer_configure"]
+margin_left = 158.0
+margin_top = 592.0
+margin_right = 188.0
+margin_bottom = 622.0
+toggle_mode = true
+group = ExtResource( 4 )
+
 [node name="weaponbut2" type="Button" parent="Multiplayer_configure"]
 margin_left = 608.0
 margin_top = 598.0
@@ -157,6 +213,9 @@ group = ExtResource( 3 )
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/weaponbut1" to="." method="_on_weaponbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/classbut1" to="." method="_on_classbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/classbut2" to="." method="_on_classbut2_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/classbut3" to="." method="_on_classbut3_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/weaponbut2" to="." method="_on_weaponbut2_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Sweaponbut1" to="." method="_on_Sweaponbut1_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Sweaponbut2" to="." method="_on_Sweaponbut2_pressed"]
