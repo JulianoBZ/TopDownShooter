@@ -312,7 +312,7 @@ func _process(delta):
 		#################################################################################
 		#Melee
 		if Input.is_action_just_pressed("fire") && active_weapon == 3:
-			rpc("melee")
+			rpc("melee",get_tree().get_network_unique_id())
 			yield(get_tree().create_timer(0.3),"timeout")
 			
 
@@ -453,11 +453,14 @@ func change_weapon(desired_p,desired_s):
 		secondary = 2
 		Sporcentagem = 16.666666
 
-remotesync func melee():
+remotesync func melee(id):
 	var mh = meleeH.instance()
+	mh.name = "Melee" + name + str(Net.network_object_name_index)
 	mh.flag = get_parent()
 	mh.position = $Bulletpoint.get_global_position()
 	mh.rotation_degrees = rotation_degrees
 	Bullets.add_child(mh)
+	mh.set_network_master(id)
+	Net.network_object_name_index += 1
 	#yield(get_tree().create_timer(0.3),"timeout")
 	

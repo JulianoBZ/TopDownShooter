@@ -264,7 +264,6 @@ func _on_PlayerAll_dashing():
 		speed = 1000
 		yield(get_tree().create_timer(0.01),"timeout")
 		shift_texture.value += 1
-		print(shift_texture.value)
 		c += 1
 		if c == 3:
 			c = 0
