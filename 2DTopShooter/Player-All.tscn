@@ -80,11 +80,28 @@ script = ExtResource( 4 )
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 visible = false
-margin_left = -31.0
-margin_top = -45.0
-margin_right = 31.0
-margin_bottom = -31.0
+margin_left = -32.0
+margin_top = -37.0
+margin_right = 30.0
+margin_bottom = -23.0
 script = ExtResource( 6 )
+
+[node name="ShiftSkill" type="TextureProgress" parent="."]
+margin_left = -64.4
+margin_top = -32.55
+margin_right = 447.6
+margin_bottom = 479.45
+rect_scale = Vector2( 0.05, 0.05 )
+max_value = 240.0
+texture_under = ExtResource( 8 )
+texture_progress = ExtResource( 8 )
+fill_mode = 4
+tint_under = Color( 0.211765, 0.211765, 0.211765, 0.596078 )
+tint_over = Color( 0.721569, 0.447059, 0.447059, 1 )
+tint_progress = Color( 0.482353, 1, 0.027451, 1 )
+
+[node name="Timer" type="Timer" parent="ShiftSkill"]
+wait_time = 2.4
 
 [node name="Tween" type="Tween" parent="."]
 
@@ -272,9 +289,13 @@ margin_top = 0.223999
 margin_right = 0.103973
 margin_bottom = 0.0479889
 
+[connection signal="dashing" from="." to="." method="_on_PlayerAll_dashing"]
+[connection signal="not_dashing" from="." to="." method="_on_PlayerAll_not_dashing"]
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
+[connection signal="rushing" from="." to="." method="_on_PlayerAll_rushing"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
+[connection signal="timeout" from="ShiftSkill/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="." method="_on_ApplyButton_pressed"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="Player" method="_on_ApplyButton_pressed"]
 

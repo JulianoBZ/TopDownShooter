@@ -52,6 +52,7 @@ var desired_melee
 var desired_frame
 var active_weapon = 1
 var ejected = false
+onready var meleeH = preload("res://Scenes/MeleeHibox.tscn")
 
 signal change_P
 signal change_S
@@ -113,6 +114,8 @@ func _process(delta):
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
+		if Input.is_action_just_pressed("wep3"):
+			active_weapon = 3
 		
 		#Look at mouse position
 		look_at(get_global_mouse_position())
@@ -306,6 +309,12 @@ func _process(delta):
 				max_recoil += 1
 				if alive == true:
 					can_fire = true
+		#################################################################################
+		#Melee
+		if Input.is_action_just_pressed("fire") && active_weapon == 3:
+			rpc("melee")
+			yield(get_tree().create_timer(0.3),"timeout")
+			
 
 remotesync func spawn_cartridge():
 	var s = shell.instance()
@@ -443,3 +452,12 @@ func change_weapon(desired_p,desired_s):
 		Sammo_max = 6
 		secondary = 2
 		Sporcentagem = 16.666666
+
+remotesync func melee():
+	var mh = meleeH.instance()
+	mh.flag = get_parent()
+	mh.position = $Bulletpoint.get_global_position()
+	mh.rotation_degrees = rotation_degrees
+	Bullets.add_child(mh)
+	#yield(get_tree().create_timer(0.3),"timeout")
+	

@@ -8,8 +8,8 @@ var speed = 200
 var base_speed = 200
 var pos = Vector2()
 var sprinting = false
-var health = 100
-var max_health = 100
+export var health = 100
+export var max_health = 100
 var vida = 100
 var alive = true
 var direction = Vector2()
@@ -34,9 +34,17 @@ onready var Classbut2 = get_node("Esc_Menu/Panel/Classbut2")
 onready var Classbut3 = get_node("Esc_Menu/Panel/Classbut3")
 var trysprint = false
 var lastdamage
-
+var sprint
+onready var shift_texture = get_node("ShiftSkill")
+onready var shift_timer = get_node("ShiftSkill/Timer")
+onready var afterimage = preload("res://Scenes/player_afterimage.tscn")
 signal pdeath
 signal respawned
+signal dashing
+signal not_dashing
+signal rushing
+var dashing
+var candash = true
 
 func _ready():
 	rng.randomize()
@@ -53,17 +61,19 @@ func _ready():
 		frame = 3
 		Classbut3.pressed = true
 		desired_frame = 3
+	#rset_unreliable("frame",frame)
 	set_stats(frame)
+	#rpc("set_stats",frame,self)
 	
 	
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
 	if is_network_master() && can_move:
-		print(desired_frame)
+		rpc_unreliable("update_stats",health, max_health)
 		rpc("on_kill")
 		#Menu.rect_global_position = global_position
-		rpc("hide_bars")
+		#rpc("hide_bars")
 		camera.make_current()
 		#print(camera.get_camera_position())
 		if camera_lock == false:
@@ -72,12 +82,32 @@ func _process(delta):
 			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		#$Health.rect_position = camera.get_camera_position()
 		
-		if Input.is_action_pressed("Sprint"):
+		##########################################################################
+		#Shift skills
+		
+		#frame2 = sprint
+		if Input.is_action_pressed("Sprint") && frame == 2:
+			print("run")
 			speed = base_speed * 2
 			trysprint = true
 		else:
 			sprinting = false
 			speed = base_speed
+		
+		#frame1 = dash
+		if Input.is_action_just_pressed("Sprint") && frame == 1 && candash:
+			#sprinting = true
+			emit_signal("dashing")
+		
+		#frame3 = bullrush
+		if Input.is_action_pressed("Sprint") && frame == 3 && sprinting == false && candash && !dashing:
+			shift_texture.max_value = 60
+			yield(get_tree().create_timer(0.01),"timeout")
+			shift_texture.value += 1
+			if shift_texture.value == 60:
+				emit_signal("rushing")
+		elif !Input.is_action_pressed("Sprint") && frame == 3:
+			shift_texture.value -= 1
 		
 		if health <= 0:
 			alive = false
@@ -176,23 +206,29 @@ remotesync func on_kill():
 	if health > max_health:
 		health = max_health
 
-func set_stats(frame):
-	if frame == 1:
+#192.168.191.107
+
+#No futuro isso vai ter que atualizar pra todo mundo certinho, mas por agora q se foda kkkk
+func set_stats(f):
+	if f == 1:
 		speed = 300
-		base_speed = 300
+		base_speed = 350
 		health = 50
 		max_health = 50
-	if frame == 2:
+	if f == 2:
 		speed = 200
-		base_speed = 200
+		base_speed = 250
 		health = 100
 		max_health = 100
-	if frame == 3:
+	if f == 3:
 		speed = 100
-		base_speed = 100
+		base_speed = 200
 		health = 175
 		max_health = 175
 
+remote func update_stats(h,mh):
+	health = h
+	max_health = mh
 
 #func puppet_position_set(new_value):
 #	puppet_position = new_value
@@ -212,3 +248,82 @@ func _on_ApplyButton_pressed():
 	can_move = true
 	esc_pressed = false
 	camera_lock = false
+
+
+func _on_PlayerAll_dashing():
+	#self.sprinting = true
+	player.sprinting = true
+	candash = false
+	var spr = true
+	var c = 0
+	#print(sprinting)
+	shift_texture.max_value = 25
+	#shift_texture.visible = true
+	while spr:
+		#self.sprinting = true
+		speed = 1000
+		yield(get_tree().create_timer(0.01),"timeout")
+		shift_texture.value += 1
+		print(shift_texture.value)
+		c += 1
+		if c == 3:
+			c = 0
+			rpc("afterimage")
+		if alive == false:
+			#sprinting = false
+			shift_texture.visible = false
+			shift_texture.value = 0
+			break
+		if shift_texture.value == 25:
+			#shift_texture.visible = false
+			#shift_texture.value = 0
+			spr = false
+			#sprinting = false
+			speed = base_speed
+			trysprint = false
+			emit_signal("not_dashing")
+
+remotesync func afterimage():
+	var ai = afterimage.instance()
+	ai.rotation_degrees = player.rotation_degrees + 90
+	ai.position = position
+	Players.add_child(ai)
+
+
+func _on_PlayerAll_not_dashing():
+	var nspr = true
+	self.sprinting = true
+	while nspr:
+		yield(get_tree().create_timer(0.1),"timeout")
+		shift_texture.value -= 1
+		if shift_texture.value == 0:
+			nspr = false
+			self.sprinting = false
+			trysprint = false
+			candash = true
+
+
+func _on_PlayerAll_rushing():
+	can_move = false
+	var lookdir = Vector2(cos(deg2rad(player.rotation_degrees)), sin(deg2rad(player.rotation_degrees)))
+	dashing = true
+	#shift_texture.max_value = 50
+	while dashing:
+		rpc_unreliable("update_position",position)
+		yield(get_tree().create_timer(0.01),"timeout")
+		shift_texture.value -= 1
+		move_and_slide(lookdir * 500)
+		if alive == false:
+			self.sprinting = false
+			shift_texture.visible = false
+			shift_texture.value = 0
+			break
+		if shift_texture.value == 0:
+			#shift_texture.visible = false
+			#shift_texture.value = 0
+			self.sprinting = false
+			speed = base_speed
+			trysprint = false
+			dashing = false
+			#emit_signal("not_dashing")
+			can_move = true
