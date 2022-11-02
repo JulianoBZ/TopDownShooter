@@ -5,8 +5,18 @@ onready var spawns = {"1":get_node("Spawn1"),"2":get_node("Spawn2"),"3":get_node
 
 var rng = RandomNumberGenerator.new()
 
+const PORT := 3333
+
+export (NodePath) var advertiserPath: NodePath
+onready var advertiser := get_node(advertiserPath)
+
 func ready():
 	rng.randomize()
+
+func _process(delta):
+	advertiser.serverInfo["name"] = "123 Testing...."
+	advertiser.serverInfo["port"] = PORT
+	print(advertiser.serverInfo)
 
 #remotesync func _on_PlayerAll_pdeath(player):
 #	print("dead1")
