@@ -198,6 +198,7 @@ remote func hide_bars():
 	$HealthBar.visible = false
 	$Ammo.visible = false
 	$Health.visible = false
+	shift_texture.visible = false
 
 remotesync func on_kill():
 	if kills > prev_kills:

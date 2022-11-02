@@ -52,6 +52,7 @@ var desired_melee
 var desired_frame
 var active_weapon = 1
 var ejected = false
+var can_switch = true
 onready var meleeH = preload("res://Scenes/MeleeHibox.tscn")
 
 signal change_P
@@ -104,18 +105,21 @@ func _process(delta):
 			Sreserve = Sammo_max*clips
 		
 		#Change Weapon Slots
-		if Input.is_action_just_pressed("wep1"):
+		if Input.is_action_just_pressed("wep1") && reloading == false && can_switch:
 			active_weapon = 1
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
-		if Input.is_action_just_pressed("wep2"):
+		if Input.is_action_just_pressed("wep2") && reloading == false && can_switch:
 			active_weapon = 2
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
 		if Input.is_action_just_pressed("wep3"):
 			active_weapon = 3
+			reloading = false
+			reload_texture.visible = false
+			reload_texture.value = 0
 		
 		#Look at mouse position
 		look_at(get_global_mouse_position())
@@ -147,6 +151,7 @@ func _process(delta):
 		#Rifle
 		if Input.is_action_just_pressed("Reload") && reloading == false:
 			if primary == 1 && Pammo_count < 30 && active_weapon == 1 && Preserve > 0:
+				reload_texture.max_value = 180
 				reloading = true
 				max_recoil = 1
 				reload_texture.visible = true
@@ -158,7 +163,7 @@ func _process(delta):
 						reload_texture.visible = false
 						reload_texture.value = 0
 						break
-					if reload_texture.value == 240:
+					if reload_texture.value == 180:
 						reload_texture.visible = false
 						reload_texture.value = 0
 						PrelAux = Pammo_max - Pammo_count
@@ -208,6 +213,7 @@ func _process(delta):
 			if secondary == 1 && Sammo_count < 15 && active_weapon == 2 && Sreserve > 0:
 				reload_texture.max_value = 80
 				reloading = true
+				max_recoil = 1
 				reload_texture.visible = true
 				while(reloading):
 					yield(get_tree().create_timer(0.01),"timeout")
@@ -282,9 +288,11 @@ func _process(delta):
 			can_fire = false
 			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			Pammo_count -= 1
+			can_switch = false
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
 			rpc("spawn_shell")
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
+			can_switch = true
 			if alive == true:
 				can_fire = true
 		##################################################################################################
@@ -338,6 +346,7 @@ remotesync func spawn_bullet(id,tot_recoil):
 	var b = bullet.instance()
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
+	b.type = 1
 	b.damage = rifle_damage
 	b.position = $Bulletpoint.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
@@ -354,6 +363,7 @@ remotesync func spawn_shotgun(id):
 	var graus = -6
 	for x in bullets:
 		bullets[x].name = "Bullet" + name + str(Net.network_object_name_index)
+		bullets[x].type = 2
 		bullets[x].damage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()

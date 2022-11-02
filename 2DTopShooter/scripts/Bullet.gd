@@ -2,6 +2,9 @@ extends RigidBody2D
 
 onready var flag
 var damage = 10
+#Type of bullet
+var type = 1
+var lifespan = 0.5
 
 var pos = Vector2()
 var rot
@@ -10,8 +13,20 @@ onready var trail = preload("res://Scenes/Bullet_Particle.tscn")
 var receiverint
 var receiverinst
 
-#func _ready():
-#	rpc_unreliable("spawn_bullet")
+
+func _on_Bullet_tree_entered():
+	if type == 1:
+		lifespan = 0.5
+	if type == 2:
+		lifespan = 0.35
+
+func _ready():
+	#if type == 1:
+	#	lifespan = 0.5
+	#if type == 2:
+	#	lifespan = 0.35
+	$Timer.wait_time = lifespan
+	$Timer.start()
 
 func _process(delta):
 	var t = trail.instance()
@@ -43,3 +58,6 @@ remotesync func damage(attacker: Object,receiver: Object):
 #remote func last_damage(attacker: Object,receiver: Object):
 #	print(attacker , " " , receiver)
 	
+
+func _on_Timer_timeout():
+	queue_free()

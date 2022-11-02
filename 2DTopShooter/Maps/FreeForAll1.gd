@@ -16,7 +16,7 @@ func ready():
 func _process(delta):
 	advertiser.serverInfo["name"] = "123 Testing...."
 	advertiser.serverInfo["port"] = PORT
-	print(advertiser.serverInfo)
+	#print(advertiser.serverInfo)
 
 #remotesync func _on_PlayerAll_pdeath(player):
 #	print("dead1")
