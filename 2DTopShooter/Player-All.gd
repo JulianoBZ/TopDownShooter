@@ -61,19 +61,18 @@ func _ready():
 		frame = 3
 		Classbut3.pressed = true
 		desired_frame = 3
-	#rset_unreliable("frame",frame)
 	set_stats(frame)
-	#rpc("set_stats",frame,self)
 	
 	
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
 	if is_network_master() && can_move:
+		set_name(Global.player_name)
 		rpc_unreliable("update_stats",health, max_health)
 		rpc("on_kill")
 		#Menu.rect_global_position = global_position
-		#rpc("hide_bars")
+		rpc("hide_bars")
 		camera.make_current()
 		#print(camera.get_camera_position())
 		if camera_lock == false:
@@ -327,3 +326,6 @@ func _on_PlayerAll_rushing():
 			dashing = false
 			#emit_signal("not_dashing")
 			can_move = true
+
+remotesync func set_name(Gname):
+	Pname.text = str(Gname)

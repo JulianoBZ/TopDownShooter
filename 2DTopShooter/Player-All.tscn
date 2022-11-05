@@ -51,7 +51,6 @@ margin_left = -39.0
 margin_top = -58.0
 margin_right = 40.0
 margin_bottom = -44.0
-text = "Player-Teste"
 align = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]

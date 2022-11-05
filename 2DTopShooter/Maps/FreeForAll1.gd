@@ -14,7 +14,7 @@ func ready():
 	rng.randomize()
 
 func _process(delta):
-	advertiser.serverInfo["name"] = "123 Testing...."
+	advertiser.serverInfo["name"] = Net.lobby_name
 	advertiser.serverInfo["port"] = PORT
 	#print(advertiser.serverInfo)
 

@@ -7,10 +7,12 @@ const PORT := 3333
 var firetype = 1
 var player = preload("res://Player-All.tscn")
 var world = preload("res://Maps/FreeForAll1.tscn").instance()
+var browser = preload("res://Scenes/ServerBrowser.tscn").instance()
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
 onready var device_ip_address = $Multiplayer_configure/CanvasLayer/Device_IP
 onready var playername = $Multiplayer_configure/NameText
+onready var servername = $Multiplayer_configure/ServerName
 #onready var ffa1 = preload("res://Maps/FreeForAll1.tscn")
 #var spawns = {"1":world.get_node("Spawn1"),"2":world.get_node("Spawn2"),"3":world.get_node("Spawn3"),"4":world.get_node("Spawn4")
 #,"5":world.get_node("Spawn5"),"6":world.get_node("Spawn6"),"7":world.get_node("Spawn7")}
@@ -40,15 +42,21 @@ func _ready():
 
 func _player_connected(id):
 	print("Player: "+str(playername.text)+" has connected")
+	print(id)
 	instance_player(id)
 
 func _player_disconnected(id):
 	print("Player: "+str(playername.text)+" has disconnected")
-	
+	rpc("dc",id)
+	#var inst = instance_from_id(id)
+	#inst.queue_free()
+
+
 	if Players.has_node(str(playername.text)):
 		Players.get_node(str(playername.text)).queue_free()
 
 func _on_Create_Server_pressed():
+	Net.lobby_name = servername.text
 	multiplayer_config_ui.hide()
 	device_ip_address.hide()
 	#Net.create_server()
@@ -86,9 +94,9 @@ func _connected_to_server():
 	instance_player(get_tree().get_network_unique_id())
 
 func instance_player(id):
-	#Global.player_name = str(playername.text)
+	Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(player, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
-	player_instance.name = "Player: " + str(id)
+	player_instance.name = str(id)
 	player_instance.set_network_master(id)
 
 func _on_weaponbut1_pressed():
@@ -113,4 +121,11 @@ func _on_classbut3_pressed():
 	Global.frame = 3
 
 func _on_BrowseServer_pressed():
-	get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
+	self.add_child(browser)
+	#get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
+
+remotesync func dc(id):
+	pass
+	for c in Players.get_children():
+		if str(c.name) == str(id):
+			c.queue_free()

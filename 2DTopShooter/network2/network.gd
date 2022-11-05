@@ -9,18 +9,18 @@ var server = null
 var client = null
 
 var ip_address = ""
-var adapter
-var check = "ZeroTier One"
+#var adapter
+#var check = "ZeroTier One"
 
 var network_object_name_index = 0 setget network_object_name_index_set
 puppet var puppet_network_object_name_index = 0 setget puppet_network_object_name_index_set
 
 func _ready():
 	#adapter = get_local_interfaces()
-	for ad in IP.get_local_interfaces():
-		if (check in ad["friendly"]):
-			print(ad["friendly"])
-			print(ad["addresses"][1])
+	#for ad in IP.get_local_interfaces():
+	#	if (check in ad["friendly"]):
+	#		print(ad["friendly"])
+	#		print(ad["addresses"][1])
 	#print(IP.get_local_interfaces())
 	
 	if OS.get_name() == "Windows":

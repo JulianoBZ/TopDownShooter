@@ -95,7 +95,6 @@ func _ready():
 		Sreserve = Sammo_max * clips
 
 
-
 func _process(delta):
 	if is_network_master():
 		#Limit weapon ammo
