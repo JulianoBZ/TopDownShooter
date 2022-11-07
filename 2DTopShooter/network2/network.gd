@@ -3,7 +3,7 @@ extends Node
 const DEFAULT_PORT = 3333
 const MAX_CLIENTS = 6
 
-var lobby_name = ""
+var lobby_name = "Normal Lobby"
 
 var server = null
 var client = null

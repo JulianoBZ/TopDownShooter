@@ -8,6 +8,8 @@ var firetype = 1
 var player = preload("res://Player-All.tscn")
 var world = preload("res://Maps/FreeForAll1.tscn").instance()
 var browser = preload("res://Scenes/ServerBrowser.tscn").instance()
+var lobby = preload("res://network2/Lobby.tscn").instance()
+var playerList = []
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
 onready var device_ip_address = $Multiplayer_configure/CanvasLayer/Device_IP
@@ -42,18 +44,17 @@ func _ready():
 
 func _player_connected(id):
 	print("Player: "+str(playername.text)+" has connected")
-	print(id)
-	instance_player(id)
+	playerList.append(id)
+	#instance_player(id)
 
 func _player_disconnected(id):
 	print("Player: "+str(playername.text)+" has disconnected")
+	for p in playerList:
+		if p == id:
+			playerList.erase(p)
 	rpc("dc",id)
 	#var inst = instance_from_id(id)
 	#inst.queue_free()
-
-
-	if Players.has_node(str(playername.text)):
-		Players.get_node(str(playername.text)).queue_free()
 
 func _on_Create_Server_pressed():
 	Net.lobby_name = servername.text
@@ -64,10 +65,12 @@ func _on_Create_Server_pressed():
 	var result = peer.create_server(PORT)
 	if result == OK:
 		get_tree().set_network_peer(peer)
-		Map.add_child(world)
+		playerList.append(get_tree().get_network_unique_id())
+		self.add_child(lobby)
+		#Map.add_child(world)
 		print("Game hosted")
-		print(get_tree().get_network_unique_id())
-		instance_player(get_tree().get_network_unique_id())
+		#print(get_tree().get_network_unique_id())
+		#instance_player(get_tree().get_network_unique_id())
 		
 	else:
 		print("Failed to host game")
@@ -87,11 +90,12 @@ func _on_Join_Server_pressed():
 		Net.ip_address = server_ip_address.text
 		Net.join_server()
 		#var w = world.instance()
-		Map.add_child(world)
+		playerList.append(get_tree().get_network_unique_id())
+		self.add_child(lobby)
 
 func _connected_to_server():
 	yield(get_tree().create_timer(0.1),"timeout")
-	instance_player(get_tree().get_network_unique_id())
+	#instance_player(get_tree().get_network_unique_id())
 
 func instance_player(id):
 	Global.player_name = str(playername.text)

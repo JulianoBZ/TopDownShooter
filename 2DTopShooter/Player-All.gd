@@ -86,7 +86,6 @@ func _process(delta):
 		
 		#frame2 = sprint
 		if Input.is_action_pressed("Sprint") && frame == 2:
-			print("run")
 			speed = base_speed * 2
 			trysprint = true
 		else:
@@ -166,7 +165,8 @@ remote func update_position(pos):
 	position = pos
 
 remotesync func death():
-	lastdamage.kills += 1
+	if lastdamage != null:
+		lastdamage.kills += 1
 	
 	var skull = deathskull.instance()
 	skull.position = position
@@ -256,7 +256,6 @@ func _on_PlayerAll_dashing():
 	candash = false
 	var spr = true
 	var c = 0
-	#print(sprinting)
 	shift_texture.max_value = 25
 	#shift_texture.visible = true
 	while spr:
@@ -268,11 +267,6 @@ func _on_PlayerAll_dashing():
 		if c == 3:
 			c = 0
 			rpc("afterimage")
-		if alive == false:
-			#sprinting = false
-			shift_texture.visible = false
-			shift_texture.value = 0
-			break
 		if shift_texture.value == 25:
 			#shift_texture.visible = false
 			#shift_texture.value = 0

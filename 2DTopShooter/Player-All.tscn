@@ -288,6 +288,13 @@ margin_top = 0.223999
 margin_right = 0.103973
 margin_bottom = 0.0479889
 
+[node name="Panel2" type="Panel" parent="Esc_Menu"]
+visible = false
+margin_left = 121.0
+margin_top = -99.0
+margin_right = 308.0
+margin_bottom = 36.0
+
 [connection signal="dashing" from="." to="." method="_on_PlayerAll_dashing"]
 [connection signal="not_dashing" from="." to="." method="_on_PlayerAll_not_dashing"]
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
