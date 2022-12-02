@@ -40,6 +40,7 @@ func changed_playerList():
 
 func _on_StartGame_pressed():
 	rpc("start_game")
+	Net.lobby_name = "Game Started, do not Join"
 
 remotesync func start_game():
 	Map.add_child(world)
@@ -49,7 +50,7 @@ remotesync func start_game():
 			instance_player(each)
 	instance_player(get_tree().get_network_unique_id())
 
-func instance_player(id):
+remotesync func instance_player(id):
 	#Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(playerChar, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
 	player_instance.name = str(id)

@@ -295,6 +295,28 @@ margin_top = -99.0
 margin_right = 308.0
 margin_bottom = 36.0
 
+[node name="TabMenu" type="Control" parent="."]
+visible = false
+margin_left = -464.0
+margin_top = -282.0
+margin_right = 465.0
+margin_bottom = 283.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabMenu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 229.0
+margin_top = 28.0
+margin_right = -231.0
+margin_bottom = -33.0
+
+[node name="Panel" type="Panel" parent="TabMenu"]
+modulate = Color( 1, 1, 1, 0.509804 )
+margin_left = 229.0
+margin_top = 28.0
+margin_right = 698.0
+margin_bottom = 28.0
+
 [connection signal="dashing" from="." to="." method="_on_PlayerAll_dashing"]
 [connection signal="not_dashing" from="." to="." method="_on_PlayerAll_not_dashing"]
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]

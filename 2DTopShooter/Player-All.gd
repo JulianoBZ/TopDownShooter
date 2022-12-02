@@ -10,7 +10,7 @@ var pos = Vector2()
 var sprinting = false
 export var health = 100
 export var max_health = 100
-var vida = 100
+#var vida = 100
 var alive = true
 var direction = Vector2()
 var lastdir = Vector2()
@@ -45,6 +45,7 @@ signal not_dashing
 signal rushing
 var dashing
 var candash = true
+var PlayersCharacters
 
 func _ready():
 	rng.randomize()
@@ -64,11 +65,17 @@ func _ready():
 	set_stats(frame)
 	
 	
+	#PlayersCharacters = Players.get_children()
+	#for n in PlayersCharacters:
+	#	var plname = Label.new()
+	#	plname.text = n.Pname.text
+	#	print(n.Pname.text)
+	#	$TabMenu/VBoxContainer.add_child(plname)
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
 func _process(delta):
 	if is_network_master() && can_move:
-		set_name(Global.player_name)
+		rpc_unreliable("set_name",Global.player_name)
 		rpc_unreliable("update_stats",health, max_health)
 		rpc("on_kill")
 		#Menu.rect_global_position = global_position
@@ -111,6 +118,24 @@ func _process(delta):
 			alive = false
 			rpc("death")
 		
+		#Tab
+		if Input.is_action_pressed("Tab"):
+			$TabMenu.show()
+			camera.offset_h = 0
+			camera.offset_v = 0
+		else:
+			$TabMenu.hide()
+		
+		for i in $TabMenu/VBoxContainer.get_children():
+			i.queue_free()
+		PlayersCharacters = Players.get_children()
+		for n in PlayersCharacters:
+			var plname = Label.new()
+			plname.text = n.Pname.text
+			print(n.Pname.text)
+			$TabMenu/VBoxContainer.add_child(plname)
+		
+		#Esc
 		if Input.is_action_just_pressed("Esc_Menu"):
 			if esc_pressed:
 				print("Error")
@@ -323,3 +348,4 @@ func _on_PlayerAll_rushing():
 
 remotesync func set_name(Gname):
 	Pname.text = str(Gname)
+

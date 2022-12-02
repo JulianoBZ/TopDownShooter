@@ -55,6 +55,13 @@ margin_right = 1265.0
 margin_bottom = 496.0
 align = 1
 
+[node name="SetName" type="Button" parent="Multiplayer_configure"]
+margin_left = 1073.0
+margin_top = 511.0
+margin_right = 1171.0
+margin_bottom = 548.0
+text = "Set Name"
+
 [node name="ServerName" type="LineEdit" parent="Multiplayer_configure"]
 margin_left = 978.0
 margin_top = 100.0
@@ -246,6 +253,7 @@ text = "Browse Servers"
 
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/SetName" to="." method="_on_SetName_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/weaponbut1" to="." method="_on_weaponbut1_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/classbut1" to="." method="_on_classbut1_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/classbut2" to="." method="_on_classbut2_pressed"]
