@@ -24,7 +24,7 @@ func _enter_tree():
 		socketUDP.set_dest_address('255.255.255.255', broadcastPort)
 
 func broadcast():
-	print('Broadcasting game...')
+	#print('Broadcasting game...')
 	var packetMessage := to_json(serverInfo)
 	var packet := packetMessage.to_ascii()
 	socketUDP.put_packet(packet)

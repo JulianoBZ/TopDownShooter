@@ -8,6 +8,12 @@ var lobby_name = "Normal Lobby"
 var server = null
 var client = null
 
+var myinfo = [0,"Player"]
+var connected = false
+#var playerList = []
+
+onready var connecting = false
+
 var ip_address = ""
 #var adapter
 #var check = "ZeroTier One"
@@ -52,6 +58,10 @@ func join_server():
 
 func _connected_to_server() -> void:
 	print("Conectado ao servidor com sucesso")
+	connecting = true
+	myinfo = [get_tree().get_network_unique_id(),Global.player_name]
+	connected = true
+	#rpc_id(1,"connected",get_tree().get_network_unique_id(),Global.player_name)
 
 func _server_disconnected() -> void:
 	print("Desconectado do servidor")
@@ -64,3 +74,6 @@ func network_object_name_index_set(new_value):
 	
 	if get_tree().is_network_server():
 		rset("puppet_network_object_name_index",network_object_name_index)
+
+#remote func connected(peerInfo):
+#	playerList.append_array(peerInfo)

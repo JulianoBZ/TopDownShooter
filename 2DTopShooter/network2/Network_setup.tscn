@@ -46,6 +46,7 @@ margin_left = 574.0
 margin_top = 439.0
 margin_right = 861.0
 margin_bottom = 495.0
+text = "192.168.0.10"
 align = 1
 
 [node name="NameText" type="LineEdit" parent="Multiplayer_configure"]

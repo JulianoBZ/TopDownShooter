@@ -132,7 +132,6 @@ func _process(delta):
 		for n in PlayersCharacters:
 			var plname = Label.new()
 			plname.text = n.Pname.text
-			print(n.Pname.text)
 			$TabMenu/VBoxContainer.add_child(plname)
 		
 		#Esc
@@ -305,7 +304,7 @@ remotesync func afterimage():
 	var ai = afterimage.instance()
 	ai.rotation_degrees = player.rotation_degrees + 90
 	ai.position = position
-	Players.add_child(ai)
+	Bullets.add_child(ai)
 
 
 func _on_PlayerAll_not_dashing():
