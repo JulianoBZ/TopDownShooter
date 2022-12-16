@@ -10,6 +10,7 @@ var playerList_aux = 0
 var playerList = []
 var peerinfo = []
 var myinfo = []
+onready var PLU = preload("res://network2/PlayerListUnit.tscn")
 
 export (NodePath) var advertiserPath: NodePath
 onready var advertiser := get_node(advertiserPath)
@@ -69,9 +70,21 @@ func changed_playerList():
 	for n in $PlayerList.get_children():
 		n.queue_free()
 	for p in playerList:
-		var player = Label.new()
-		player.text = str(p)
-		$PlayerList.add_child(player)
+		
+		#var player = Label.new()
+		#var Pcolor = ColorRect.new()
+		#player.text = str(p[1])
+		#Pcolor.color = Color(1,0,0,1)
+		#Pcolor.rect_position = player.rect_position
+		#player.add_child(Pcolor)
+		#$PlayerList.add_child(player)
+		
+		var playerunit = PLU.instance()
+		playerunit.get_node("ColorRect/Label").text = str(p[1])
+		#print(str(playerunit.get_node("Label").text))
+		$PlayerList.add_child(playerunit)
+		#print(str($PlayerList.get_children()))
+		
 
 func _on_StartGame_pressed():
 	rpc("start_game")

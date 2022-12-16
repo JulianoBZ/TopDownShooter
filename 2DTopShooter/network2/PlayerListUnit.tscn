@@ -1,0 +1,19 @@
+[gd_scene format=2]
+
+[node name="PlayerListUnit" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1234.0
+margin_bottom = -749.0
+
+[node name="ColorRect" type="ColorRect" parent="."]
+show_behind_parent = true
+margin_right = 132.0
+margin_bottom = 19.0
+color = Color( 0.596078, 0.105882, 0.105882, 1 )
+
+[node name="Label" type="Label" parent="ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Player"
+max_lines_visible = 1

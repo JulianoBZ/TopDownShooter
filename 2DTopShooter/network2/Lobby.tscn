@@ -18,6 +18,7 @@ margin_left = -252.5
 margin_top = -241.0
 margin_right = 252.5
 margin_bottom = 241.0
+custom_constants/separation = 16
 
 [node name="Label" type="Label" parent="."]
 anchor_left = 0.5
