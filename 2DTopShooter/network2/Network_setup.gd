@@ -33,7 +33,7 @@ func _ready():
 	get_tree().connect("connected_to_server",self,'_connected_to_server')
 	#rpc("register_player",myinfo)
 	device_ip_address.text = Net.ip_address
-	myinfo = [0,Global.player_name]
+	myinfo = [0,Global.player_name,"CC0000"]
 
 func _player_connected(id):
 	print("Player: has connected")
@@ -51,6 +51,7 @@ func _player_disconnected(id):
 	rpc("dc",id)
 
 func _on_Create_Server_pressed():
+	Net.hosting = true
 	if servername.text != "":
 		Net.lobby_name = servername.text
 	multiplayer_config_ui.hide()
@@ -63,7 +64,7 @@ func _on_Create_Server_pressed():
 		#self.add_child(lobby)
 		lobby.show()
 		#print("Game hosted")
-		myinfo = [get_tree().get_network_unique_id(), Global.player_name]
+		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000"]
 		lobby.playerList.append(myinfo)
 		print(lobby.playerList)
 		#myinfo["name"] = Global.player_name

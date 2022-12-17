@@ -34,6 +34,7 @@ func _process(delta):
 	advertiser.serverInfo["port"] = PORT
 	if Net.connected == true:
 		rpc_id(1,"Pconnected",Net.myinfo)
+		Net.onLobby = true
 		Net.connected = false
 	
 	
@@ -66,6 +67,7 @@ func _process(delta):
 		$StartGame.show()
 
 func changed_playerList():
+	#rpc("update_player_list_lobby",playerList)
 	#if get_tree().get_network_unique_id() == 1:
 	for n in $PlayerList.get_children():
 		n.queue_free()
@@ -81,6 +83,9 @@ func changed_playerList():
 		
 		var playerunit = PLU.instance()
 		playerunit.get_node("ColorRect/Label").text = str(p[1])
+		#print(str(p[2]))
+		#print(Net.color)
+		playerunit.get_node("ColorRect").color = Color(str(p[2]))
 		#print(str(playerunit.get_node("Label").text))
 		$PlayerList.add_child(playerunit)
 		#print(str($PlayerList.get_children()))

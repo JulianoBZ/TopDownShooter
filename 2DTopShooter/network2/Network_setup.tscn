@@ -112,136 +112,6 @@ align = 1
 valign = 1
 autowrap = true
 
-[node name="weapon1" type="Label" parent="Multiplayer_configure"]
-margin_left = 609.0
-margin_top = 551.0
-margin_right = 805.0
-margin_bottom = 592.0
-text = "Rifle"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="weapon2" type="Label" parent="Multiplayer_configure"]
-margin_left = 610.0
-margin_top = 594.0
-margin_right = 806.0
-margin_bottom = 635.0
-text = "Shotgun"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="weaponbut1" type="Button" parent="Multiplayer_configure"]
-margin_left = 608.0
-margin_top = 556.0
-margin_right = 638.0
-margin_bottom = 586.0
-toggle_mode = true
-pressed = true
-group = ExtResource( 2 )
-
-[node name="class1" type="Label" parent="Multiplayer_configure"]
-margin_left = 159.0
-margin_top = 483.0
-margin_right = 355.0
-margin_bottom = 524.0
-text = "Light"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="classbut1" type="Button" parent="Multiplayer_configure"]
-margin_left = 158.0
-margin_top = 488.0
-margin_right = 188.0
-margin_bottom = 518.0
-toggle_mode = true
-pressed = true
-group = ExtResource( 4 )
-
-[node name="class2" type="Label" parent="Multiplayer_configure"]
-margin_left = 159.0
-margin_top = 537.0
-margin_right = 355.0
-margin_bottom = 578.0
-text = "Medium"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="classbut2" type="Button" parent="Multiplayer_configure"]
-margin_left = 158.0
-margin_top = 542.0
-margin_right = 188.0
-margin_bottom = 572.0
-toggle_mode = true
-group = ExtResource( 4 )
-
-[node name="class3" type="Label" parent="Multiplayer_configure"]
-margin_left = 159.0
-margin_top = 587.0
-margin_right = 355.0
-margin_bottom = 628.0
-text = "Heavy"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="classbut3" type="Button" parent="Multiplayer_configure"]
-margin_left = 158.0
-margin_top = 592.0
-margin_right = 188.0
-margin_bottom = 622.0
-toggle_mode = true
-group = ExtResource( 4 )
-
-[node name="weaponbut2" type="Button" parent="Multiplayer_configure"]
-margin_left = 608.0
-margin_top = 598.0
-margin_right = 638.0
-margin_bottom = 628.0
-toggle_mode = true
-group = ExtResource( 2 )
-
-[node name="Sweapon1" type="Label" parent="Multiplayer_configure"]
-margin_left = 820.0
-margin_top = 553.0
-margin_right = 1016.0
-margin_bottom = 594.0
-rect_pivot_offset = Vector2( -684, -122 )
-text = "Pistol"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="Sweapon2" type="Label" parent="Multiplayer_configure"]
-margin_left = 821.0
-margin_top = 596.0
-margin_right = 1017.0
-margin_bottom = 637.0
-text = "Revolver"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="Sweaponbut1" type="Button" parent="Multiplayer_configure"]
-margin_left = 819.0
-margin_top = 558.0
-margin_right = 849.0
-margin_bottom = 588.0
-toggle_mode = true
-pressed = true
-group = ExtResource( 3 )
-
-[node name="Sweaponbut2" type="Button" parent="Multiplayer_configure"]
-margin_left = 819.0
-margin_top = 600.0
-margin_right = 849.0
-margin_bottom = 630.0
-toggle_mode = true
-group = ExtResource( 3 )
-
 [node name="BrowseServer" type="Button" parent="Multiplayer_configure"]
 anchor_left = 0.5
 anchor_right = 0.5
@@ -252,14 +122,149 @@ margin_bottom = 281.0
 rect_pivot_offset = Vector2( 223, 22 )
 text = "Browse Servers"
 
+[node name="Class-Weapons" type="Control" parent="Multiplayer_configure"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="weapon1" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 609.0
+margin_top = 551.0
+margin_right = 805.0
+margin_bottom = 592.0
+text = "Rifle"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="weapon2" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 610.0
+margin_top = 594.0
+margin_right = 806.0
+margin_bottom = 635.0
+text = "Shotgun"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="weaponbut1" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 608.0
+margin_top = 556.0
+margin_right = 638.0
+margin_bottom = 586.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 2 )
+
+[node name="class1" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 159.0
+margin_top = 483.0
+margin_right = 355.0
+margin_bottom = 524.0
+text = "Light"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut1" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 158.0
+margin_top = 488.0
+margin_right = 188.0
+margin_bottom = 518.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 4 )
+
+[node name="class2" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 159.0
+margin_top = 537.0
+margin_right = 355.0
+margin_bottom = 578.0
+text = "Medium"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut2" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 158.0
+margin_top = 542.0
+margin_right = 188.0
+margin_bottom = 572.0
+toggle_mode = true
+group = ExtResource( 4 )
+
+[node name="class3" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 159.0
+margin_top = 587.0
+margin_right = 355.0
+margin_bottom = 628.0
+text = "Heavy"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="classbut3" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 158.0
+margin_top = 592.0
+margin_right = 188.0
+margin_bottom = 622.0
+toggle_mode = true
+group = ExtResource( 4 )
+
+[node name="weaponbut2" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 608.0
+margin_top = 598.0
+margin_right = 638.0
+margin_bottom = 628.0
+toggle_mode = true
+group = ExtResource( 2 )
+
+[node name="Sweapon1" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 820.0
+margin_top = 553.0
+margin_right = 1016.0
+margin_bottom = 594.0
+rect_pivot_offset = Vector2( -684, -122 )
+text = "Pistol"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Sweapon2" type="Label" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 821.0
+margin_top = 596.0
+margin_right = 1017.0
+margin_bottom = 637.0
+text = "Revolver"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Sweaponbut1" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 819.0
+margin_top = 558.0
+margin_right = 849.0
+margin_bottom = 588.0
+toggle_mode = true
+pressed = true
+group = ExtResource( 3 )
+
+[node name="Sweaponbut2" type="Button" parent="Multiplayer_configure/Class-Weapons"]
+margin_left = 819.0
+margin_top = 600.0
+margin_right = 849.0
+margin_bottom = 630.0
+toggle_mode = true
+group = ExtResource( 3 )
+
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/SetName" to="." method="_on_SetName_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/weaponbut1" to="." method="_on_weaponbut1_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/classbut1" to="." method="_on_classbut1_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/classbut2" to="." method="_on_classbut2_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/classbut3" to="." method="_on_classbut3_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/weaponbut2" to="." method="_on_weaponbut2_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/Sweaponbut1" to="." method="_on_Sweaponbut1_pressed"]
-[connection signal="pressed" from="Multiplayer_configure/Sweaponbut2" to="." method="_on_Sweaponbut2_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/BrowseServer" to="." method="_on_BrowseServer_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/weaponbut1" to="." method="_on_weaponbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/classbut1" to="." method="_on_classbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/classbut2" to="." method="_on_classbut2_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/classbut3" to="." method="_on_classbut3_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/weaponbut2" to="." method="_on_weaponbut2_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/Sweaponbut1" to="." method="_on_Sweaponbut1_pressed"]
+[connection signal="pressed" from="Multiplayer_configure/Class-Weapons/Sweaponbut2" to="." method="_on_Sweaponbut2_pressed"]
