@@ -51,36 +51,44 @@ margin_right = 139.0
 margin_bottom = -37.0
 text = "Start Game"
 
+[node name="ReadyButton" type="Button" parent="."]
+margin_left = 1120.0
+margin_top = 491.0
+margin_right = 1204.0
+margin_bottom = 536.0
+toggle_mode = true
+text = "Ready"
+
 [node name="PlayerLoadout" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 6 )
 
 [node name="weapon1" type="Label" parent="PlayerLoadout"]
-margin_left = 609.0
-margin_top = 551.0
-margin_right = 805.0
-margin_bottom = 592.0
+margin_left = 367.0
+margin_top = 516.0
+margin_right = 563.0
+margin_bottom = 557.0
 text = "Rifle"
 align = 1
 valign = 1
 autowrap = true
 
 [node name="weapon2" type="Label" parent="PlayerLoadout"]
-margin_left = 610.0
-margin_top = 594.0
-margin_right = 806.0
-margin_bottom = 635.0
+margin_left = 368.0
+margin_top = 559.0
+margin_right = 564.0
+margin_bottom = 600.0
 text = "Shotgun"
 align = 1
 valign = 1
 autowrap = true
 
 [node name="weaponbut1" type="Button" parent="PlayerLoadout"]
-margin_left = 608.0
-margin_top = 556.0
-margin_right = 638.0
-margin_bottom = 586.0
+margin_left = 366.0
+margin_top = 521.0
+margin_right = 396.0
+margin_bottom = 551.0
 toggle_mode = true
 pressed = true
 group = ExtResource( 5 )
@@ -141,18 +149,18 @@ toggle_mode = true
 group = ExtResource( 4 )
 
 [node name="weaponbut2" type="Button" parent="PlayerLoadout"]
-margin_left = 608.0
-margin_top = 598.0
-margin_right = 638.0
-margin_bottom = 628.0
+margin_left = 366.0
+margin_top = 563.0
+margin_right = 396.0
+margin_bottom = 593.0
 toggle_mode = true
 group = ExtResource( 5 )
 
 [node name="Sweapon1" type="Label" parent="PlayerLoadout"]
-margin_left = 820.0
-margin_top = 553.0
-margin_right = 1016.0
-margin_bottom = 594.0
+margin_left = 578.0
+margin_top = 518.0
+margin_right = 774.0
+margin_bottom = 559.0
 rect_pivot_offset = Vector2( -684, -122 )
 text = "Pistol"
 align = 1
@@ -160,41 +168,42 @@ valign = 1
 autowrap = true
 
 [node name="Sweapon2" type="Label" parent="PlayerLoadout"]
-margin_left = 821.0
-margin_top = 596.0
-margin_right = 1017.0
-margin_bottom = 637.0
+margin_left = 579.0
+margin_top = 561.0
+margin_right = 775.0
+margin_bottom = 602.0
 text = "Revolver"
 align = 1
 valign = 1
 autowrap = true
 
 [node name="Sweaponbut1" type="Button" parent="PlayerLoadout"]
-margin_left = 819.0
-margin_top = 558.0
-margin_right = 849.0
-margin_bottom = 588.0
+margin_left = 577.0
+margin_top = 523.0
+margin_right = 607.0
+margin_bottom = 553.0
 toggle_mode = true
 pressed = true
 group = ExtResource( 3 )
 
 [node name="Sweaponbut2" type="Button" parent="PlayerLoadout"]
-margin_left = 819.0
-margin_top = 600.0
-margin_right = 849.0
-margin_bottom = 630.0
+margin_left = 577.0
+margin_top = 565.0
+margin_right = 607.0
+margin_bottom = 595.0
 toggle_mode = true
 group = ExtResource( 3 )
 
 [node name="OptionButton" type="OptionButton" parent="PlayerLoadout"]
-margin_left = 1075.0
-margin_top = 515.0
-margin_right = 1259.0
-margin_bottom = 560.0
+margin_left = 827.0
+margin_top = 490.0
+margin_right = 1011.0
+margin_bottom = 535.0
 text = "Color"
 script = ExtResource( 7 )
 
 [connection signal="pressed" from="StartGame" to="." method="_on_StartGame_pressed"]
+[connection signal="toggled" from="ReadyButton" to="." method="_on_ReadyButton_toggled"]
 [connection signal="pressed" from="PlayerLoadout/weaponbut1" to="PlayerLoadout" method="_on_weaponbut1_pressed"]
 [connection signal="pressed" from="PlayerLoadout/classbut1" to="PlayerLoadout" method="_on_classbut1_pressed"]
 [connection signal="pressed" from="PlayerLoadout/classbut2" to="PlayerLoadout" method="_on_classbut2_pressed"]

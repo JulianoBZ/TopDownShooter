@@ -16,4 +16,26 @@ color = Color( 0.596078, 0.105882, 0.105882, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 text = "Player"
+align = 1
+valign = 1
 max_lines_visible = 1
+
+[node name="ReadyRect" type="ColorRect" parent="."]
+margin_left = 189.0
+margin_right = 208.0
+margin_bottom = 19.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="FragRect" type="ColorRect" parent="."]
+visible = false
+margin_left = 189.0
+margin_right = 218.0
+margin_bottom = 19.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="KillLabel" type="Label" parent="FragRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "1"
+align = 1
+valign = 1

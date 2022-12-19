@@ -30,6 +30,11 @@ func ready():
 
 func _process(delta):
 	if Net.hosting:
+		$ReadyButton.hide()
+		for p in Net.playerList:
+			if p[0] == 1:
+				p[3] = 1
+	if Net.hosting:
 		rpc("update_player_list_lobby",playerList)
 	#print(playerList)
 	advertiser.serverInfo["name"] = Net.lobby_name
@@ -88,6 +93,10 @@ func changed_playerList():
 		#print(str(p[2]))
 		#print(Net.color)
 		playerunit.get_node("ColorRect").color = Color(str(p[2]))
+		if p[3] == 1:
+			playerunit.get_node("ReadyRect").color = Color("5bd700")
+		else:
+			playerunit.get_node("ReadyRect").color = Color("000000")
 		#print(str(playerunit.get_node("Label").text))
 		$PlayerList.add_child(playerunit)
 		#print(str($PlayerList.get_children()))
@@ -96,15 +105,15 @@ func changed_playerList():
 
 func _on_StartGame_pressed():
 	rpc("start_game")
+	#$ServerAdvertiser.socketUDP.set_broadcast_enabled(false)
 	Net.lobby_name = "Game Started, do not Join"
 
 remotesync func start_game():
-	for p in playerList:
-		p.append(0)
 	Net.playerList = playerList
 	print(Net.playerList)
 	Map.add_child(world)
 	self.hide()
+	
 	for each in playerList:
 		var pl_id = each[0]
 		if pl_id != get_tree().get_network_unique_id():
@@ -128,3 +137,32 @@ remote func Pconnected(PeerInfo):
 remotesync func update_player_list_lobby(list):
 	playerList = list
 	Net.playerList = playerList
+
+func _on_ReadyButton_pressed():
+	if $ReadyButton.text == "Ready":
+		rpc_id(1,"UpdateReady",get_tree().get_network_unique_id())
+		$ReadyButton.text = "Unready"
+	if $ReadyButton.text == "Unready":
+		rpc_id(1,"UpdateUnReady",get_tree().get_network_unique_id())
+		$ReadyButton.text = "Ready"
+
+remote func UpdateReady(id):
+	for p in Net.playerList:
+		if p[0] == id:
+			p[3] = 1
+			print(Net.playerList)
+	
+remote func UpdateUnReady(id):
+	for p in Net.playerList:
+		if p[0] == id:
+			p[3] = 0
+			print(Net.playerList)
+
+
+func _on_ReadyButton_toggled(button_pressed):
+	if button_pressed:
+		rpc_id(1,"UpdateReady",get_tree().get_network_unique_id())
+		$ReadyButton.text = "Unready"
+	if !button_pressed:
+		rpc_id(1,"UpdateUnReady",get_tree().get_network_unique_id())
+		$ReadyButton.text = "Ready"

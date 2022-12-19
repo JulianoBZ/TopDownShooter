@@ -33,7 +33,7 @@ func _ready():
 	get_tree().connect("connected_to_server",self,'_connected_to_server')
 	#rpc("register_player",myinfo)
 	device_ip_address.text = Net.ip_address
-	myinfo = [0,Global.player_name,"CC0000"]
+	myinfo = [0,Global.player_name,"CC0000",0]
 
 func _player_connected(id):
 	print("Player: has connected")
@@ -47,7 +47,7 @@ func _player_disconnected(id):
 	#print("Player: "+str(playername.text)+" has disconnected")
 	for p in Net.playerList:
 		if p[0] == id:
-			rpc("dc",id)
+			dc(id)
 			Net.playerList.erase(p)
 	#rpc("dc",id)
 
@@ -65,7 +65,7 @@ func _on_Create_Server_pressed():
 		#self.add_child(lobby)
 		lobby.show()
 		#print("Game hosted")
-		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000"]
+		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000",0]
 		lobby.playerList.append(myinfo)
 		print(lobby.playerList)
 		#myinfo["name"] = Global.player_name
@@ -150,11 +150,13 @@ func _on_BrowseServer_pressed():
 	self.add_child(browser)
 	#get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
 
-remotesync func dc(id):
+func dc(id):
+	var count = 0
 	for c in Net.playerList:
 		if c[0] == id:
 			print("Player ",c[1]," has Disconnected")
-			Net.playerList.remove(c)
+			Net.playerList.remove(count)
+		count += 1
 
 #remote func register_player(info,self_name):
 #	var id = get_tree().get_rpc_sender_id()
