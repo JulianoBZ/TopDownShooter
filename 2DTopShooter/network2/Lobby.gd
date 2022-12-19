@@ -29,6 +29,8 @@ func ready():
 	#playerList.append(myinfo)
 
 func _process(delta):
+	if Net.hosting:
+		rpc("update_player_list_lobby",playerList)
 	#print(playerList)
 	advertiser.serverInfo["name"] = Net.lobby_name
 	advertiser.serverInfo["port"] = PORT
@@ -90,12 +92,17 @@ func changed_playerList():
 		$PlayerList.add_child(playerunit)
 		#print(str($PlayerList.get_children()))
 		
+	Net.playerList = playerList
 
 func _on_StartGame_pressed():
 	rpc("start_game")
 	Net.lobby_name = "Game Started, do not Join"
 
 remotesync func start_game():
+	for p in playerList:
+		p.append(0)
+	Net.playerList = playerList
+	print(Net.playerList)
 	Map.add_child(world)
 	self.hide()
 	for each in playerList:
@@ -114,9 +121,10 @@ remote func Pconnected(PeerInfo):
 	peerinfo = PeerInfo
 	print(peerinfo)
 	playerList.append(peerinfo)
-	rpc("update_player_list_lobby",playerList)
+	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
 	print(playerList)
 
 remotesync func update_player_list_lobby(list):
 	playerList = list
+	Net.playerList = playerList

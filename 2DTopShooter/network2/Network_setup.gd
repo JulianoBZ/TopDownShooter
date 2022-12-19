@@ -44,11 +44,12 @@ func _player_connected(id):
 	#instance_player(id)
 
 func _player_disconnected(id):
-	print("Player: "+str(playername.text)+" has disconnected")
-	for p in lobby.playerList:
+	#print("Player: "+str(playername.text)+" has disconnected")
+	for p in Net.playerList:
 		if p[0] == id:
-			lobby.playerList.erase(p)
-	rpc("dc",id)
+			rpc("dc",id)
+			Net.playerList.erase(p)
+	#rpc("dc",id)
 
 func _on_Create_Server_pressed():
 	Net.hosting = true
@@ -150,9 +151,10 @@ func _on_BrowseServer_pressed():
 	#get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
 
 remotesync func dc(id):
-	for c in Players.get_children():
-		if str(c.name) == str(id):
-			c.queue_free()
+	for c in Net.playerList:
+		if c[0] == id:
+			print("Player ",c[1]," has Disconnected")
+			Net.playerList.remove(c)
 
 #remote func register_player(info,self_name):
 #	var id = get_tree().get_rpc_sender_id()

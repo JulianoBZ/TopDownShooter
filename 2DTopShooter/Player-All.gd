@@ -25,7 +25,8 @@ onready var spawns = get_tree().get_root().get_node("/root/Map").get_child(0).sp
 var rng = RandomNumberGenerator.new()
 onready var killcount = $KillCount
 onready var Menu = $Esc_Menu/Panel
-var kills = 0
+export var kills = 0
+var newkill = 0
 var prev_kills = kills
 onready var deathskull = preload("res://Scenes/DeadPlayer.tscn")
 onready var ammo_crate = preload("res://Scenes/Ammo_pickup.tscn")
@@ -126,13 +127,13 @@ func _process(delta):
 		else:
 			$TabMenu.hide()
 		
-		for i in $TabMenu/VBoxContainer.get_children():
-			i.queue_free()
-		PlayersCharacters = Players.get_children()
-		for n in PlayersCharacters:
-			var plname = Label.new()
-			plname.text = n.Pname.text
-			$TabMenu/VBoxContainer.add_child(plname)
+		#for i in $TabMenu/VBoxContainer.get_children():
+		#	i.queue_free()
+		#PlayersCharacters = Players.get_children()
+		#for n in PlayersCharacters:
+		#	var plname = Label.new()
+		#	plname.text = n.Pname.text
+		#	$TabMenu/VBoxContainer.add_child(plname)
 		
 		#Esc
 		if Input.is_action_just_pressed("Esc_Menu"):
@@ -227,6 +228,16 @@ remotesync func on_kill():
 	if kills > prev_kills:
 		prev_kills = kills
 		health += 30
+		rpc("UpdateKills",kills,get_tree().get_network_unique_id())
+		#if Net.onLobby:
+		#	rpc_id(1,"UpdateKills",kills,get_tree().get_network_unique_id())
+		#	print(Net.playerList)
+		#if Net.hosting:
+		#	for p in Net.playerList:
+		#		if p[0] == 1:
+		#			p[3] = kills
+		#	rpc("UpdateKillList",Net.playerList)
+			
 	if health > max_health:
 		health = max_health
 
@@ -348,3 +359,20 @@ func _on_PlayerAll_rushing():
 remotesync func set_name(Gname):
 	Pname.text = str(Gname)
 
+remotesync func UpdateKills(k,id):
+	for p in Net.playerList:
+		if p[0] == id:
+			p[3] = k
+
+#remote func UpdateKills(k,id):
+#	newkill = k
+#	var killid = id
+#	for p in Net.playerList:
+#		if p[0] == killid:
+#			p[3] = newkill
+#			newkill = 0
+#	rpc("UpdateKillList",Net.playerList)
+#	print(Net.playerList)
+
+#remotesync func UpdateKillList(list):
+#	Net.playerList = list

@@ -13,7 +13,7 @@ var myinfo = [0,"Player",color]
 var connected = false
 var hosting = false
 var onLobby = false
-#var playerList = []
+var playerList = []
 
 onready var connecting = false
 

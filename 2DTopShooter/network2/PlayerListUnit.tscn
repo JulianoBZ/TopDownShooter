@@ -8,7 +8,7 @@ margin_bottom = -749.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
 show_behind_parent = true
-margin_right = 132.0
+margin_right = 180.0
 margin_bottom = 19.0
 color = Color( 0.596078, 0.105882, 0.105882, 1 )
 
