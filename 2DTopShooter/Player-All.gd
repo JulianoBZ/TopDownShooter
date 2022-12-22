@@ -45,7 +45,10 @@ signal dashing
 signal not_dashing
 signal rushing
 var dashing
+onready var DashSound = $DashSound
 var candash = true
+var rushPressure = "res://assets/Sounds/PressureRelease.mp3"
+onready var steam = preload("res://Scenes/Steam_Particle.tscn")
 var PlayersCharacters
 
 func _ready():
@@ -103,7 +106,7 @@ func _process(delta):
 		#frame1 = dash
 		if Input.is_action_just_pressed("Sprint") && frame == 1 && candash:
 			#sprinting = true
-			emit_signal("dashing")
+			dashing()
 		
 		#frame3 = bullrush
 		if Input.is_action_pressed("Sprint") && frame == 3 && sprinting == false && candash && !dashing:
@@ -111,7 +114,8 @@ func _process(delta):
 			yield(get_tree().create_timer(0.01),"timeout")
 			shift_texture.value += 1
 			if shift_texture.value == 60:
-				emit_signal("rushing")
+				#emit_signal("rushing")
+				rushing()
 		elif !Input.is_action_pressed("Sprint") && frame == 3:
 			shift_texture.value -= 1
 		
@@ -207,13 +211,14 @@ remotesync func death():
 	emit_signal("pdeath")
 	
 	yield(get_tree().create_timer(3),"timeout")
-	position = spawns[str(rng.randi_range(1,spawns.size()))].position
+	position = Map.get_child(0).spawns[str(rng.randi_range(1,spawns.size()))].position
 	health = max_health
 	can_move = true
 	set_stats(desired_frame)
 	yield(get_tree().create_timer(0.1),"timeout")
 	$Corpo.disabled = false
 	$KillCount.visible = true
+	alive = true
 	#$HealthBar.visible = true
 	emit_signal("respawned")
 
@@ -228,7 +233,7 @@ remotesync func on_kill():
 	if kills > prev_kills:
 		prev_kills = kills
 		health += 30
-		rpc("UpdateKills",kills,get_tree().get_network_unique_id())
+		#rpc_id(1,"UpdateKills",kills,get_tree().get_network_unique_id())
 		#if Net.onLobby:
 		#	rpc_id(1,"UpdateKills",kills,get_tree().get_network_unique_id())
 		#	print(Net.playerList)
@@ -250,16 +255,19 @@ func set_stats(f):
 		base_speed = 350
 		health = 50
 		max_health = 50
+		frame = 1
 	if f == 2:
 		speed = 200
 		base_speed = 250
 		health = 100
 		max_health = 100
+		frame = 2
 	if f == 3:
 		speed = 100
 		base_speed = 200
 		health = 175
 		max_health = 175
+		frame = 3
 
 remote func update_stats(h,mh):
 	health = h
@@ -285,7 +293,7 @@ func _on_ApplyButton_pressed():
 	camera_lock = false
 
 
-func _on_PlayerAll_dashing():
+func dashing():
 	#self.sprinting = true
 	player.sprinting = true
 	candash = false
@@ -309,7 +317,7 @@ func _on_PlayerAll_dashing():
 			#sprinting = false
 			speed = base_speed
 			trysprint = false
-			emit_signal("not_dashing")
+			not_dashing()
 
 remotesync func afterimage():
 	var ai = afterimage.instance()
@@ -318,7 +326,7 @@ remotesync func afterimage():
 	Bullets.add_child(ai)
 
 
-func _on_PlayerAll_not_dashing():
+func not_dashing():
 	var nspr = true
 	self.sprinting = true
 	while nspr:
@@ -331,22 +339,42 @@ func _on_PlayerAll_not_dashing():
 			candash = true
 
 
-func _on_PlayerAll_rushing():
+func rushing():
 	can_move = false
 	var lookdir = Vector2(cos(deg2rad(player.rotation_degrees)), sin(deg2rad(player.rotation_degrees)))
 	dashing = true
-	#shift_texture.max_value = 50
+	#var lastdir = 0
+	#var lookdir = Vector2()
+	#var lookdeg = 0
+	#print(dashing)
 	while dashing:
+		player.can_look = false
+		var lastdir = lookdir
+		lookdir = Vector2(cos(deg2rad(clamp(player.rotation_degrees,player.rotation_degrees+2,player.rotation_degrees-2))), sin(deg2rad(player.rotation_degrees)))
+		if camera_lock == false:
+			var mouse_pos = get_global_mouse_position()
+			camera.offset_h = (mouse_pos.x - position.x) / (1366 / 3)
+			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
+		if Input.is_action_pressed("right"):
+			player.rotation_degrees += 1.5
+		if Input.is_action_pressed("left"):
+			player.rotation_degrees -= 1.5
+		#lastdir = lookdir
+		#lookdeg = player.rotation_degrees
+		#lookdir = Vector2(cos(deg2rad(player.rotation_degrees)), sin(deg2rad(player.rotation_degrees)))
+		#print(lookdir[0] + lookdir[1])
 		rpc_unreliable("update_position",position)
 		yield(get_tree().create_timer(0.01),"timeout")
 		shift_texture.value -= 1
-		move_and_slide(lookdir * 500)
+		move_and_slide(lookdir * 700)
 		if alive == false:
 			self.sprinting = false
 			shift_texture.visible = false
 			shift_texture.value = 0
 			break
 		if shift_texture.value == 0:
+			if dashing == true:
+				rpc("DashSound",rushPressure)
 			#shift_texture.visible = false
 			#shift_texture.value = 0
 			self.sprinting = false
@@ -355,14 +383,17 @@ func _on_PlayerAll_rushing():
 			dashing = false
 			#emit_signal("not_dashing")
 			can_move = true
+			player.can_look = true
+			#print(dashing)
 
 remotesync func set_name(Gname):
 	Pname.text = str(Gname)
 
-remotesync func UpdateKills(k,id):
-	for p in Net.playerList:
-		if p[0] == id:
-			p[3] = k
+#remote func UpdateKills(k,id):
+#	for p in Net.playerList:
+#		if p[0] == id:
+#			p[3] = k
+#	rpc("UpdateKillList")
 
 #remote func UpdateKills(k,id):
 #	newkill = k
@@ -375,4 +406,24 @@ remotesync func UpdateKills(k,id):
 #	print(Net.playerList)
 
 #remotesync func UpdateKillList(list):
-#	Net.playerList = list
+#		Net.playerList = list
+
+remotesync func DashSound(source):
+	var sfx = load(source)
+	DashSound.stream = sfx
+	DashSound.play()
+	var pcounter = 0
+	while DashSound.is_playing() == true:
+		yield(get_tree().create_timer(0.01),"timeout")
+		if source == rushPressure:
+			while pcounter < 10:
+				var s = steam.instance()
+				s.position = $Player.global_position
+				s.process_material.set("initial_velocity",300)
+				s.process_material.set("spread",180)
+				Bullets.add_child(s)
+				pcounter += 1
+				if alive == false || health <= 0:
+					DashSound.stop()
+					break
+			pcounter = 0

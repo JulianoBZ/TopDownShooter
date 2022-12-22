@@ -21,6 +21,7 @@ var Preserve = 120
 var Sreserve = 60
 var bullet = preload("res://Scenes/Bullet.tscn")
 var can_fire = true
+var can_melee = true
 var recoil = 0
 var max_recoil = 1
 var rand = RandomNumberGenerator.new()
@@ -53,6 +54,7 @@ var desired_frame
 var active_weapon = 1
 var ejected = false
 var can_switch = true
+var can_look = true
 onready var meleeH = preload("res://Scenes/MeleeHibox.tscn")
 
 signal change_P
@@ -121,8 +123,9 @@ func _process(delta):
 			reload_texture.value = 0
 		
 		#Look at mouse position
-		look_at(get_global_mouse_position())
-		rpc_unreliable("update_rotation", rotation_degrees)
+		if can_look:
+			look_at(get_global_mouse_position())
+			rpc_unreliable("update_rotation", rotation_degrees)
 		
 		#Sprinting
 		sprinting = get_parent().sprinting
@@ -318,9 +321,11 @@ func _process(delta):
 					can_fire = true
 		#################################################################################
 		#Melee
-		if Input.is_action_just_pressed("fire") && active_weapon == 3:
+		if Input.is_action_just_pressed("fire") && active_weapon == 3 && can_melee:
+			can_melee = false
 			rpc("melee",get_tree().get_network_unique_id())
 			yield(get_tree().create_timer(0.3),"timeout")
+			can_melee = true
 			
 
 remotesync func spawn_cartridge():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player-All.gd" type="Script" id=2]
@@ -11,6 +11,8 @@
 [ext_resource path="res://MenuPWeaponGroup.tres" type="ButtonGroup" id=9]
 [ext_resource path="res://MenuSWeaponGroup.tres" type="ButtonGroup" id=10]
 [ext_resource path="res://TabMenu.gd" type="Script" id=11]
+
+[sub_resource type="AudioStreamGenerator" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 29.0
@@ -35,6 +37,10 @@ tint_progress = Color( 0.482353, 1, 0.027451, 1 )
 
 [node name="Timer" type="Timer" parent="TextureProgress"]
 wait_time = 2.4
+
+[node name="DashSound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource( 2 )
+attenuation = 8.57418
 
 [node name="Sprite" type="Sprite" parent="."]
 visible = false

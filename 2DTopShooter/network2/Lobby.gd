@@ -70,15 +70,22 @@ func _process(delta):
 	#if list_last_value != network.playerList.size():
 	changed_playerList()
 	#	list_last_value = network.playerList.size()
-	if get_tree().is_network_server():
-		$StartGame.show()
+	var readycount = 0
+	for p in Net.playerList:
+		if p[3] == 1:
+			readycount += 1
+	if readycount == Net.playerList.size():
+		if get_tree().is_network_server():
+			$StartGame.show()
+	else:
+		$StartGame.hide()
 
 func changed_playerList():
 	#rpc("update_player_list_lobby",playerList)
 	#if get_tree().get_network_unique_id() == 1:
 	for n in $PlayerList.get_children():
 		n.queue_free()
-	for p in playerList:
+	for p in Net.playerList:
 		
 		#var player = Label.new()
 		#var Pcolor = ColorRect.new()
@@ -112,10 +119,11 @@ remotesync func start_game():
 	Net.playerList = playerList
 	print(Net.playerList)
 	Map.add_child(world)
-	self.hide()
-	
-	for each in playerList:
+	self.queue_free()
+	for each in Net.playerList:
+		rng.randomize()
 		var pl_id = each[0]
+		each[3] = 0
 		if pl_id != get_tree().get_network_unique_id():
 			instance_player(pl_id)
 	instance_player(get_tree().get_network_unique_id())
@@ -129,7 +137,7 @@ remotesync func instance_player(id):
 remote func Pconnected(PeerInfo):
 	peerinfo = PeerInfo
 	print(peerinfo)
-	playerList.append(peerinfo)
+	Net.playerList.append(peerinfo)
 	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
 	print(playerList)

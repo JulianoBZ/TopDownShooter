@@ -28,7 +28,10 @@ func _process(delta):
 		n.queue_free()
 	for p in TabPlayerList:
 		var playerunit = PLU.instance()
-		playerunit.get_node("ColorRect/Label").text = str(p[1]," - ",p[3])
+		playerunit.get_node("ReadyRect").hide()
+		playerunit.get_node("FragRect").show()
+		playerunit.get_node("FragRect/KillLabel").text = str(p[3])
+		playerunit.get_node("ColorRect/Label").text = str(p[1])
 		playerunit.get_node("ColorRect").color = Color(str(p[2]))
 		$TabList.add_child(playerunit)
 

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/PressureRelease.mp3-1d6373c88643017b5c4f8ea6d5cdef26.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/PressureRelease.mp3"
+dest_files=[ "res://.import/PressureRelease.mp3-1d6373c88643017b5c4f8ea6d5cdef26.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
