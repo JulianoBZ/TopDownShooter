@@ -6,6 +6,9 @@ func _on_weaponbut1_pressed():
 func _on_weaponbut2_pressed():
 	Global.primary = 2
 
+func _on_weaponbut3_pressed():
+	Global.primary = 3
+
 func _on_Sweaponbut1_pressed():
 	Global.secondary = 1
 

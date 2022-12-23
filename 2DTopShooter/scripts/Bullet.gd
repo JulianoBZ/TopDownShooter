@@ -19,6 +19,10 @@ func _on_Bullet_tree_entered():
 		lifespan = 0.5
 	if type == 2:
 		lifespan = 0.35
+	if type == 3:
+		lifespan = 0.3
+		$Sprite.hide()
+		$Arrow.show()
 
 func _ready():
 	#if type == 1:

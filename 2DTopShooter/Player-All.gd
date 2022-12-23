@@ -92,6 +92,11 @@ func _process(delta):
 			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		#$Health.rect_position = camera.get_camera_position()
 		
+		if $BowBar.value > 0:
+			$BowBar.show()
+		else:
+			$BowBar.hide()
+		
 		##########################################################################
 		#Shift skills
 		
@@ -349,7 +354,7 @@ func rushing():
 	#print(dashing)
 	while dashing:
 		player.can_look = false
-		var lastdir = lookdir
+		#var lastdir = lookdir
 		lookdir = Vector2(cos(deg2rad(clamp(player.rotation_degrees,player.rotation_degrees+2,player.rotation_degrees-2))), sin(deg2rad(player.rotation_degrees)))
 		if camera_lock == false:
 			var mouse_pos = get_global_mouse_position()

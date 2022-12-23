@@ -84,6 +84,16 @@ align = 1
 valign = 1
 autowrap = true
 
+[node name="weapon3" type="Label" parent="PlayerLoadout"]
+margin_left = 368.0
+margin_top = 603.0
+margin_right = 564.0
+margin_bottom = 644.0
+text = "Bow"
+align = 1
+valign = 1
+autowrap = true
+
 [node name="weaponbut1" type="Button" parent="PlayerLoadout"]
 margin_left = 366.0
 margin_top = 521.0
@@ -91,6 +101,22 @@ margin_right = 396.0
 margin_bottom = 551.0
 toggle_mode = true
 pressed = true
+group = ExtResource( 5 )
+
+[node name="weaponbut2" type="Button" parent="PlayerLoadout"]
+margin_left = 366.0
+margin_top = 563.0
+margin_right = 396.0
+margin_bottom = 593.0
+toggle_mode = true
+group = ExtResource( 5 )
+
+[node name="weaponbut3" type="Button" parent="PlayerLoadout"]
+margin_left = 366.0
+margin_top = 607.0
+margin_right = 396.0
+margin_bottom = 637.0
+toggle_mode = true
 group = ExtResource( 5 )
 
 [node name="class1" type="Label" parent="PlayerLoadout"]
@@ -148,14 +174,6 @@ margin_bottom = 622.0
 toggle_mode = true
 group = ExtResource( 4 )
 
-[node name="weaponbut2" type="Button" parent="PlayerLoadout"]
-margin_left = 366.0
-margin_top = 563.0
-margin_right = 396.0
-margin_bottom = 593.0
-toggle_mode = true
-group = ExtResource( 5 )
-
 [node name="Sweapon1" type="Label" parent="PlayerLoadout"]
 margin_left = 578.0
 margin_top = 518.0
@@ -205,9 +223,10 @@ script = ExtResource( 7 )
 [connection signal="pressed" from="StartGame" to="." method="_on_StartGame_pressed"]
 [connection signal="toggled" from="ReadyButton" to="." method="_on_ReadyButton_toggled"]
 [connection signal="pressed" from="PlayerLoadout/weaponbut1" to="PlayerLoadout" method="_on_weaponbut1_pressed"]
+[connection signal="pressed" from="PlayerLoadout/weaponbut2" to="PlayerLoadout" method="_on_weaponbut2_pressed"]
+[connection signal="pressed" from="PlayerLoadout/weaponbut3" to="PlayerLoadout" method="_on_weaponbut3_pressed"]
 [connection signal="pressed" from="PlayerLoadout/classbut1" to="PlayerLoadout" method="_on_classbut1_pressed"]
 [connection signal="pressed" from="PlayerLoadout/classbut2" to="PlayerLoadout" method="_on_classbut2_pressed"]
 [connection signal="pressed" from="PlayerLoadout/classbut3" to="PlayerLoadout" method="_on_classbut3_pressed"]
-[connection signal="pressed" from="PlayerLoadout/weaponbut2" to="PlayerLoadout" method="_on_weaponbut2_pressed"]
 [connection signal="pressed" from="PlayerLoadout/Sweaponbut1" to="PlayerLoadout" method="_on_Sweaponbut1_pressed"]
 [connection signal="pressed" from="PlayerLoadout/Sweaponbut2" to="PlayerLoadout" method="_on_Sweaponbut2_pressed"]

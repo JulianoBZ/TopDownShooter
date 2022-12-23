@@ -45,6 +45,7 @@ onready var shell = preload("res://Scenes/spent_casings.tscn")
 onready var MenuPanel = get_parent().get_node("Esc_Menu/Panel")
 onready var Pweapon1 = MenuPanel.get_node("Pweaponbut1")
 onready var Pweapon2 = MenuPanel.get_node("Pweaponbut2")
+onready var Pweapon3 = MenuPanel.get_node("Pweaponbut3")
 onready var Sweapon1 = MenuPanel.get_node("Sweaponbut1")
 onready var Sweapon2 = MenuPanel.get_node("Sweaponbut2")
 var desired_primary
@@ -83,6 +84,11 @@ func _ready():
 		Pweapon2.pressed = true
 		Preserve = Pammo_max * clips
 		active_weapon = 1
+	if primary == 3:
+		Pammo_count = 1
+		Pammo_max = 1
+		Preserve = Pammo_max * 12
+		active_weapon = 1
 	if secondary == 1:
 		Sammo_count = 15
 		Sammo_max = 15
@@ -100,10 +106,16 @@ func _ready():
 func _process(delta):
 	if is_network_master():
 		#Limit weapon ammo
-		if Preserve > Pammo_max*clips:
+		if primary == 3:
+			if Preserve > Pammo_max*12:
+				Preserve = Pammo_max*12
+				print(primary)
+		elif Preserve > Pammo_max*clips:
 			Preserve = Pammo_max*clips
+		
 		if Sreserve > Sammo_max*clips:
 			Sreserve = Sammo_max*clips
+		
 		
 		#Change Weapon Slots
 		if Input.is_action_just_pressed("wep1") && reloading == false && can_switch:
@@ -211,6 +223,30 @@ func _process(delta):
 				#		ammo_count += 1
 				#		if ammo_count == 8:
 				#			reloading = false
+			
+			#Bow
+			if primary == 3 && Pammo_count < 1 && active_weapon == 1 && Preserve > 0:
+				reload_texture.max_value = 40
+				reloading = true
+				while(reloading):
+					can_fire = false
+					reload_texture.visible = true
+					yield(get_tree().create_timer(0.01),"timeout")
+					reload_texture.value += 1
+					if alive == false:
+						reloading = false
+						reload_texture.visible = false
+						reload_texture.value = 0
+						break
+					if reload_texture.value == 40:
+						reloading = false
+						reload_texture.visible = false
+						reload_texture.value = 0
+						Pammo_count += 1
+						Preserve -= 1
+					if Pammo_count == 1:
+						reloading = false
+				can_fire = true
 			#########################################################################################
 			if secondary == 1 && Sammo_count < 15 && active_weapon == 2 && Sreserve > 0:
 				reload_texture.max_value = 80
@@ -297,6 +333,17 @@ func _process(delta):
 			can_switch = true
 			if alive == true:
 				can_fire = true
+			
+		#Bow
+		if Input.is_action_pressed("fire") && can_fire && Pammo_count > 0 && !sprinting && primary == 3 && active_weapon == 1:
+			get_parent().get_node("BowBar").value += 1
+			get_parent().speed = get_parent().base_speed*0.6
+		else:
+			if get_parent().get_node("BowBar").value > 0:
+				rpc("spawn_arrow",get_tree().get_network_unique_id(),get_parent().get_node("BowBar").value)
+				Pammo_count -= 1
+			get_parent().get_node("BowBar").value = 0
+			get_parent().speed = get_parent().base_speed
 		##################################################################################################
 		#Pistol
 		if Input.is_action_just_pressed("fire") && can_fire && Sammo_count > 0 && !reloading && secondary == 1 && active_weapon == 2:
@@ -379,6 +426,26 @@ remotesync func spawn_shotgun(id):
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
 
+remotesync func spawn_arrow(id,value):
+	var b = bullet.instance()
+	var arrow_speed = 0.3
+	b.name = "Bullet" + name + str(Net.network_object_name_index)
+	b.flag = get_parent()
+	b.type = 3
+	if value < 30:
+		b.damage = 30
+		arrow_speed = lerp(arrow_speed,2,value)
+		print(arrow_speed)
+	else:
+		b.damage = value
+		arrow_speed = lerp(arrow_speed,2,value)
+	b.position = $Bulletpoint.get_global_position()
+	b.rotation_degrees = rotation_degrees
+	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed*(arrow_speed/100),0).rotated(rotation))
+	Bullets.add_child(b)
+	b.set_network_master(id)
+	Net.network_object_name_index += 1
+
 remote func update_rotation(rot):
 	rotation_degrees = rot
 
@@ -424,8 +491,12 @@ func _on_PlayerAll_pdeath():
 
 func _on_PlayerAll_respawned():
 	change_weapon(desired_primary,desired_secondary)
-	Pammo_count = Pammo_max
-	Preserve = Pammo_max * clips
+	if primary == 3:
+		Pammo_count = Pammo_max
+		Preserve = Pammo_max * 12
+	else:
+		Pammo_count = Pammo_max
+		Preserve = Pammo_max * clips
 	Sammo_count = Sammo_max
 	Sreserve = Sammo_max * clips
 	can_fire = true
@@ -438,6 +509,8 @@ func _on_ApplyButton_pressed():
 		desired_primary = 1
 	if Pweapon2.pressed == true:
 		desired_primary = 2
+	if Pweapon3.pressed == true:
+		desired_primary = 3
 	if Sweapon1.pressed == true:
 		desired_secondary = 1
 	if Sweapon2.pressed == true:
@@ -458,6 +531,9 @@ func change_weapon(desired_p,desired_s):
 		Pporcentagem = 12.5
 		Pammo_max = 8
 		primary = 2
+	if desired_p == 3:
+		Pammo_max = 1
+		primary = 3
 	if desired_s == 1:
 		Sammo_max = 15
 		secondary = 1

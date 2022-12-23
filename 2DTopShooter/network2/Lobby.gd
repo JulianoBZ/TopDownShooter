@@ -174,3 +174,4 @@ func _on_ReadyButton_toggled(button_pressed):
 	if !button_pressed:
 		rpc_id(1,"UpdateUnReady",get_tree().get_network_unique_id())
 		$ReadyButton.text = "Ready"
+

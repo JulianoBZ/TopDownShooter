@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scripts/Bullet.gd" type="Script" id=1]
 [ext_resource path="res://assets/photo_2022-09-27_20-14-34.jpg" type="Texture" id=2]
+[ext_resource path="res://assets/bow-arrow-left.png" type="Texture" id=3]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 0.999996
@@ -25,6 +26,11 @@ rotation = 1.5708
 shape = SubResource( 1 )
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="Arrow" type="Sprite" parent="."]
+rotation = 3.14159
+scale = Vector2( 0.1, 0.1 )
+texture = ExtResource( 3 )
 
 [connection signal="body_entered" from="." to="." method="_on_Bullet_body_entered"]
 [connection signal="tree_entered" from="." to="." method="_on_Bullet_tree_entered"]
