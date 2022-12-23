@@ -10,6 +10,7 @@ var pos = Vector2()
 var rot
 var dir = Vector2()
 onready var trail = preload("res://Scenes/Bullet_Particle.tscn")
+onready var arc = preload("res://Scenes/Spark1.tscn")
 var receiverint
 var receiverinst
 
@@ -33,9 +34,15 @@ func _ready():
 	$Timer.start()
 
 func _process(delta):
-	var t = trail.instance()
-	t.position = position
-	Bullets.add_child(t)
+	if type == 1 || type == 2:
+		var t = trail.instance()
+		t.position = position
+		Bullets.add_child(t)
+	if type == 3:
+		var a = arc.instance()
+		a.position = position
+		a.rotation_degrees = rotation_degrees + 90
+		Bullets.add_child(a)
 
 func _on_Bullet_body_entered(body):
 	if not body.is_in_group("player") && !self && !self.get_parent() && !body.is_in_group("bullet"):

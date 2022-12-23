@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/kenney-particle-pack-7e801dc538996622a91327bb1dd5879cf977aa09/addons/kenney_particle_pack/spark_05.png" type="Texture" id=1]
+[ext_resource path="res://scripts/Spark1.gd" type="Script" id=2]
+
+[sub_resource type="ParticlesMaterial" id=1]
+emission_shape = 1
+emission_sphere_radius = 50.0
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.2
+orbit_velocity_random = 0.0
+radial_accel = 27.72
+damping = 100.0
+color = Color( 0.541176, 0.831373, 1, 1 )
+
+[node name="Particles2D" type="Particles2D"]
+rotation = 1.5708
+scale = Vector2( 0.1, 0.1 )
+amount = 3
+lifetime = 0.1
+process_material = SubResource( 1 )
+texture = ExtResource( 1 )
+script = ExtResource( 2 )
