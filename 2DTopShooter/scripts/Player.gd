@@ -5,13 +5,14 @@ export var secondary = 2
 export var melee = 1
 export var bullet_speed = 2000
 onready var ShotSound = get_node("ShotSound")
-var riflesound = "res://assets/Sounds/ak47-2.wav"
-var riflesound2 = "res://assets/Sounds/m4a1-1.wav"
+onready var riflesound = preload("res://assets/Sounds/ak47-2.wav")
+onready var riflesound2 = preload("res://assets/Sounds/m4a1-1.wav")
+onready var ping = preload("res://assets/Sounds/PingSFX.mp3")
 var speed = 200
-export var fire_rate = 0.1
+export var fire_rate = 0.3
 export var fire_rate2 = 1.3
-var Pammo_count = 30
-var Pammo_max = 30
+var Pammo_count = 12
+var Pammo_max = 12
 var Sammo_count = 15
 var Sammo_max = 15
 var clips = 4
@@ -58,6 +59,7 @@ var can_switch = true
 var can_look = true
 onready var meleeH = preload("res://Scenes/MeleeHibox.tscn")
 
+
 signal change_P
 signal change_S
 signal change_M
@@ -73,7 +75,7 @@ func _ready():
 	desired_primary = primary
 	if primary == 1:
 		Pporcentagem = 3.333
-		Pammo_max = 30
+		Pammo_max = 12
 		Pweapon1.pressed = true
 		Preserve = Pammo_max * clips
 		active_weapon = 1
@@ -164,8 +166,9 @@ func _process(delta):
 			
 		#Rifle
 		if Input.is_action_just_pressed("Reload") && reloading == false:
-			if primary == 1 && Pammo_count < 30 && active_weapon == 1 && Preserve > 0:
-				reload_texture.max_value = 180
+			if primary == 1 && Pammo_count < 12 && active_weapon == 1 && Preserve > 0:
+				rpc("Reloading",ping)
+				reload_texture.max_value = 90
 				reloading = true
 				max_recoil = 1
 				reload_texture.visible = true
@@ -177,7 +180,7 @@ func _process(delta):
 						reload_texture.visible = false
 						reload_texture.value = 0
 						break
-					if reload_texture.value == 180:
+					if reload_texture.value == 90:
 						reload_texture.visible = false
 						reload_texture.value = 0
 						PrelAux = Pammo_max - Pammo_count
@@ -309,10 +312,10 @@ func _process(delta):
 		#	base_recoil = 12
 		
 		#Rifle
-		if Input.is_action_pressed("fire") && can_fire && Pammo_count > 0 && !reloading && !sprinting && primary == 1 && active_weapon == 1:
+		if Input.is_action_just_pressed("fire") && can_fire && Pammo_count > 0 && !reloading && !sprinting && primary == 1 && active_weapon == 1:
 			can_fire = false
 			rpc("Shooting",riflesound2)
-			rpc("spawn_bullet",get_tree().get_network_unique_id(),Ptot_recoil)
+			rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-2,2)))
 			Pammo_count -= 1
 			max_recoil += 1
 			yield(get_tree().create_timer(fire_rate/2),"timeout")
@@ -477,8 +480,13 @@ remote func update_rotation(rot):
 #	move_and_slide(direction * speed)
 
 remotesync func Shooting(source):
-	var sfx = load(source)
-	ShotSound.stream = sfx
+	#var sfx = load(source)
+	ShotSound.stream = source
+	ShotSound.play()
+
+remotesync func Reloading(source):
+	#var sfx = load(source)
+	ShotSound.stream = source
 	ShotSound.play()
 
 func _on_Timer_timeout():
@@ -525,7 +533,7 @@ func _on_ApplyButton_pressed():
 func change_weapon(desired_p,desired_s):
 	if desired_p == 1:
 		Pporcentagem = 3.333
-		Pammo_max = 30
+		Pammo_max = 12
 		primary = 1
 	if desired_p == 2:
 		Pporcentagem = 12.5

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/PingSFX.mp3-37209d786e9cf93e8baee8a42fb7ddb1.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/PingSFX.mp3"
+dest_files=[ "res://.import/PingSFX.mp3-37209d786e9cf93e8baee8a42fb7ddb1.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

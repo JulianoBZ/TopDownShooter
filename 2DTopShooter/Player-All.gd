@@ -419,6 +419,7 @@ remotesync func DashSound(source):
 	DashSound.play()
 	var pcounter = 0
 	while DashSound.is_playing() == true:
+		candash = false
 		yield(get_tree().create_timer(0.01),"timeout")
 		if source == rushPressure:
 			while pcounter < 10:
@@ -432,3 +433,4 @@ remotesync func DashSound(source):
 					DashSound.stop()
 					break
 			pcounter = 0
+	candash = true
