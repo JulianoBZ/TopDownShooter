@@ -77,6 +77,8 @@ func _process(delta):
 	if readycount == Net.playerList.size():
 		if get_tree().is_network_server():
 			$StartGame.show()
+			$"Label - External IP".show()
+			$"Label - External IP".text = "IP: "+str(Net.external_ip)
 	else:
 		$StartGame.hide()
 
@@ -116,6 +118,7 @@ func _on_StartGame_pressed():
 	Net.lobby_name = "Game Started, do not Join"
 
 remotesync func start_game():
+	Net.gameStart = true
 	Net.playerList = playerList
 	print(Net.playerList)
 	Map.add_child(world)
@@ -125,13 +128,15 @@ remotesync func start_game():
 		var pl_id = each[0]
 		each[3] = 0
 		if pl_id != get_tree().get_network_unique_id():
-			instance_player(pl_id)
-	instance_player(get_tree().get_network_unique_id())
+			instance_player(pl_id, each[2])
+		if pl_id == get_tree().get_network_unique_id():
+			instance_player(get_tree().get_network_unique_id(),each[2])
 
-remotesync func instance_player(id):
+remotesync func instance_player(id,color):
 	#Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(playerChar, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
 	player_instance.name = str(id)
+	player_instance.get_node('Player').get_node('Sprite').modulate = color
 	player_instance.set_network_master(id)
 
 remote func Pconnected(PeerInfo):

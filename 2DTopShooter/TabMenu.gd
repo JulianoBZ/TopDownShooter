@@ -5,6 +5,8 @@ extends Control
 # var a = 2
 # var b = "text"
 
+var count = 0
+
 onready var PLU = preload("res://network2/PlayerListUnit.tscn")
 onready var TabPlayerList = Net.playerList
 
@@ -36,7 +38,11 @@ func _process(delta):
 		$TabList.add_child(playerunit)
 
 remotesync func UpdateTabList(list):
-	TabPlayerList = list
+	Net.playerList = list
+	count += 1
+	if count > 30:
+		print(TabPlayerList)
+		count = 0
 
 func sort_TabList(a, b):
 	if a[3] > b[3]:

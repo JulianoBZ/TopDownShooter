@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://assets/photo_2022-06-23_15-24-11.jpg" type="Texture" id=1]
+[ext_resource path="res://assets/t.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/player_afterimage.gd" type="Script" id=2]
 
 [sub_resource type="Gradient" id=1]
@@ -17,7 +17,7 @@ orbit_velocity_random = 0.0
 color_ramp = SubResource( 2 )
 
 [node name="Sprite" type="Particles2D"]
-scale = Vector2( 0.069, 0.086 )
+scale = Vector2( 0.339, 0.342 )
 emitting = false
 amount = 1
 lifetime = 0.6

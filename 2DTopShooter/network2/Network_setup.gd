@@ -14,6 +14,7 @@ var peerinfo = []
 var myinfo = []
 var player_info = {}
 var list_aux = []
+var upnp = UPNP.new()
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
 onready var device_ip_address = $Multiplayer_configure/CanvasLayer/Device_IP
@@ -52,6 +53,27 @@ func _player_disconnected(id):
 	#rpc("dc",id)
 
 func _on_Create_Server_pressed():
+	#########################################
+	#var discover_result = upnp.discover()
+	
+	#while true:
+	#	if discover_result == UPNP.UPNP_RESULT_SUCCESS:
+	#		if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
+	#			var map_result_udp = upnp.add_port_mapping(PORT,PORT,"godot_udp","UDP",0)
+	#			print("map udp:",map_result_udp)
+	#			var map_result_tcp = upnp.add_port_mapping(PORT,PORT,"godot_tcp","TCP",0)
+	#			print("map tcp:",map_result_tcp)
+	#			
+	#			if not map_result_udp == UPNP.UPNP_RESULT_SUCCESS:
+	#				upnp.add_port_mapping(PORT,PORT,"","UDP")
+	#				print("UPD criado")
+	#			if not map_result_tcp == UPNP.UPNP_RESULT_SUCCESS:
+	#				print("TCP criado")
+	#				upnp.add_port_mapping(PORT,PORT,"","TCP")
+	#			break
+	##external_ip = upnp.query_external_address()
+	#Net.external_ip = upnp.query_external_address()
+	########################################
 	Net.hosting = true
 	if servername.text != "":
 		Net.lobby_name = servername.text
@@ -130,8 +152,6 @@ func _on_weaponbut1_pressed():
 
 func _on_weaponbut2_pressed():
 	Global.primary = 2
-
-
 
 func _on_Sweaponbut1_pressed():
 	Global.secondary = 1

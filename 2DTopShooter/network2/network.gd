@@ -2,11 +2,13 @@ extends Node
 
 const DEFAULT_PORT = 3333
 const MAX_CLIENTS = 6
+var external_ip = 0
 
 var lobby_name = "Normal Lobby"
 
 var server = null
 var client = null
+var gameStart = false
 
 var color = "000000"
 var myinfo = [0,"Player",color,0]
@@ -46,6 +48,9 @@ func _ready():
 	get_tree().connect("connected_to_server",self,"_connected_to_server")
 	get_tree().connect("server_disconnected",self,"_server_disconnected")
 
+func _process(delta):
+	update_player_list_lobby(playerList)
+
 func create_server():
 	pass
 	###############################
@@ -77,6 +82,9 @@ func network_object_name_index_set(new_value):
 	
 	if get_tree().is_network_server():
 		rset("puppet_network_object_name_index",network_object_name_index)
+
+remotesync func update_player_list_lobby(list):
+	playerList = list
 
 #remote func connected(peerInfo):
 #	playerList.append_array(peerInfo)

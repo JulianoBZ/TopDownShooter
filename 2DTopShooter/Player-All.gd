@@ -50,6 +50,9 @@ var candash = true
 var rushPressure = "res://assets/Sounds/PressureRelease.mp3"
 onready var steam = preload("res://Scenes/Steam_Particle.tscn")
 var PlayersCharacters
+onready var t = preload("res://assets/t.png")
+onready var c = preload("res://assets/c.png")
+onready var q = preload("res://assets/q.png")
 
 func _ready():
 	rng.randomize()
@@ -261,18 +264,21 @@ func set_stats(f):
 		health = 50
 		max_health = 50
 		frame = 1
+		player.get_node("Sprite").texture = t
 	if f == 2:
 		speed = 200
 		base_speed = 250
 		health = 100
 		max_health = 100
 		frame = 2
+		player.get_node("Sprite").texture = c
 	if f == 3:
 		speed = 100
 		base_speed = 200
 		health = 175
 		max_health = 175
 		frame = 3
+		player.get_node("Sprite").texture = q
 
 remote func update_stats(h,mh):
 	health = h

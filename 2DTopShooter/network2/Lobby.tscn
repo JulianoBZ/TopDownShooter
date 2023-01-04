@@ -25,13 +25,25 @@ margin_right = 252.5
 margin_bottom = 241.0
 custom_constants/separation = 16
 
-[node name="Label" type="Label" parent="."]
+[node name="Label - PlayerList" type="Label" parent="."]
+visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -76.0
-margin_top = 48.0
+margin_top = 39.0
 margin_right = 76.0
-margin_bottom = 105.0
+margin_bottom = 96.0
+text = "Server IP"
+align = 1
+valign = 1
+
+[node name="Label - External IP" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -76.0
+margin_top = 85.0
+margin_right = 76.0
+margin_bottom = 142.0
 text = "Player List:"
 align = 1
 valign = 1
