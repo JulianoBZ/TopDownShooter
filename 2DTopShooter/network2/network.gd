@@ -10,8 +10,8 @@ var server = null
 var client = null
 var gameStart = false
 
-var color = "000000"
-var myinfo = [0,"Player",color,0]
+var color = "CC0000"
+var myinfo = [0,"Player",color,0,0]
 var connected = false
 var hosting = false
 var onLobby = false
@@ -67,7 +67,7 @@ func join_server():
 func _connected_to_server() -> void:
 	print("Conectado ao servidor com sucesso")
 	connecting = true
-	myinfo = [get_tree().get_network_unique_id(),Global.player_name,color,0]
+	myinfo = [get_tree().get_network_unique_id(),Global.player_name,color,0,0]
 	connected = true
 	#rpc_id(1,"connected",get_tree().get_network_unique_id(),Global.player_name)
 

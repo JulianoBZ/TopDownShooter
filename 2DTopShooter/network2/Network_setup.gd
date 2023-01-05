@@ -34,7 +34,8 @@ func _ready():
 	get_tree().connect("connected_to_server",self,'_connected_to_server')
 	#rpc("register_player",myinfo)
 	device_ip_address.text = Net.ip_address
-	myinfo = [0,Global.player_name,"CC0000",0]
+	#myinfo = Net.myinfo
+	myinfo = [0,Global.player_name,"CC0000",0,0]
 
 func _player_connected(id):
 	print("Player: has connected")
@@ -87,7 +88,7 @@ func _on_Create_Server_pressed():
 		#self.add_child(lobby)
 		lobby.show()
 		#print("Game hosted")
-		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000",0]
+		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000",0,0]
 		lobby.playerList.append(myinfo)
 		print(lobby.playerList)
 		#myinfo["name"] = Global.player_name
@@ -119,6 +120,8 @@ func _process(delta):
 			lobby.show()
 			#rpc_id(1,"connected",[get_tree().get_network_unique_id(),Global.player_name])
 			Net.connecting == false
+	if Net.gameStart == true:
+		lobby.hide()
 
 func _on_Join_Server_pressed():
 	if server_ip_address.text != "":
@@ -187,6 +190,14 @@ func dc(id):
 
 func _on_SetName_pressed():
 	Global.player_name = str(playername.text)
+
+func gameEnded():
+	lobby.show()
+	Map.get_child(0).queue_free()
+	for each in Players.get_children():
+		each.queue_free()
+	for each in Bullets.get_children():
+		each.queue_free()
 
 #remote func connected(PeerInfo):
 #	playerList.append(PeerInfo)

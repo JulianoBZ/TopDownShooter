@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/Title_Image.png" type="Texture" id=1]
 [ext_resource path="res://Maps/FreeForAll1.gd" type="Script" id=2]
 [ext_resource path="res://addons/LANServerBroadcast/server_advertiser/ServerAdvertiser.gd" type="Script" id=3]
+[ext_resource path="res://assets/Sounds/MLG Air Horn Soun.mp3" type="AudioStream" id=4]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -81,3 +82,11 @@ position = Vector2( 219, 243 )
 
 [node name="ServerAdvertiser" type="Node" parent="."]
 script = ExtResource( 3 )
+
+[node name="WinSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+max_distance = 1e+09
+
+[node name="WinSound2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+volume_db = -20.0

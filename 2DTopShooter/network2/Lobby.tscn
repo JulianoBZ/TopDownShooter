@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://network2/Lobby.gd" type="Script" id=1]
 [ext_resource path="res://addons/LANServerBroadcast/server_advertiser/ServerAdvertiser.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://PrimaryWeaponGroup.tres" type="ButtonGroup" id=5]
 [ext_resource path="res://network2/Class-Weapons.gd" type="Script" id=6]
 [ext_resource path="res://network2/ColorOption.gd" type="Script" id=7]
+[ext_resource path="res://network2/OptionButtonKills.gd" type="Script" id=8]
 
 [node name="Lobby" type="Control"]
 anchor_right = 1.0
@@ -70,6 +71,14 @@ margin_right = 1204.0
 margin_bottom = 536.0
 toggle_mode = true
 text = "Ready"
+
+[node name="OptionButtonKills" type="OptionButton" parent="."]
+visible = false
+margin_left = 979.0
+margin_top = 60.0
+margin_right = 1163.0
+margin_bottom = 105.0
+script = ExtResource( 8 )
 
 [node name="PlayerLoadout" type="Control" parent="."]
 margin_right = 40.0

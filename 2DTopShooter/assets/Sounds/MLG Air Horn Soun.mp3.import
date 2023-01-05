@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/MLG Air Horn Soun.mp3-909f770603b5ba10ce66e923c5fbdfe9.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/MLG Air Horn Soun.mp3"
+dest_files=[ "res://.import/MLG Air Horn Soun.mp3-909f770603b5ba10ce66e923c5fbdfe9.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

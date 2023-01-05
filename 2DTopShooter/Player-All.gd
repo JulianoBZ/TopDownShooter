@@ -28,6 +28,7 @@ onready var Menu = $Esc_Menu/Panel
 export var kills = 0
 var newkill = 0
 var prev_kills = kills
+var deaths = 0
 onready var deathskull = preload("res://Scenes/DeadPlayer.tscn")
 onready var ammo_crate = preload("res://Scenes/Ammo_pickup.tscn")
 onready var Classbut1 = get_node("Esc_Menu/Panel/Classbut1")
@@ -204,7 +205,7 @@ remote func update_position(pos):
 remotesync func death():
 	if lastdamage != null:
 		lastdamage.kills += 1
-	
+	deaths += 1
 	var skull = deathskull.instance()
 	skull.position = position
 	var ammo = ammo_crate.instance()
@@ -218,7 +219,7 @@ remotesync func death():
 	#$HealthBar.visible = false
 	emit_signal("pdeath")
 	
-	yield(get_tree().create_timer(3),"timeout")
+	yield(get_tree().create_timer(Map.get_child(0).deathTimer),"timeout")
 	position = Map.get_child(0).spawns[str(rng.randi_range(1,spawns.size()))].position
 	health = max_health
 	can_move = true

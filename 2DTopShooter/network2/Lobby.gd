@@ -74,6 +74,8 @@ func _process(delta):
 	for p in Net.playerList:
 		if p[3] == 1:
 			readycount += 1
+	if get_tree().is_network_server():
+		$OptionButtonKills.show()
 	if readycount == Net.playerList.size():
 		if get_tree().is_network_server():
 			$StartGame.show()
@@ -120,9 +122,12 @@ func _on_StartGame_pressed():
 remotesync func start_game():
 	Net.gameStart = true
 	Net.playerList = playerList
-	print(Net.playerList)
+	#print(Net.playerList)
+	world.winkills = $OptionButtonKills.killLimit
 	Map.add_child(world)
-	self.queue_free()
+	#print(world.winkills)
+	#visible = false
+	#self.queue_free()
 	for each in Net.playerList:
 		rng.randomize()
 		var pl_id = each[0]
@@ -134,7 +139,7 @@ remotesync func start_game():
 
 remotesync func instance_player(id,color):
 	#Global.player_name = str(playername.text)
-	var player_instance = Global.instance_node_at_location(playerChar, Players, (world.spawns[str(rng.randi_range(1,7))]).position)
+	var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
 	player_instance.name = str(id)
 	player_instance.get_node('Player').get_node('Sprite').modulate = color
 	player_instance.set_network_master(id)

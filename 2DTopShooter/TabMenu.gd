@@ -22,6 +22,7 @@ func _process(delta):
 			for pl in Net.playerList:
 				if str(p.name) == str(pl[0]):
 					pl[3] = p.kills
+					pl[4] = p.deaths
 	TabPlayerList = Net.playerList
 	if Net.hosting:
 		TabPlayerList.sort_custom(self,"sort_TabList")
@@ -32,7 +33,7 @@ func _process(delta):
 		var playerunit = PLU.instance()
 		playerunit.get_node("ReadyRect").hide()
 		playerunit.get_node("FragRect").show()
-		playerunit.get_node("FragRect/KillLabel").text = str(p[3])
+		playerunit.get_node("FragRect/KillLabel").text = str(p[3])+'/'+str(p[4])
 		playerunit.get_node("ColorRect/Label").text = str(p[1])
 		playerunit.get_node("ColorRect").color = Color(str(p[2]))
 		$TabList.add_child(playerunit)
@@ -41,7 +42,8 @@ remotesync func UpdateTabList(list):
 	Net.playerList = list
 	count += 1
 	if count > 30:
-		print(TabPlayerList)
+		#print("Tab ",Net.playerList)
+		#print("Tab ",TabPlayerList)
 		count = 0
 
 func sort_TabList(a, b):
