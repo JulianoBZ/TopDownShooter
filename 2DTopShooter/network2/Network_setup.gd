@@ -15,6 +15,7 @@ var myinfo = []
 var player_info = {}
 var list_aux = []
 var upnp = UPNP.new()
+onready var camera = get_node("Camera2D")
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
 onready var device_ip_address = $Multiplayer_configure/CanvasLayer/Device_IP
@@ -191,13 +192,23 @@ func dc(id):
 func _on_SetName_pressed():
 	Global.player_name = str(playername.text)
 
-func gameEnded():
-	lobby.show()
+remotesync func gameEnded():
+	Net.gameStart = false
+	lobby.visible = true
+	camera.make_current()
 	Map.get_child(0).queue_free()
 	for each in Players.get_children():
 		each.queue_free()
 	for each in Bullets.get_children():
 		each.queue_free()
+	get_node("Lobby/ReadyButton").pressed = false
+	get_node("Lobby/ReadyButton").text = "Ready"
+	for each in Net.playerList:
+		each[3] = 1
+		each[4] = 0
+		if each[0] == 1:
+			each[3] = 1
+	
 
 #remote func connected(PeerInfo):
 #	playerList.append(PeerInfo)

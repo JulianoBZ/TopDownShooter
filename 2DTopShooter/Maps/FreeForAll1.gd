@@ -38,6 +38,7 @@ func _process(delta):
 	advertiser.serverInfo["name"] = Net.lobby_name
 	advertiser.serverInfo["port"] = PORT
 	
+	#Win Condition
 	if get_tree().is_network_server():
 		for each in PlayerList:
 			#print("Map ",each)

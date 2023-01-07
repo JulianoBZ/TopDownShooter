@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 onready var Pname = $Name
 onready var player = $Player
+var texture = ""
 var frame = 2
 var desired_frame = 2
 var speed = 200
@@ -84,7 +85,8 @@ func _ready():
 func _process(delta):
 	if is_network_master() && can_move:
 		rpc_unreliable("set_name",Global.player_name)
-		rpc_unreliable("update_stats",health, max_health)
+		rpc_unreliable("update_stats",health, max_health,frame)
+		#rpc_unreliable("update_sprite",get_tree().get_network_unique_id(),texture)
 		rpc("on_kill")
 		#Menu.rect_global_position = global_position
 		rpc("hide_bars")
@@ -107,9 +109,11 @@ func _process(delta):
 		#frame2 = sprint
 		if Input.is_action_pressed("Sprint") && frame == 2:
 			speed = base_speed * 2
-			trysprint = true
+			#trysprint = true
+			sprinting = true
 		else:
 			sprinting = false
+			#trysprint = false
 			speed = base_speed
 		
 		#frame1 = dash
@@ -262,28 +266,52 @@ func set_stats(f):
 	if f == 1:
 		speed = 300
 		base_speed = 350
-		health = 50
-		max_health = 50
+		health = 75
+		max_health = 75
 		frame = 1
-		player.get_node("Sprite").texture = t
+		texture = t
 	if f == 2:
 		speed = 200
 		base_speed = 250
-		health = 100
-		max_health = 100
+		health = 125
+		max_health = 125
 		frame = 2
-		player.get_node("Sprite").texture = c
+		texture = c
 	if f == 3:
 		speed = 100
 		base_speed = 200
 		health = 175
 		max_health = 175
 		frame = 3
-		player.get_node("Sprite").texture = q
+		texture = q
 
-remote func update_stats(h,mh):
+remote func update_sprite(id,frame):
+	if Net.playerList.size() == Players.get_child_count():
+		for n in Players.get_children():
+			if str(n.name) == str(id):
+				match frame:
+					1:
+						get_node("Player/Sprite").texture = t
+					2:
+						get_node("Player/Sprite").texture = c
+					3:
+						get_node("Player/Sprite").texture = q
+				#n.get_node("Player/Sprite").texture = tex
+	#print(player.get_node("Sprite").texture)
+
+remotesync func update_stats(h,mh,frame):
 	health = h
 	max_health = mh
+	match frame:
+		1:
+			get_node("Player/Sprite").texture = t
+		2:
+			get_node("Player/Sprite").texture = c
+		3:
+			get_node("Player/Sprite").texture = q
+	#get_node("Player/Sprite").texture = texture
+	rpc("update_sprite",get_tree().get_network_unique_id(),frame)
+	#print(tex)
 
 #func puppet_position_set(new_value):
 #	puppet_position = new_value

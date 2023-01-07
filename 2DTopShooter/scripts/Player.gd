@@ -57,7 +57,7 @@ var active_weapon = 1
 var ejected = false
 var can_switch = true
 var can_look = true
-onready var meleeH = preload("res://Scenes/MeleeHibox.tscn")
+onready var meleeH = preload("res://Scenes/MeleeHitbox.tscn")
 
 
 signal change_P
@@ -437,8 +437,7 @@ remotesync func spawn_arrow(id,value):
 	b.type = 3
 	if value < 30:
 		b.damage = 30
-		arrow_speed = lerp(arrow_speed,2,value)
-		print(arrow_speed)
+		arrow_speed = lerp(arrow_speed,2,30)
 	else:
 		b.damage = value
 		arrow_speed = lerp(arrow_speed,2,value)

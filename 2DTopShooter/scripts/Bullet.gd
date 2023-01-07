@@ -34,6 +34,7 @@ func _ready():
 	$Timer.start()
 
 func _process(delta):
+	#Trail
 	if type == 1 || type == 2:
 		var t = trail.instance()
 		t.position = position
@@ -68,7 +69,6 @@ remotesync func damage(attacker: Object,receiver: Object):
 	
 #remote func last_damage(attacker: Object,receiver: Object):
 #	print(attacker , " " , receiver)
-	
 
 func _on_Timer_timeout():
 	queue_free()

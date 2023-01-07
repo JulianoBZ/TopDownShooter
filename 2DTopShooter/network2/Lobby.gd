@@ -16,8 +16,10 @@ export (NodePath) var advertiserPath: NodePath
 onready var advertiser := get_node(advertiserPath)
 
 var playerChar = preload("res://Player-All.tscn")
-var world = preload("res://Maps/FreeForAll1.tscn").instance()
+var FFA1 = preload("res://Maps/FreeForAll1.tscn")
 var rng = RandomNumberGenerator.new()
+
+var world
 
 onready var connected_player_list = {}
 
@@ -122,6 +124,11 @@ func _on_StartGame_pressed():
 remotesync func start_game():
 	Net.gameStart = true
 	Net.playerList = playerList
+	
+	#FreeForAll
+	world = FFA1.instance()
+	
+	
 	#print(Net.playerList)
 	world.winkills = $OptionButtonKills.killLimit
 	Map.add_child(world)
@@ -129,6 +136,7 @@ remotesync func start_game():
 	#visible = false
 	#self.queue_free()
 	for each in Net.playerList:
+		
 		rng.randomize()
 		var pl_id = each[0]
 		each[3] = 0
@@ -136,6 +144,8 @@ remotesync func start_game():
 			instance_player(pl_id, each[2])
 		if pl_id == get_tree().get_network_unique_id():
 			instance_player(get_tree().get_network_unique_id(),each[2])
+	#yield(get_tree().create_timer(1),'timeout')
+	#get_node("/root/Network_setup").gameEnded()
 
 remotesync func instance_player(id,color):
 	#Global.player_name = str(playername.text)
