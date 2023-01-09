@@ -154,20 +154,24 @@ func _process(delta):
 		
 		#Esc
 		if Input.is_action_just_pressed("Esc_Menu"):
-			if esc_pressed:
-				print("Error")
-				camera_lock = false
+			print(Menu.visible)
+			if Menu.visible == true:
 				Menu.visible = false
-				esc_pressed = false
-				can_move = true
+				print("Close")
+				#print(Menu.visible)
+				camera_lock = false
+				#esc_pressed = false
+				#can_move = true
 				player.can_fire = true
-			else: 
+			else:
+				Menu.visible = true
+				print("Open")
+				#print(Menu.visible)
 				camera.offset_h = 0
 				camera.offset_v = 0
-				Menu.visible = true
 				camera_lock = true
-				esc_pressed = true
-				can_move = false
+				#esc_pressed = true
+				#can_move = false
 				player.can_fire = false
 		
 		killcount.text = str(kills)
@@ -240,6 +244,7 @@ remote func hide_bars():
 	$HealthBar.visible = false
 	$Ammo.visible = false
 	$Health.visible = false
+	$BowBar.visible = false
 	shift_texture.visible = false
 
 remotesync func on_kill():
@@ -329,7 +334,7 @@ func _on_ApplyButton_pressed():
 		desired_frame = 3
 	
 	can_move = true
-	esc_pressed = false
+	Menu.visible = false
 	camera_lock = false
 
 

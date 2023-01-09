@@ -154,6 +154,30 @@ margin_top = 12.0
 margin_right = -33.0
 margin_bottom = 29.0
 
+[node name="TabMenu" type="Control" parent="."]
+visible = false
+margin_left = -464.0
+margin_top = -282.0
+margin_right = 465.0
+margin_bottom = 283.0
+script = ExtResource( 11 )
+
+[node name="TabList" type="VBoxContainer" parent="TabMenu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 229.0
+margin_top = 28.0
+margin_right = -231.0
+margin_bottom = -33.0
+custom_constants/separation = 16
+
+[node name="Panel" type="Panel" parent="TabMenu"]
+modulate = Color( 1, 1, 1, 0.509804 )
+margin_left = 229.0
+margin_top = 28.0
+margin_right = 698.0
+margin_bottom = 28.0
+
 [node name="Esc_Menu" type="Control" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
@@ -208,63 +232,6 @@ margin_bottom = 103.0
 toggle_mode = true
 group = ExtResource( 9 )
 
-[node name="Class1" type="Label" parent="Esc_Menu/Panel"]
-margin_left = 50.0
-margin_top = 70.0
-margin_right = 246.0
-margin_bottom = 111.0
-rect_pivot_offset = Vector2( -684, -122 )
-text = "Light"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="Classbut1" type="Button" parent="Esc_Menu/Panel"]
-margin_left = 49.0
-margin_top = 75.0
-margin_right = 79.0
-margin_bottom = 105.0
-toggle_mode = true
-group = ExtResource( 7 )
-
-[node name="Class2" type="Label" parent="Esc_Menu/Panel"]
-margin_left = 50.0
-margin_top = 112.0
-margin_right = 246.0
-margin_bottom = 153.0
-rect_pivot_offset = Vector2( -684, -122 )
-text = "Medium"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="Classbut2" type="Button" parent="Esc_Menu/Panel"]
-margin_left = 49.0
-margin_top = 117.0
-margin_right = 79.0
-margin_bottom = 147.0
-toggle_mode = true
-group = ExtResource( 7 )
-
-[node name="Class3" type="Label" parent="Esc_Menu/Panel"]
-margin_left = 50.0
-margin_top = 156.0
-margin_right = 246.0
-margin_bottom = 197.0
-rect_pivot_offset = Vector2( -684, -122 )
-text = "Heavy"
-align = 1
-valign = 1
-autowrap = true
-
-[node name="Classbut3" type="Button" parent="Esc_Menu/Panel"]
-margin_left = 49.0
-margin_top = 161.0
-margin_right = 79.0
-margin_bottom = 191.0
-toggle_mode = true
-group = ExtResource( 7 )
-
 [node name="Pweaponbut2" type="Button" parent="Esc_Menu/Panel"]
 margin_left = 507.0
 margin_top = 115.0
@@ -280,6 +247,63 @@ margin_right = 537.0
 margin_bottom = 192.0
 toggle_mode = true
 group = ExtResource( 9 )
+
+[node name="Class1" type="Label" parent="Esc_Menu/Panel"]
+margin_left = 50.0
+margin_top = 70.0
+margin_right = 246.0
+margin_bottom = 111.0
+rect_pivot_offset = Vector2( -684, -122 )
+text = "Light"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Class2" type="Label" parent="Esc_Menu/Panel"]
+margin_left = 50.0
+margin_top = 112.0
+margin_right = 246.0
+margin_bottom = 153.0
+rect_pivot_offset = Vector2( -684, -122 )
+text = "Medium"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Class3" type="Label" parent="Esc_Menu/Panel"]
+margin_left = 50.0
+margin_top = 156.0
+margin_right = 246.0
+margin_bottom = 197.0
+rect_pivot_offset = Vector2( -684, -122 )
+text = "Heavy"
+align = 1
+valign = 1
+autowrap = true
+
+[node name="Classbut1" type="Button" parent="Esc_Menu/Panel"]
+margin_left = 49.0
+margin_top = 75.0
+margin_right = 79.0
+margin_bottom = 105.0
+toggle_mode = true
+group = ExtResource( 7 )
+
+[node name="Classbut2" type="Button" parent="Esc_Menu/Panel"]
+margin_left = 49.0
+margin_top = 117.0
+margin_right = 79.0
+margin_bottom = 147.0
+toggle_mode = true
+group = ExtResource( 7 )
+
+[node name="Classbut3" type="Button" parent="Esc_Menu/Panel"]
+margin_left = 49.0
+margin_top = 161.0
+margin_right = 79.0
+margin_bottom = 191.0
+toggle_mode = true
+group = ExtResource( 7 )
 
 [node name="Sweapon1" type="Label" parent="Esc_Menu/Panel"]
 margin_left = 508.0
@@ -335,47 +359,6 @@ margin_top = 372.0
 margin_right = 514.0
 margin_bottom = 435.0
 text = "Apply"
-
-[node name="debug" type="RichTextLabel" parent="Esc_Menu/Panel"]
-anchor_left = 0.194
-anchor_top = 0.187
-anchor_right = 0.404
-anchor_bottom = 0.424
-margin_left = 0.143997
-margin_top = 0.223999
-margin_right = 0.103973
-margin_bottom = 0.0479889
-
-[node name="Panel2" type="Panel" parent="Esc_Menu"]
-visible = false
-margin_left = 121.0
-margin_top = -99.0
-margin_right = 308.0
-margin_bottom = 36.0
-
-[node name="TabMenu" type="Control" parent="."]
-visible = false
-margin_left = -464.0
-margin_top = -282.0
-margin_right = 465.0
-margin_bottom = 283.0
-script = ExtResource( 11 )
-
-[node name="TabList" type="VBoxContainer" parent="TabMenu"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 229.0
-margin_top = 28.0
-margin_right = -231.0
-margin_bottom = -33.0
-custom_constants/separation = 16
-
-[node name="Panel" type="Panel" parent="TabMenu"]
-modulate = Color( 1, 1, 1, 0.509804 )
-margin_left = 229.0
-margin_top = 28.0
-margin_right = 698.0
-margin_bottom = 28.0
 
 [connection signal="dashing" from="." to="." method="_on_PlayerAll_dashing"]
 [connection signal="not_dashing" from="." to="." method="_on_PlayerAll_not_dashing"]

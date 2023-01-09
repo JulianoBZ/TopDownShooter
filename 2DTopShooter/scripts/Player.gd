@@ -31,7 +31,7 @@ var sprinting = false
 export var last_rec = 2
 var alive = true
 var rifle_damage = 15
-var shotgun_damage = 7
+var shotgun_damage = 6
 var is_master = true
 var Pporcentagem = 1
 var Sporcentagem = 1
@@ -198,7 +198,7 @@ func _process(delta):
 				#yield(get_tree().create_timer(2.4),"timeout")
 				
 			#Shotgun
-			if primary == 2 && Pammo_count < 8 && active_weapon == 1 && Preserve > 0:
+			if primary == 2 && Pammo_count < 8 && active_weapon == 1 && Preserve > 0 && can_fire:
 				reload_texture.max_value = 40
 				reloading = true
 				while(reloading):
@@ -560,4 +560,3 @@ remotesync func melee(id):
 	mh.set_network_master(id)
 	Net.network_object_name_index += 1
 	#yield(get_tree().create_timer(0.3),"timeout")
-	
