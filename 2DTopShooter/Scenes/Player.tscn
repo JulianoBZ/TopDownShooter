@@ -51,3 +51,8 @@ position = Vector2( 36, 0 )
 stream = SubResource( 2 )
 volume_db = -15.0
 attenuation = 8.57418
+
+[node name="ShotSound2" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource( 2 )
+volume_db = -15.0
+attenuation = 8.57418

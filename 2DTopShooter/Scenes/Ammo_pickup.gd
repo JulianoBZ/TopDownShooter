@@ -21,4 +21,8 @@ func _on_Ammo_pickup_body_entered(body):
 		if body.get_node('Player').Preserve < (body.get_node('Player').Pammo_max * body.get_node('Player').clips) || body.get_node('Player').Sreserve < (body.get_node('Player').Sammo_max * body.get_node('Player').clips):
 			body.get_node('Player').Preserve += body.get_node('Player').Pammo_max
 			body.get_node('Player').Sreserve += body.get_node('Player').Sammo_max
-			queue_free()
+			body.health += 30
+			rpc("delete")
+
+remotesync func delete():
+	queue_free()

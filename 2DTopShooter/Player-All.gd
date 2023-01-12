@@ -250,7 +250,7 @@ remote func hide_bars():
 remotesync func on_kill():
 	if kills > prev_kills:
 		prev_kills = kills
-		health += 30
+		#health += 30
 		#rpc_id(1,"UpdateKills",kills,get_tree().get_network_unique_id())
 		#if Net.onLobby:
 		#	rpc_id(1,"UpdateKills",kills,get_tree().get_network_unique_id())

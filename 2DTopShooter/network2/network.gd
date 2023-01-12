@@ -73,6 +73,12 @@ func _connected_to_server() -> void:
 
 func _server_disconnected() -> void:
 	print("Desconectado do servidor")
+	get_tree().quit()
+	client = null
+	print(client)
+	get_node("/root/Network_setup").gameEnded()
+	get_node("/root/Network_setup/Lobby").visible = false
+	get_node("/root/Network_setup").visible = true
 
 func puppet_network_object_name_index_set(new_value):
 	network_object_name_index = new_value

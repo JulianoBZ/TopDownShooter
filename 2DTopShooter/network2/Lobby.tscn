@@ -80,6 +80,16 @@ margin_right = 1163.0
 margin_bottom = 105.0
 script = ExtResource( 8 )
 
+[node name="Score" type="Label" parent="."]
+visible = false
+margin_left = 979.0
+margin_top = 60.0
+margin_right = 1161.0
+margin_bottom = 108.0
+text = "Score: "
+align = 1
+valign = 1
+
 [node name="PlayerLoadout" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/casingDrop.mp3-a3f301b7484c74b7ee9a89d199bba81f.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/casingDrop.mp3"
+dest_files=[ "res://.import/casingDrop.mp3-a3f301b7484c74b7ee9a89d199bba81f.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -3,6 +3,7 @@ extends Control
 #export (NodePath) var advertiserPath: NodePath
 #onready var advertiser := get_node(advertiserPath)
 const PORT := 3333
+var peer = null
 
 var firetype = 1
 var player = preload("res://Player-All.tscn")
@@ -52,6 +53,11 @@ func _player_disconnected(id):
 		if p[0] == id:
 			dc(id)
 			Net.playerList.erase(p)
+	if Players.get_child_count() > 0:
+		for p in Players.get_children():
+			if str(p.name) == str(id):
+				dc(id)
+				p.queue_free()
 	#rpc("dc",id)
 
 func _on_Create_Server_pressed():
@@ -81,7 +87,7 @@ func _on_Create_Server_pressed():
 		Net.lobby_name = servername.text
 	multiplayer_config_ui.hide()
 	device_ip_address.hide()
-	var peer = NetworkedMultiplayerENet.new()
+	peer = NetworkedMultiplayerENet.new()
 	var result = peer.create_server(PORT)
 	if result == OK:
 		get_tree().set_network_peer(peer)

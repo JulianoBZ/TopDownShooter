@@ -5,9 +5,17 @@ export var secondary = 2
 export var melee = 1
 export var bullet_speed = 2000
 onready var ShotSound = get_node("ShotSound")
+onready var ShotSound2 = get_node("ShotSound2")
 onready var riflesound = preload("res://assets/Sounds/ak47-2.wav")
 onready var riflesound2 = preload("res://assets/Sounds/m4a1-1.wav")
 onready var ping = preload("res://assets/Sounds/PingSFX.mp3")
+onready var rifle1 = preload("res://assets/Sounds/rifle1.mp3")
+onready var rifle2 = preload("res://assets/Sounds/rifle2.mp3")
+onready var rifle3 = preload("res://assets/Sounds/rifle3.mp3")
+onready var futRifle = preload("res://assets/Sounds/Futuristic Assault Rifle Single Shot 02.wav")
+onready var casingDrop = preload("res://assets/Sounds/casingDrop.mp3")
+onready var shotgun = preload("res://assets/Sounds/Shotgun.wav")
+onready var shotgunRack = preload("res://assets/Sounds/shotgunrack.wav")
 var speed = 200
 export var fire_rate = 0.3
 export var fire_rate2 = 1.3
@@ -314,7 +322,7 @@ func _process(delta):
 		#Rifle
 		if Input.is_action_just_pressed("fire") && can_fire && Pammo_count > 0 && !reloading && !sprinting && primary == 1 && active_weapon == 1:
 			can_fire = false
-			rpc("Shooting",riflesound2)
+			rpc("Shooting",futRifle)
 			rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-2,2)))
 			Pammo_count -= 1
 			max_recoil += 1
@@ -327,6 +335,7 @@ func _process(delta):
 		#Shotgun
 		if Input.is_action_pressed("fire") && can_fire && Pammo_count > 0 && !sprinting && primary == 2 && active_weapon == 1:
 			can_fire = false
+			rpc("Shooting",shotgun)
 			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			Pammo_count -= 1
 			can_switch = false
@@ -388,6 +397,7 @@ remotesync func spawn_cartridge():
 	Bullets.add_child(s)
 
 remotesync func spawn_shell():
+	rpc("SecShooting",shotgunRack)
 	var s = shell.instance()
 	s.position = $Bulletpoint.get_global_position()
 	s.add_torque(250000)
@@ -423,11 +433,12 @@ remotesync func spawn_shotgun(id):
 		bullets[x].flag = get_parent()
 		bullets[x].position = $Bulletpoint.get_global_position()
 		bullets[x].rotation_degrees = rotation_degrees
-		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + deg2rad(graus)))
+		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed*1.5,0).rotated(rotation + deg2rad(graus)))
 		Bullets.add_child(bullets[x])
 		graus += 1
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
+	
 
 remotesync func spawn_arrow(id,value):
 	var b = bullet.instance()
@@ -482,6 +493,10 @@ remotesync func Shooting(source):
 	#var sfx = load(source)
 	ShotSound.stream = source
 	ShotSound.play()
+
+remotesync func SecShooting(source):
+	ShotSound2.stream = source
+	ShotSound2.play()
 
 remotesync func Reloading(source):
 	#var sfx = load(source)

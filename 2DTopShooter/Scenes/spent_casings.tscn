@@ -29,3 +29,10 @@ position = Vector2( 0.00466444, 0.00827694 )
 rotation = 4.71239
 scale = Vector2( 0.0249839, 0.0209544 )
 texture = ExtResource( 3 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+volume_db = -20.975
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

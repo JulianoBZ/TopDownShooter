@@ -76,10 +76,11 @@ func _process(delta):
 	for p in Net.playerList:
 		if p[3] == 1:
 			readycount += 1
-	if get_tree().is_network_server():
+	if get_tree().is_network_server() && get_parent().peer != null:
 		$OptionButtonKills.show()
+		rpc("update_lobby_score",$OptionButtonKills.killLimit)
 	if readycount == Net.playerList.size():
-		if get_tree().is_network_server():
+		if get_tree().is_network_server() && get_parent().peer != null:
 			$StartGame.show()
 			$"Label - External IP".show()
 			$"Label - External IP".text = "IP: "+str(Net.external_ip)
@@ -195,3 +196,5 @@ func _on_ReadyButton_toggled(button_pressed):
 		rpc_id(1,"UpdateUnReady",get_tree().get_network_unique_id())
 		$ReadyButton.text = "Ready"
 
+remote func update_lobby_score(score):
+	$Score.text = "Score: "+str(score)
