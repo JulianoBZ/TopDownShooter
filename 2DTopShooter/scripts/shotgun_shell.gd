@@ -14,7 +14,8 @@ func _ready():
 	yield(get_tree().create_timer(rnd.randf_range(0.1,0.3)),"timeout")
 	$CollisionShape2D.disabled = true
 	mode = MODE_STATIC
-	$Timer.wait_time = 120
+	$Timer.wait_time = 60
+	$Timer.start()
 	if $Shell.is_visible():
 		rpc("sound",shotgunShell)
 	if $Casing.is_visible():

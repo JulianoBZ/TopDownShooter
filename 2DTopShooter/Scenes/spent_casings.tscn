@@ -31,7 +31,7 @@ scale = Vector2( 0.0249839, 0.0209544 )
 texture = ExtResource( 3 )
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-volume_db = -20.975
+volume_db = -15.0
 
 [node name="Timer" type="Timer" parent="."]
 

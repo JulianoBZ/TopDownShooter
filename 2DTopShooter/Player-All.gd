@@ -270,23 +270,23 @@ remotesync func on_kill():
 func set_stats(f):
 	if f == 1:
 		speed = 300
-		base_speed = 350
+		base_speed = 300
 		health = 75
 		max_health = 75
 		frame = 1
 		texture = t
 	if f == 2:
-		speed = 200
-		base_speed = 250
+		speed = 250
+		base_speed = 200
 		health = 125
 		max_health = 125
 		frame = 2
 		texture = c
 	if f == 3:
-		speed = 100
+		speed = 200
 		base_speed = 200
-		health = 175
-		max_health = 175
+		health = 150
+		max_health = 150
 		frame = 3
 		texture = q
 
