@@ -45,8 +45,10 @@ var reloading = false
 var sprinting = false
 export var last_rec = 2
 var alive = true
-var rifle_damage = 15
+var rifle_damage = 20
 var shotgun_damage = 6
+var pistol_damage = 10
+var revolver_damage = 15
 var is_master = true
 var Pporcentagem = 1
 var Sporcentagem = 1
@@ -336,7 +338,7 @@ func _process(delta):
 		if Input.is_action_just_pressed("fire") && can_fire && Pammo_count > 0 && !reloading && !sprinting && primary == 1 && active_weapon == 1:
 			can_fire = false
 			rpc("Shooting",futRifle)
-			rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-1,1)))
+			rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-1,1)),rifle_damage)
 			Pammo_count -= 1
 			max_recoil += 1
 			yield(get_tree().create_timer(fire_rate/2),"timeout")
@@ -375,7 +377,7 @@ func _process(delta):
 			if can_fire:
 				rpc("Shooting",Pistol)
 				can_fire = false
-				rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(2))#Stot_recoil)
+				rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(2),pistol_damage)#Stot_recoil)
 				Sammo_count -= 1
 				max_recoil += 1
 				yield(get_tree().create_timer(fire_rate/2),"timeout")
@@ -388,7 +390,7 @@ func _process(delta):
 			if can_fire:
 				rpc("Shooting",Revolver)
 				can_fire = false
-				rpc("spawn_bullet",get_tree().get_network_unique_id(),0)#Stot_recoil)
+				rpc("spawn_bullet",get_tree().get_network_unique_id(),0,revolver_damage)#Stot_recoil)
 				Sammo_count -= 1
 				max_recoil += 1
 				if alive == true:
@@ -425,12 +427,12 @@ remotesync func spawn_shell():
 	Bullets.add_child(s)
 	Net.network_object_name_index += 1
 
-remotesync func spawn_bullet(id,tot_recoil):
+remotesync func spawn_bullet(id,tot_recoil,damage):
 	var b = bullet.instance()
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
-	b.damage = rifle_damage
+	b.damage = damage
 	b.position = $Bulletpoint.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))

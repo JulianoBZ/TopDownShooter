@@ -32,19 +32,24 @@ func ready():
 
 func _process(delta):
 	if Net.hosting:
+		#########
+		#$Debug.show()
+		#########
 		$ReadyButton.hide()
 		for p in Net.playerList:
 			if p[0] == 1:
 				p[3] = 1
 	if Net.hosting:
+		$Debug.text = str(Gotm.lobby)+"-"+str(Gotm.lobby.name)
 		rpc("update_player_list_lobby",playerList)
 	#print(playerList)
 	advertiser.serverInfo["name"] = Net.lobby_name
 	advertiser.serverInfo["port"] = PORT
-	if Net.connected == true:
-		rpc_id(1,"Pconnected",Net.myinfo)
-		Net.onLobby = true
-		Net.connected = false
+	#if Net.connected == true:
+	#	rpc_id(1,"Pconnected",Net.myinfo)
+	#	Net.onLobby = true
+	#	Net.connected = false
+	
 	
 	
 	#if get_tree().get_network_unique_id() != null:
@@ -81,9 +86,10 @@ func _process(delta):
 		rpc("update_lobby_score",$OptionButtonKills.killLimit)
 	if readycount == Net.playerList.size():
 		if get_tree().is_network_server() && get_parent().peer != null:
+			$Score.hide()
 			$StartGame.show()
-			$"Label - External IP".show()
-			$"Label - External IP".text = "IP: "+str(Net.external_ip)
+			#$"Label - External IP".show()
+			#$"Label - External IP".text = "IP: "+str(Net.external_ip)
 	else:
 		$StartGame.hide()
 
@@ -189,10 +195,10 @@ remote func UpdateUnReady(id):
 
 
 func _on_ReadyButton_toggled(button_pressed):
-	if button_pressed:
+	if button_pressed && Net.connected:
 		rpc_id(1,"UpdateReady",get_tree().get_network_unique_id())
 		$ReadyButton.text = "Unready"
-	if !button_pressed:
+	if !button_pressed && Net.connected:
 		rpc_id(1,"UpdateUnReady",get_tree().get_network_unique_id())
 		$ReadyButton.text = "Ready"
 

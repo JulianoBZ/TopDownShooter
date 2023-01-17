@@ -39,6 +39,7 @@ align = 1
 valign = 1
 
 [node name="Label - External IP" type="Label" parent="."]
+visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -76.0
@@ -66,9 +67,9 @@ text = "Start Game"
 
 [node name="ReadyButton" type="Button" parent="."]
 margin_left = 1120.0
-margin_top = 491.0
+margin_top = 495.0
 margin_right = 1204.0
-margin_bottom = 536.0
+margin_bottom = 540.0
 toggle_mode = true
 text = "Ready"
 
@@ -81,7 +82,6 @@ margin_bottom = 105.0
 script = ExtResource( 8 )
 
 [node name="Score" type="Label" parent="."]
-visible = false
 margin_left = 979.0
 margin_top = 60.0
 margin_right = 1161.0
@@ -250,6 +250,13 @@ margin_right = 1011.0
 margin_bottom = 535.0
 text = "Color"
 script = ExtResource( 7 )
+
+[node name="Debug" type="Label" parent="."]
+visible = false
+margin_left = 74.0
+margin_top = 82.0
+margin_right = 264.0
+margin_bottom = 160.0
 
 [connection signal="pressed" from="StartGame" to="." method="_on_StartGame_pressed"]
 [connection signal="toggled" from="ReadyButton" to="." method="_on_ReadyButton_toggled"]

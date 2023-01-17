@@ -1,15 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://Scenes/ServerBrowser.gd" type="Script" id=1]
-[ext_resource path="res://addons/LANServerBroadcast/server_listener/ServerListener.gd" type="Script" id=2]
 
 [node name="ServerBrowser" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -802.0
-margin_bottom = -295.0
+margin_right = -809.0
+margin_bottom = -240.0
 script = ExtResource( 1 )
-serverListPath = NodePath("ServerList")
 
 [node name="Label" type="Label" parent="."]
 anchor_left = 0.5
@@ -21,25 +19,42 @@ text = "Servers List"
 align = 1
 valign = 1
 
-[node name="ServerList" type="VBoxContainer" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_left = 0.497
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -171.829
+margin_top = -232.0
+margin_right = 171.5
+margin_bottom = 141.0
+color = Color( 0, 0, 0, 0.207843 )
+
+[node name="ServerList" type="VBoxContainer" parent="ColorRect"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -174.0
-margin_top = -184.5
-margin_right = 171.0
-margin_bottom = 216.5
+margin_left = -172.5
+margin_top = -153.5
+margin_right = 172.5
+margin_bottom = 145.5
 
-[node name="ServerListener" type="Node" parent="."]
-script = ExtResource( 2 )
+[node name="next" type="Button" parent="."]
+visible = false
+margin_left = 286.0
+margin_top = 415.0
+margin_right = 451.0
+margin_bottom = 458.0
+text = "Next List"
 
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_left = 108.0
-margin_top = 52.0
-margin_right = 453.0
-margin_bottom = 452.0
-color = Color( 0, 0, 0, 0.415686 )
+[node name="previous" type="Button" parent="."]
+visible = false
+margin_left = 110.0
+margin_top = 415.0
+margin_right = 275.0
+margin_bottom = 458.0
+text = "Previous List"
 
-[connection signal="new_server" from="ServerListener" to="." method="_on_ServerListener_new_server"]
-[connection signal="remove_server" from="ServerListener" to="." method="_on_ServerListener_remove_server"]
+[connection signal="pressed" from="next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="previous" to="." method="_on_previous_pressed"]

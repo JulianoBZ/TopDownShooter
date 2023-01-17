@@ -8,14 +8,15 @@ var peer = null
 var firetype = 1
 var player = preload("res://Player-All.tscn")
 var world = preload("res://Maps/FreeForAll1.tscn").instance()
-var browser = preload("res://Scenes/ServerBrowser.tscn").instance()
-var lobby = preload("res://network2/Lobby.tscn").instance()
+var found = preload("res://Scenes/Found_Server.tscn")
+onready var browser = $ServerBrowser
+onready var lobby = $Lobby
 var playerList = []
 var peerinfo = []
 var myinfo = []
 var player_info = {}
 var list_aux = []
-var upnp = UPNP.new()
+onready var fetch = GotmLobbyFetch.new()
 onready var camera = get_node("Camera2D")
 onready var multiplayer_config_ui = $Multiplayer_configure
 onready var server_ip_address = $Multiplayer_configure/Server_IP_address
@@ -28,9 +29,11 @@ onready var servername = $Multiplayer_configure/ServerName
 var rng = RandomNumberGenerator.new()
 
 func _ready():
+	$Debug.text = str(Gotm.user)+" - "+str(Gotm.user.id)+" - "+str(Gotm.lobby)
+	Gotm.initialize()
 	rng.randomize()
-	add_child(lobby)
 	lobby.hide()
+	browser.hide()
 	get_tree().connect("network_peer_connected",self,'_player_connected')
 	get_tree().connect("network_peer_disconnected",self,'_player_disconnected')
 	get_tree().connect("connected_to_server",self,'_connected_to_server')
@@ -38,6 +41,7 @@ func _ready():
 	device_ip_address.text = Net.ip_address
 	#myinfo = Net.myinfo
 	myinfo = [0,Global.player_name,"CC0000",0,0]
+	#print(self.get_children())
 
 func _player_connected(id):
 	print("Player: has connected")
@@ -61,35 +65,17 @@ func _player_disconnected(id):
 	#rpc("dc",id)
 
 func _on_Create_Server_pressed():
-	#########################################
-	var discover_result = upnp.discover()
-	
-	while true:
-		if discover_result == UPNP.UPNP_RESULT_SUCCESS:
-			if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
-				var map_result_udp = upnp.add_port_mapping(PORT,PORT,"godot_udp","UDP",0)
-				print("map udp:",map_result_udp)
-				var map_result_tcp = upnp.add_port_mapping(PORT,PORT,"godot_tcp","TCP",0)
-				print("map tcp:",map_result_tcp)
-				
-				if not map_result_udp == UPNP.UPNP_RESULT_SUCCESS:
-					upnp.add_port_mapping(PORT,PORT,"","UDP")
-					print("UPD criado")
-				if not map_result_tcp == UPNP.UPNP_RESULT_SUCCESS:
-					print("TCP criado")
-					upnp.add_port_mapping(PORT,PORT,"","TCP")
-				break
-	#external_ip = upnp.query_external_address()
-	Net.external_ip = upnp.query_external_address()
-	########################################
 	Net.hosting = true
 	if servername.text != "":
 		Net.lobby_name = servername.text
-	multiplayer_config_ui.hide()
-	device_ip_address.hide()
+	hide_UI_show_Lobby()
 	peer = NetworkedMultiplayerENet.new()
 	var result = peer.create_server(PORT)
 	if result == OK:
+		Gotm.host_lobby()
+		Gotm.lobby.name = Net.lobby_name
+		Gotm.lobby.hidden = false
+		
 		get_tree().set_network_peer(peer)
 		#playerList.append(Global.player_name)
 		#self.add_child(lobby)
@@ -98,6 +84,7 @@ func _on_Create_Server_pressed():
 		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000",0,0]
 		lobby.playerList.append(myinfo)
 		print(lobby.playerList)
+		print(peer)
 		#myinfo["name"] = Global.player_name
 		#print(myinfo)
 		#print(playerList)
@@ -111,30 +98,15 @@ func _on_Create_Server_pressed():
 	#print(advertiser.serverInfo)
 	
 func _process(delta):
-	#print(playerList)
-	#rpc("update_player_list_lobby",playerList)
-	if Net.connecting == true:
-			multiplayer_config_ui.hide()
-			device_ip_address.hide()
-			for i in get_children():
-				if i == browser:
-					browser.queue_free()
-			#Net.ip_address = server_ip_address.text
-			#Net.join_server()
-			#var w = world.instance()
-			#playerList.append(get_tree().get_network_unique_id())
-			#self.add_child(lobby)
-			lobby.show()
-			#rpc_id(1,"connected",[get_tree().get_network_unique_id(),Global.player_name])
-			Net.connecting == false
+	#GotmUser.display_name = str(playername.text)
 	if Net.gameStart == true:
 		lobby.hide()
 
 func _on_Join_Server_pressed():
 	if server_ip_address.text != "":
-		Net.ip_address = server_ip_address.text
+		Net.ip_address = "127.0.0.1"
 		Net.join_server()
-		print(Net.connecting)
+		hide_UI_show_Lobby()
 		#if Net.connecting == true:
 		#	multiplayer_config_ui.hide()
 		#	device_ip_address.hide()
@@ -179,8 +151,16 @@ func _on_classbut3_pressed():
 	Global.frame = 3
 
 func _on_BrowseServer_pressed():
-	self.add_child(browser)
+	browser.show()
+	var f = found.instance()
 	#get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
+	var lobbies = yield(fetch.first(), "completed")
+	#print(lobbies)
+	$Debug.text = "Fetch: "+str(lobbies)
+	for i in lobbies:
+		browser.get_node("ColorRect/ServerList").add_child(f)
+		f.get_node("Label").text = i.name
+		f.lobby = i
 
 func dc(id):
 	var count = 0
@@ -197,12 +177,15 @@ func dc(id):
 
 func _on_SetName_pressed():
 	Global.player_name = str(playername.text)
+	GotmUser.display_name = str(playername.text)
+	#$Debug.text = str(GotmUser.display_name)
 
 remotesync func gameEnded():
 	Net.gameStart = false
 	lobby.visible = true
 	camera.make_current()
-	Map.get_child(0).queue_free()
+	if Map.get_child_count() > 0:
+		Map.get_child(0).queue_free()
 	for each in Players.get_children():
 		each.queue_free()
 	for each in Bullets.get_children():
@@ -216,8 +199,16 @@ remotesync func gameEnded():
 			each[3] = 1
 	
 
+func hide_UI_show_Lobby():
+	multiplayer_config_ui.hide()
+	device_ip_address.hide()
+	lobby.show()
+	browser.hide()
+
+
 #remote func connected(PeerInfo):
 #	playerList.append(PeerInfo)
 
 #remote func update_player_list_lobby(list):
 #	playerList = list
+

@@ -38,7 +38,7 @@ func _process(delta):
 	#	UpdateColor(color,1)
 		#print(color,get_tree().get_network_unique_id())
 	
-	if (Net.hosting || Net.onLobby) && color != oldcolor:
+	if (Net.connected || Net.hosting) && color != oldcolor:
 		#if color != oldcolor:
 		#	if is_network_master():
 		#		UpdateColor(color,1)

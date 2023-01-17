@@ -1,7 +1,7 @@
 extends Node
 
 const DEFAULT_PORT = 3333
-const MAX_CLIENTS = 6
+const MAX_CLIENTS = 12
 var external_ip = 0
 
 var lobby_name = "Normal Lobby"
@@ -12,16 +12,15 @@ var gameStart = false
 
 var color = "CC0000"
 var myinfo = [0,"Player",color,0,0]
-var connected = false
 var hosting = false
 var onLobby = false
+var connected = false
 var playerList = []
 
-onready var connecting = false
-
-var ip_address = ""
+var ip_address = "127.0.0.1"
 #var adapter
 #var check = "ZeroTier One"
+var lobby = preload("res://network2/Lobby.tscn").instance()
 
 var network_object_name_index = 0 setget network_object_name_index_set
 puppet var puppet_network_object_name_index = 0 setget puppet_network_object_name_index_set
@@ -66,19 +65,26 @@ func join_server():
 
 func _connected_to_server() -> void:
 	print("Conectado ao servidor com sucesso")
-	connecting = true
 	myinfo = [get_tree().get_network_unique_id(),Global.player_name,color,0,0]
+	rpc_id(1,"Pconnected",myinfo)
 	connected = true
-	#rpc_id(1,"connected",get_tree().get_network_unique_id(),Global.player_name)
+	get_node("/root/Network_setup").hide_UI_show_Lobby()
 
 func _server_disconnected() -> void:
+	get_tree().network_peer = null
+	Net.playerList.clear()
+	hosting = false
+	onLobby = false
+	connected = false
 	print("Desconectado do servidor")
-	get_tree().quit()
-	client = null
+	#get_tree().quit()
+	#client = null
 	print(client)
 	get_node("/root/Network_setup").gameEnded()
 	get_node("/root/Network_setup/Lobby").visible = false
+	get_node("/root/Network_setup/Lobby/ReadyButton").pressed = false
 	get_node("/root/Network_setup").visible = true
+	get_node("/root/Network_setup/Multiplayer_configure").visible = true
 
 func puppet_network_object_name_index_set(new_value):
 	network_object_name_index = new_value
@@ -94,3 +100,12 @@ remotesync func update_player_list_lobby(list):
 
 #remote func connected(peerInfo):
 #	playerList.append_array(peerInfo)
+
+remote func Pconnected(PeerInfo):
+	var peerinfo
+	peerinfo = PeerInfo
+	print(peerinfo)
+	Net.playerList.append(peerinfo)
+	#rpc("update_player_list_lobby",playerList)
+	#print(PeerInfo)
+	print(playerList)
