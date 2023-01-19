@@ -23,9 +23,11 @@ onready var Pistol = preload("res://assets/Sounds/Pistol.wav")
 onready var shotgunReload = preload("res://assets/Sounds/shotgunReload.wav")
 onready var rifleReload = preload("res://assets/Sounds/rifleReload.wav")
 onready var Thunder = preload("res://assets/Sounds/Thunder.wav")
+var anim = false
 var speed = 200
 export var fire_rate = 0.3
 export var fire_rate2 = 1.3
+export var fire_rateP = 0.1
 var Pammo_count = 12
 var Pammo_max = 12
 var Sammo_count = 15
@@ -45,7 +47,7 @@ var reloading = false
 var sprinting = false
 export var last_rec = 2
 var alive = true
-var rifle_damage = 20
+var rifle_damage = 25
 var shotgun_damage = 6
 var pistol_damage = 10
 var revolver_damage = 15
@@ -75,6 +77,13 @@ var ejected = false
 var can_switch = true
 var can_look = true
 onready var meleeH = preload("res://Scenes/MeleeHitbox.tscn")
+onready var WSRR = $Primaries/WeaponStaticReloadR
+onready var WSRS = $Primaries/WeaponStaticReloadS
+onready var WSRB = $Primaries/WeaponStaticReloadB
+onready var WAR =  $Primaries/WeaponAnimR
+onready var WAS = $Primaries/WeaponAnimS
+onready var WAB = $Primaries/WeaponAnimB
+onready var WAB2 = $Primaries/WeaponAnimB2
 
 
 signal change_P
@@ -135,24 +144,26 @@ func _process(delta):
 		if Sreserve > Sammo_max*clips:
 			Sreserve = Sammo_max*clips
 		
-		
 		#Change Weapon Slots
 		if Input.is_action_just_pressed("wep1") && reloading == false && can_switch:
 			active_weapon = 1
+			$Primaries.visible = true
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
 		if Input.is_action_just_pressed("wep2") && reloading == false && can_switch:
 			active_weapon = 2
+			$Primaries.visible = false
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
 		if Input.is_action_just_pressed("wep3"):
 			active_weapon = 3
+			$Primaries.visible = false
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
-		
+		rpc("weaponDrawn")
 		#Look at mouse position
 		if can_look:
 			look_at(get_global_mouse_position())
@@ -181,17 +192,22 @@ func _process(delta):
 		if dir_recoil == 0:
 			Stot_recoil *= -1
 			
+		#Bow Animation
+		rpc("updateBow",get_parent().get_node("BowBar").value)
+		
 		#Rifle
 		if Input.is_action_just_pressed("Reload") && reloading == false:
 			if primary == 1 && Pammo_count < 12 && active_weapon == 1 && Preserve > 0:
+				var c = 0
 				rpc("Reloading",ping)
 				reload_texture.max_value = 100
 				reloading = true
 				max_recoil = 1
 				reload_texture.visible = true
 				while(reloading):
-					if !ShotSound.is_playing():
+					if !ShotSound.is_playing() && c == 0:
 						rpc("Reloading",rifleReload)
+						c = 1
 					yield(get_tree().create_timer(0.01),"timeout")
 					reload_texture.value += 1
 					if alive == false:
@@ -328,8 +344,11 @@ func _process(delta):
 								Sammo_count += Sreserve
 								Sreserve -= Sreserve
 						reloading = false
-				
-				
+		if reloading:
+			rpc("weaponReload")
+		if !reloading:
+			rpc("weaponFinishReload")
+		
 		#sprinting = get_parent().sprinting
 		#if sprinting == true:
 		#	base_recoil = 12
@@ -343,6 +362,7 @@ func _process(delta):
 			max_recoil += 1
 			yield(get_tree().create_timer(fire_rate/2),"timeout")
 			rpc("spawn_cartridge")
+			rpc("weaponAnim")
 			yield(get_tree().create_timer(fire_rate/2),"timeout")
 			if alive == true:
 				can_fire = true
@@ -356,6 +376,7 @@ func _process(delta):
 			can_switch = false
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
 			rpc("spawn_shell")
+			rpc("weaponAnim")
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
 			can_switch = true
 			if alive == true:
@@ -380,9 +401,9 @@ func _process(delta):
 				rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(2),pistol_damage)#Stot_recoil)
 				Sammo_count -= 1
 				max_recoil += 1
-				yield(get_tree().create_timer(fire_rate/2),"timeout")
+				yield(get_tree().create_timer(fire_rateP/2),"timeout")
 				rpc("spawn_cartridge")
-				yield(get_tree().create_timer(fire_rate/2),"timeout")
+				yield(get_tree().create_timer(fire_rateP/2),"timeout")
 				if alive == true:
 					can_fire = true
 		#Revolver
@@ -407,10 +428,10 @@ func _process(delta):
 remotesync func spawn_cartridge():
 	var s = shell.instance()
 	s.name = "Cartridge"+ name +str(Net.network_object_name_index)
-	s.position = $Bulletpoint.get_global_position()
+	s.position = $RifleCPoint.get_global_position()
 	s.add_torque(250000)
 	s.rotation_degrees = rotation_degrees + 90
-	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(75,105))))
+	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(255,295))))
 	s.get_node("Casing").visible = true
 	Bullets.add_child(s)
 	Net.network_object_name_index += 1
@@ -419,10 +440,10 @@ remotesync func spawn_shell():
 	rpc("SecShooting",shotgunRack)
 	var s = shell.instance()
 	s.name = "Shell"+ name +str(Net.network_object_name_index)
-	s.position = $Bulletpoint.get_global_position()
+	s.position = $ShellPoint.get_global_position()
 	s.add_torque(250000)
-	s.rotation_degrees = rotation_degrees + 90
-	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(75,105))))
+	s.rotation_degrees = rotation_degrees + 270
+	s.apply_impulse(Vector2(0,0),Vector2(300,0).rotated(rotation - deg2rad(rand.randi_range(255,295))))
 	s.get_node("Shell").visible = true
 	Bullets.add_child(s)
 	Net.network_object_name_index += 1
@@ -433,7 +454,7 @@ remotesync func spawn_bullet(id,tot_recoil,damage):
 	b.flag = get_parent()
 	b.type = 1
 	b.damage = damage
-	b.position = $Bulletpoint.get_global_position()
+	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
 	Bullets.add_child(b)
@@ -452,7 +473,7 @@ remotesync func spawn_shotgun(id):
 		bullets[x].damage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
-		bullets[x].position = $Bulletpoint.get_global_position()
+		bullets[x].position = $BulletpointS.get_global_position()
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed*1.5,0).rotated(rotation + deg2rad(graus)))
 		Bullets.add_child(bullets[x])
@@ -462,6 +483,7 @@ remotesync func spawn_shotgun(id):
 	
 
 remotesync func spawn_arrow(id,value):
+	rpc("shootBow")
 	rpc("Shooting",Thunder)
 	var b = bullet.instance()
 	var arrow_speed = 0.3
@@ -474,12 +496,29 @@ remotesync func spawn_arrow(id,value):
 	else:
 		b.damage = value
 		arrow_speed = lerp(arrow_speed,2,value)
-	b.position = $Bulletpoint.get_global_position()
+	b.position = $BulletpointB.get_global_position()
 	b.rotation_degrees = rotation_degrees
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed*(arrow_speed/100),0).rotated(rotation))
 	Bullets.add_child(b)
 	b.set_network_master(id)
 	Net.network_object_name_index += 1
+
+remotesync func shootBow():
+	WAB.hide()
+	WAB2.show()
+	WAB2.frame = 0
+	WAB2.play("Thunder2")
+
+remotesync func updateBow(value):
+	if value > 1:
+		WAB.frame = 0
+	if value > 30:
+		WAB.frame = 1
+	if value > 60:
+		WAB.frame = 2
+	if value > 80:
+		WAB.frame = 3
+	
 
 remote func update_rotation(rot):
 	rotation_degrees = rot
@@ -511,19 +550,93 @@ remote func update_rotation(rot):
 #	#global_position += direction * speed * delta
 #	move_and_slide(direction * speed)
 
+remotesync func weaponReload():
+	match active_weapon == 1:
+		1:
+			WSRR.show()
+			WAR.hide()
+		2:
+			WSRS.show()
+			WAS.hide()
+		3:
+			WSRB.show()
+			WAB.hide()
+
+remotesync func weaponFinishReload():
+	match active_weapon == 1:
+		1:
+			WSRR.hide()
+			WAR.show()
+		2:
+			WSRS.hide()
+			WAS.show()
+		3:
+			WSRB.hide()
+			WAB.show()
+
+remotesync func weaponDrawn():
+	if active_weapon == 1:
+		match primary:
+			1:
+				WAR.frame = 0
+				WAR.show()
+				WAS.hide()
+				WAB.hide()
+			2:
+				WAS.frame = 0
+				WAS.show()
+				WAR.hide()
+				WAB.hide()
+			3:
+				WAS.hide()
+				WAR.hide()
+				if Pammo_count == 1:
+					WAB.show()
+					WAB2.hide()
+					WAB.frame = 0
+				else:
+					WAB2.show()
+					WAB.hide()
+					WAB2.frame = 3
+
+remotesync func weaponAnim():
+	if primary == 1:
+		WAR.frame = 0
+		WAR.show()
+		WAR.play("Rifle")
+	if primary == 2:
+		WAS.frame = 0
+		WAS.show()
+		WAS.play("Pump")
+
 remotesync func Shooting(source):
+	var sound = AudioStreamPlayer2D.new()
+	sound.stream = source
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
 	#var sfx = load(source)
-	ShotSound.stream = source
-	ShotSound.play()
+	#ShotSound.stream = source
+	#ShotSound.play()
 
 remotesync func SecShooting(source):
+	#var sound = AudioStreamPlayer2D.new()
+	#sound.stream = source
+	#sound.position = self.global_position
+	#Bullets.add_child(sound)
+	#sound.play()
 	ShotSound2.stream = source
 	ShotSound2.play()
 
 remotesync func Reloading(source):
+	var sound = AudioStreamPlayer2D.new()
+	sound.stream = source
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
 	#var sfx = load(source)
-	ShotSound.stream = source
-	ShotSound.play()
+	#ShotSound.stream = source
+	#ShotSound.play()
 
 func _on_Timer_timeout():
 	reload_texture.visible = false
@@ -550,6 +663,7 @@ func _on_PlayerAll_respawned():
 	visible = true
 	alive = true
 	can_melee = true
+	rpc("weaponDrawn")
 	#primary = desired_primary
 
 func _on_ApplyButton_pressed():

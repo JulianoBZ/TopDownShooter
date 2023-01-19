@@ -10,8 +10,9 @@ var server = null
 var client = null
 var gameStart = false
 
+var n = ""
 var color = "CC0000"
-var myinfo = [0,"Player",color,0,0]
+var myinfo = [0,n,color,0,0]
 var hosting = false
 var onLobby = false
 var connected = false
@@ -48,6 +49,8 @@ func _ready():
 	get_tree().connect("server_disconnected",self,"_server_disconnected")
 
 func _process(delta):
+	if Gotm.user.display_name != "":
+		Global.n
 	update_player_list_lobby(playerList)
 
 func create_server():
@@ -65,7 +68,7 @@ func join_server():
 
 func _connected_to_server() -> void:
 	print("Conectado ao servidor com sucesso")
-	myinfo = [get_tree().get_network_unique_id(),Global.player_name,color,0,0]
+	myinfo = [get_tree().get_network_unique_id(),Net.n,color,0,0]
 	rpc_id(1,"Pconnected",myinfo)
 	connected = true
 	get_node("/root/Network_setup").hide_UI_show_Lobby()

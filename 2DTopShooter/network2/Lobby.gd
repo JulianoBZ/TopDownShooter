@@ -158,7 +158,7 @@ remotesync func instance_player(id,color):
 	#Global.player_name = str(playername.text)
 	var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
 	player_instance.name = str(id)
-	player_instance.get_node('Player').get_node('Sprite').modulate = color
+	player_instance.get_node('Player').get_node('Body').modulate = color
 	player_instance.set_network_master(id)
 
 remote func Pconnected(PeerInfo):

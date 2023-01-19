@@ -81,7 +81,7 @@ func _on_Create_Server_pressed():
 		#self.add_child(lobby)
 		lobby.show()
 		#print("Game hosted")
-		myinfo = [get_tree().get_network_unique_id(), Global.player_name, "CC0000",0,0]
+		myinfo = [get_tree().get_network_unique_id(), Net.n, "CC0000",0,0]
 		lobby.playerList.append(myinfo)
 		print(lobby.playerList)
 		print(peer)
@@ -98,7 +98,12 @@ func _on_Create_Server_pressed():
 	#print(advertiser.serverInfo)
 	
 func _process(delta):
-	#GotmUser.display_name = str(playername.text)
+	if Gotm.user.display_name == "":
+		Net.n = str(playername.text)
+	else:
+		Net.n = Gotm.user.display_name
+		$Multiplayer_configure/NameText.hide()
+		$Multiplayer_configure/NameLabel.hide()
 	if Net.gameStart == true:
 		lobby.hide()
 
@@ -175,9 +180,9 @@ func dc(id):
 #	myinfo = [id,self_name]
 	#print(player_info)
 
-func _on_SetName_pressed():
-	Global.player_name = str(playername.text)
-	GotmUser.display_name = str(playername.text)
+#func _on_SetName_pressed():
+#	Global.player_name = str(playername.text)
+#	GotmUser.display_name = str(playername.text)
 	#$Debug.text = str(GotmUser.display_name)
 
 remotesync func gameEnded():

@@ -6,6 +6,7 @@ var texture = ""
 var frame = 2
 var desired_frame = 2
 var speed = 200
+var dspeed
 var base_speed = 200
 var pos = Vector2()
 var sprinting = false
@@ -84,7 +85,7 @@ func _ready():
 
 func _process(delta):
 	if is_network_master() && can_move:
-		rpc_unreliable("set_name",Global.player_name)
+		rpc_unreliable("set_name",Net.n)
 		rpc_unreliable("update_stats",health, max_health,frame)
 		#rpc_unreliable("update_sprite",get_tree().get_network_unique_id(),texture)
 		rpc("on_kill")
@@ -98,6 +99,11 @@ func _process(delta):
 			camera.offset_v = (mouse_pos.y - position.y) / (768 / 3)
 		#$Health.rect_position = camera.get_camera_position()
 		
+		if shift_texture.value == 0:
+			shift_texture.visible = false
+		else:
+			shift_texture.visible = true
+		
 		if $BowBar.value > 0:
 			$BowBar.show()
 		else:
@@ -106,20 +112,12 @@ func _process(delta):
 		##########################################################################
 		#Shift skills
 		
-		#frame2 = sprint
-		if Input.is_action_pressed("Sprint") && frame == 2:
-			speed = base_speed * 2
-			#trysprint = true
-			sprinting = true
-		else:
-			sprinting = false
-			#trysprint = false
-			speed = base_speed
-		
 		#frame1 = dash
 		if Input.is_action_just_pressed("Sprint") && frame == 1 && candash:
 			#sprinting = true
 			dashing()
+		
+		#frame2 = sprint in physics_process
 		
 		#frame3 = bullrush
 		if Input.is_action_pressed("Sprint") && frame == 3 && sprinting == false && candash && !dashing:
@@ -179,6 +177,7 @@ func _process(delta):
 
 func _physics_process(delta):
 	if is_network_master() && can_move:
+		dspeed = base_speed*2
 		direction = Vector2()
 		sprinting = false
 		if Input.is_action_pressed("up"):
@@ -201,7 +200,14 @@ func _physics_process(delta):
 			health = 0
 		direction = direction.normalized()
 		#global_position = player.global_position
-		move_and_slide(direction * speed)
+		
+		#frame2 = sprint
+		if Input.is_action_pressed("Sprint") && frame == 2:
+			move_and_slide(direction * dspeed)
+			print("sprinting")
+		else:
+			move_and_slide(direction * speed)
+		
 		rpc_unreliable("update_position",position)
 #	else:
 #		if not tween.is_active():
@@ -277,7 +283,7 @@ func set_stats(f):
 		texture = t
 	if f == 2:
 		speed = 250
-		base_speed = 200
+		base_speed = 250
 		health = 125
 		max_health = 125
 		frame = 2
@@ -309,11 +315,11 @@ remotesync func update_stats(h,mh,frame):
 	max_health = mh
 	match frame:
 		1:
-			get_node("Player/Sprite").texture = t
+			get_node("Player/Body").texture = t
 		2:
-			get_node("Player/Sprite").texture = c
+			get_node("Player/Body").texture = c
 		3:
-			get_node("Player/Sprite").texture = q
+			get_node("Player/Body").texture = q
 	#get_node("Player/Sprite").texture = texture
 	rpc("update_sprite",get_tree().get_network_unique_id(),frame)
 	#print(tex)
