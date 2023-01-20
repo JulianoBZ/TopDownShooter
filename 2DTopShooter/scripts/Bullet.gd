@@ -5,6 +5,9 @@ var damage = 10
 #Type of bullet
 var type = 1
 var lifespan = 0.5
+var can_bounce = false
+var num_bounce = 0
+
 
 var pos = Vector2()
 var rot
@@ -26,6 +29,14 @@ func _on_Bullet_tree_entered():
 		$Arrow.show()
 
 func _ready():
+	if can_bounce:
+		set_bounce(1.0)
+		set_friction(0)
+		#contacts_reported = 0
+	else:
+		set_bounce(0)
+		set_friction(1)
+		#contacts_reported = 1
 	#if type == 1:
 	#	lifespan = 0.5
 	#if type == 2:
@@ -44,10 +55,11 @@ func _process(delta):
 		a.position = position
 		a.rotation_degrees = rotation_degrees + 90
 		Bullets.add_child(a)
+	
 
 func _on_Bullet_body_entered(body):
-	if not body.is_in_group("player") && !self && !self.get_parent() && !body.is_in_group("bullet"):
-		queue_free()
+	if not body.is_in_group("player") && !self && !self.get_parent() && !body.is_in_group("bullet") && num_bounce == 0:
+			queue_free()
 	
 	if body.is_in_group("bullet"):
 		body.add_collision_exception_with(body) 
@@ -55,8 +67,9 @@ func _on_Bullet_body_entered(body):
 	if flag != body && body.is_in_group("player"):
 		damage(flag,body)
 	
-	if flag != body:
+	if flag != body && (!body.is_in_group("mapObject") || body.is_in_group("mapObject")) && !can_bounce:
 		queue_free()
+	
 
 remote func update_position(pos):
 	global_position = pos

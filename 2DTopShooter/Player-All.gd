@@ -302,11 +302,11 @@ remote func update_sprite(id,frame):
 			if str(n.name) == str(id):
 				match frame:
 					1:
-						get_node("Player/Sprite").texture = t
+						get_node("Player/Body").texture = t
 					2:
-						get_node("Player/Sprite").texture = c
+						get_node("Player/Body").texture = c
 					3:
-						get_node("Player/Sprite").texture = q
+						get_node("Player/Body").texture = q
 				#n.get_node("Player/Sprite").texture = tex
 	#print(player.get_node("Sprite").texture)
 
