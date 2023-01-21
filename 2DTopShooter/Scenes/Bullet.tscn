@@ -10,7 +10,8 @@ radius = 0.999996
 height = 6.00001
 
 [node name="Bullet" type="RigidBody2D" groups=["bullet"]]
-collision_layer = 3
+collision_layer = 2
+mass = 0.00102041
 physics_material_override = ExtResource( 4 )
 gravity_scale = 0.0
 contacts_reported = 1

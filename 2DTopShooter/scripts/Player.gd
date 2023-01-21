@@ -151,7 +151,7 @@ func _process(delta):
 		
 		#Change Weapon Slots
 		if Input.is_action_just_pressed("wep1") && reloading == false && can_switch:
-			rpc("weaponDrawn")
+			rpc("weaponDrawn",active_weapon)
 			active_weapon = 1
 			$Primaries.visible = true
 			$Secondaries.visible = false
@@ -159,7 +159,7 @@ func _process(delta):
 			reload_texture.visible = false
 			reload_texture.value = 0
 		if Input.is_action_just_pressed("wep2") && reloading == false && can_switch:
-			rpc("weaponDrawn")
+			rpc("weaponDrawn",active_weapon)
 			active_weapon = 2
 			$Primaries.visible = false
 			$Secondaries.visible = true
@@ -167,13 +167,15 @@ func _process(delta):
 			reload_texture.visible = false
 			reload_texture.value = 0
 		if Input.is_action_just_pressed("wep3"):
-			rpc("weaponDrawn")
+			rpc("weaponDrawn",active_weapon)
 			active_weapon = 3
 			$Primaries.visible = false
 			$Secondaries.visible = false
 			reloading = false
 			reload_texture.visible = false
 			reload_texture.value = 0
+		
+		rpc("updatePeerWeapon",get_tree().get_network_unique_id(),active_weapon,primary,secondary)
 		
 		#Look at mouse position
 		if can_look:
@@ -542,7 +544,7 @@ remotesync func updateBow(value):
 			WAB.hide()
 			WAB2.show()
 
-remote func update_rotation(rot):
+remotesync func update_rotation(rot):
 	rotation_degrees = rot
 
 remotesync func weaponReload():
@@ -578,7 +580,7 @@ remotesync func weaponFinishReload():
 				WAP.hide()
 				WARV.show()
 
-remotesync func weaponDrawn():
+remotesync func weaponDrawn(active_weapon):
 	if active_weapon == 1:
 		match primary:
 			1:
@@ -628,13 +630,30 @@ remotesync func weaponAnim():
 				WAS.frame = 0
 				WAS.show()
 				WAS.play("Pump")
-				print("Pump")
 	if active_weapon == 2:
 		match secondary:
 			1:
 				WAP.frame = 0
 				WAP.show()
 				WAP.play()
+
+remote func updatePeerWeapon(id,active,primary,secondary):
+	if Net.playerList.size() == Players.get_child_count():
+		for n in Players.get_children():
+			if str(n.name) == str(id):
+				n.get_node("Player").primary = primary
+				n.get_node("Player").secondary = secondary
+				n.get_node("Player").active_weapon = active
+				match active:
+					1:
+						n.get_node("Player/Primaries").show()
+						n.get_node("Player/Secondaries").hide()
+					2:
+						n.get_node("Player/Secondaries").show()
+						n.get_node("Player/Primaries").hide()
+					3:
+						n.get_node("Player/Primaries").hide()
+						n.get_node("Player/Secondaries").hide()
 
 remotesync func revolverReload():
 	WARV.frame = 0

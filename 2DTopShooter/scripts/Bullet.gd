@@ -6,8 +6,6 @@ var damage = 10
 var type = 1
 var lifespan = 0.5
 var can_bounce = false
-var num_bounce = 0
-
 
 var pos = Vector2()
 var rot
@@ -31,16 +29,10 @@ func _on_Bullet_tree_entered():
 func _ready():
 	if can_bounce:
 		set_bounce(1.0)
-		set_friction(0)
-		#contacts_reported = 0
+	#	#contacts_reported = 0
 	else:
 		set_bounce(0)
-		set_friction(1)
 		#contacts_reported = 1
-	#if type == 1:
-	#	lifespan = 0.5
-	#if type == 2:
-	#	lifespan = 0.35
 	$Timer.wait_time = lifespan
 	$Timer.start()
 
@@ -58,7 +50,7 @@ func _process(delta):
 	
 
 func _on_Bullet_body_entered(body):
-	if not body.is_in_group("player") && !self && !self.get_parent() && !body.is_in_group("bullet") && num_bounce == 0:
+	if not body.is_in_group("player") && !self && !self.get_parent() && !body.is_in_group("bullet"):
 			queue_free()
 	
 	if body.is_in_group("bullet"):
