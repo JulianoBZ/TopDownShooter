@@ -7,7 +7,9 @@ var peer = null
 
 var firetype = 1
 var player = preload("res://Player-All.tscn")
-var world = preload("res://Maps/FreeForAll1.tscn").instance()
+var world
+var ffa1 = preload("res://Maps/FreeForAll1.tscn").instance()
+var warehouseffa = preload("res://Maps/WareHouse_FFA.tscn").instance()
 var found = preload("res://Scenes/Found_Server.tscn")
 onready var browser = $ServerBrowser
 onready var lobby = $Lobby

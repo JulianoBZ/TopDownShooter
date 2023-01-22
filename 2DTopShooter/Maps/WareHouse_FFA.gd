@@ -1,12 +1,12 @@
 extends Node2D
 
-#var lobby = preload("res://network2/Lobby.tscn").instance()
+
 onready var WinSound = $WinSound
 onready var WinSound2 = $WinSound2
-onready var spawns = {"1":get_node("Spawn1"),"2":get_node("Spawn2"),"3":get_node("Spawn3"),"4":get_node("Spawn4")
-,"5":get_node("Spawn5"),"6":get_node("Spawn6"),"7":get_node("Spawn7")}
+onready var spawns = {"1":get_node("Spawns/Spawn1"),"2":get_node("Spawns/Spawn2"),"3":get_node("Spawns/Spawn3"),"4":get_node("Spawns/Spawn4")
+,"5":get_node("Spawns/Spawn5"),"6":get_node("Spawns/Spawn6"),"7":get_node("Spawns/Spawn7"),"8":get_node("Spawns/Spawn8")}
 
-var totspawns = 7
+var totspawns = 8
 
 var winkills = 1
 
@@ -19,9 +19,6 @@ const PORT := 3333
 var PlayerList = Net.playerList
 
 var winCounter = 0
-
-export (NodePath) var advertiserPath: NodePath
-onready var advertiser := get_node(advertiserPath)
 
 func ready():
 	rng.randomize()
@@ -54,8 +51,6 @@ remotesync func WinGame(winner):
 	get_node("/root/Network_setup").gameEnded()
 
 
-
-#remotesync func _on_PlayerAll_pdeath(player):
-#	print("dead1")
-#	yield(get_tree().create_timer(3),"timeout")
-#	player.position = spawns[str(rng.randi_range(1,7))].position
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass

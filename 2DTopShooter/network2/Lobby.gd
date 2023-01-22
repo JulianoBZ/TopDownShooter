@@ -17,6 +17,7 @@ onready var advertiser := get_node(advertiserPath)
 
 var playerChar = preload("res://Player-All.tscn")
 var FFA1 = preload("res://Maps/FreeForAll1.tscn")
+var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn")
 var rng = RandomNumberGenerator.new()
 
 var world
@@ -133,7 +134,8 @@ remotesync func start_game():
 	Net.playerList = playerList
 	
 	#FreeForAll
-	world = FFA1.instance()
+	#world = FFA1.instance()
+	world = WRHFFA.instance()
 	
 	
 	#print(Net.playerList)

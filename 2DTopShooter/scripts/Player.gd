@@ -713,7 +713,7 @@ func _on_PlayerAll_respawned():
 	visible = true
 	alive = true
 	can_melee = true
-	rpc("weaponDrawn")
+	rpc("weaponDrawn",active_weapon)
 	#primary = desired_primary
 
 func _on_ApplyButton_pressed():
