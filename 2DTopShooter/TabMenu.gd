@@ -15,7 +15,7 @@ func _ready():
 	pass # Replace with function body.
 
 
-func _process(delta):
+func _process(_delta):
 	
 	if Net.hosting:
 		for p in Players.get_children():
@@ -27,23 +27,34 @@ func _process(delta):
 	if Net.hosting:
 		TabPlayerList.sort_custom(self,"sort_TabList")
 		rpc("UpdateTabList",TabPlayerList)
-	for n in $TabList.get_children():
-		n.queue_free()
-	for p in TabPlayerList:
-		var playerunit = PLU.instance()
-		playerunit.get_node("ReadyRect").hide()
-		playerunit.get_node("FragRect").show()
-		playerunit.get_node("FragRect/KillLabel").text = str(p[3])+'/'+str(p[4])
-		playerunit.get_node("ColorRect/Label").text = str(p[1])
-		playerunit.get_node("ColorRect").color = Color(str(p[2]))
-		$TabList.add_child(playerunit)
+	#for n in $TabList.get_children():
+	#	n.queue_free()
+	#for p in TabPlayerList:
+	#	var playerunit = PLU.instance()
+	#	playerunit.get_node("ReadyRect").hide()
+	#	playerunit.get_node("FragRect").show()
+	#	playerunit.get_node("FragRect/KillLabel").text = str(p[3])+'/'+str(p[4])
+	#	playerunit.get_node("ColorRect/Label").text = str(p[1])
+	#	playerunit.get_node("ColorRect").color = Color(str(p[2]))
+	#	$TabList.add_child(playerunit)
 
 remotesync func UpdateTabList(list):
-	Net.playerList = list
+	#Net.playerList = list
 	count += 1
-	if count > 30:
-		#print("Tab ",Net.playerList)
-		#print("Tab ",TabPlayerList)
+	if count == 30:
+		Net.playerList = list
+		###############
+		for n in $TabList.get_children():
+			n.queue_free()
+		for p in TabPlayerList:
+			var playerunit = PLU.instance()
+			playerunit.get_node("ReadyRect").hide()
+			playerunit.get_node("FragRect").show()
+			playerunit.get_node("FragRect/KillLabel").text = str(p[3])+'/'+str(p[4])
+			playerunit.get_node("ColorRect/Label").text = str(p[1])
+			playerunit.get_node("ColorRect").color = Color(str(p[2]))
+			$TabList.add_child(playerunit)
+		#############
 		count = 0
 
 func sort_TabList(a, b):

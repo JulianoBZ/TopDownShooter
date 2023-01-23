@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 export var primary = 1
 export var secondary = 2
-export var melee = 1
+#export var melee = 1
 export var bullet_speed = 2000
 onready var ShotSound = get_node("ShotSound")
 onready var ShotSound2 = get_node("ShotSound2")
@@ -91,9 +91,9 @@ onready var WARRV = $Secondaries/WeaponStaticReloadRV
 
 
 
-signal change_P
-signal change_S
-signal change_M
+#signal change_P
+#signal change_S
+#signal change_M
 
 #puppet var puppet_rotation = 0 setget puppet_position_set
 
@@ -209,7 +209,7 @@ func _process(delta):
 		rpc("updateBow",get_parent().get_node("BowBar").value)
 		
 		#Rifle
-		if Input.is_action_just_pressed("Reload") && reloading == false:
+		if Input.is_action_just_pressed("Reload") && reloading == false && alive == true:
 			if primary == 1 && Pammo_count < 12 && active_weapon == 1 && Preserve > 0:
 				var c = 0
 				rpc("Reloading",ping)
@@ -469,7 +469,7 @@ remotesync func spawn_bullet(id,tot_recoil,damage,canBounce):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
-	b.damage = damage
+	b.Bdamage = damage
 	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
 	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
@@ -487,7 +487,7 @@ remotesync func spawn_shotgun(id):
 	for x in bullets:
 		bullets[x].name = "Bullet" + name + str(Net.network_object_name_index)
 		bullets[x].type = 2
-		bullets[x].damage = shotgun_damage
+		bullets[x].Bdamage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
 		bullets[x].position = $BulletpointS.get_global_position()
@@ -508,10 +508,10 @@ remotesync func spawn_arrow(id,value):
 	b.flag = get_parent()
 	b.type = 3
 	if value < 30:
-		b.damage = 30
+		b.Bdamage = 30
 		arrow_speed = lerp(arrow_speed,2,30)
 	else:
-		b.damage = value
+		b.Bdamage = value
 		arrow_speed = lerp(arrow_speed,2,value)
 	b.position = $BulletpointB.get_global_position()
 	b.rotation_degrees = rotation_degrees
@@ -580,8 +580,8 @@ remotesync func weaponFinishReload():
 				WAP.hide()
 				WARV.show()
 
-remotesync func weaponDrawn(active_weapon):
-	if active_weapon == 1:
+remotesync func weaponDrawn(active):
+	if active == 1:
 		match primary:
 			1:
 				WAR.stop()
@@ -608,7 +608,7 @@ remotesync func weaponDrawn(active_weapon):
 					WAB2.show()
 					WAB.hide()
 					WAB2.frame = 3
-	if active_weapon == 2:
+	if active == 2:
 		match secondary:
 			1:
 				WAP.show()
@@ -637,12 +637,12 @@ remotesync func weaponAnim():
 				WAP.show()
 				WAP.play()
 
-remote func updatePeerWeapon(id,active,primary,secondary):
+remote func updatePeerWeapon(id,active,p,s):
 	if Net.playerList.size() == Players.get_child_count():
 		for n in Players.get_children():
 			if str(n.name) == str(id):
-				n.get_node("Player").primary = primary
-				n.get_node("Player").secondary = secondary
+				n.get_node("Player").primary = p
+				n.get_node("Player").secondary = s
 				n.get_node("Player").active_weapon = active
 				match active:
 					1:

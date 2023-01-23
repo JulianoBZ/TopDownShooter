@@ -24,7 +24,7 @@ func ready():
 	rng.randomize()
 	get_tree().get_node("Lobby").visible = false
 
-func _process(delta):
+func _process(_delta):
 	for p in Players.get_children():
 		for pl in Net.playerList:
 			if str(p.name) == str(pl[0]):

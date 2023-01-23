@@ -2,7 +2,7 @@ extends Label
 
 onready var player = get_parent().get_node("Player")
 
-func _process(delta):
+func _process(_delta):
 	if player.active_weapon == 1:
 		text = str(player.Pammo_count) + "/" + str(player.Preserve)
 	if player.active_weapon == 2:

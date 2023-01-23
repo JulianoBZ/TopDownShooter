@@ -355,11 +355,8 @@ margin_right = 514.0
 margin_bottom = 435.0
 text = "Apply"
 
-[connection signal="dashing" from="." to="." method="_on_PlayerAll_dashing"]
-[connection signal="not_dashing" from="." to="." method="_on_PlayerAll_not_dashing"]
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
-[connection signal="rushing" from="." to="." method="_on_PlayerAll_rushing"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="timeout" from="ShiftSkill/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="." method="_on_ApplyButton_pressed"]

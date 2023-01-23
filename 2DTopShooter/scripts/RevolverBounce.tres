@@ -2,3 +2,4 @@
 
 [resource]
 friction = 0.0
+bounce = 1.0

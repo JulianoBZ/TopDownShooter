@@ -18,7 +18,7 @@ func _ready():
 	add_item("Yellow")
 
 
-func _process(delta):
+func _process(_delta):
 	oldcolor = color
 	match get_selected_id():
 		0:

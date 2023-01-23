@@ -20,7 +20,7 @@ func _ready():
 	add_item("35")
 	add_item("40")
 
-func _process(delta):
+func _process(_delta):
 	match get_selected_id():
 		0:
 			killLimit = 3

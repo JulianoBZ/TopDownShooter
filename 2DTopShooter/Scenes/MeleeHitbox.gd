@@ -2,7 +2,7 @@ extends Area2D
 
 var active = true
 var flag
-var damage = 50
+var Mdamage = 50
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -16,7 +16,7 @@ remote func update_position(pos):
 
 remotesync func damage(attacker: Object,receiver: Object):
 	print(str(attacker)+" damaged "+str(receiver))
-	receiver.health -= damage
+	receiver.health -= Mdamage
 	receiver.lastdamage = attacker
 	queue_free()
 

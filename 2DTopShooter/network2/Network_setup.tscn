@@ -14,10 +14,10 @@ script = ExtResource( 1 )
 
 [node name="Debug" type="RichTextLabel" parent="."]
 visible = false
-margin_left = 59.0
-margin_top = 586.0
-margin_right = 545.0
-margin_bottom = 749.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -183.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 683, 384 )
@@ -286,6 +286,14 @@ mouse_filter = 2
 
 [node name="Lobby" parent="." instance=ExtResource( 6 )]
 visible = false
+
+[node name="MessageLabel" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -182.0
+align = 1
+valign = 1
 
 [connection signal="pressed" from="Multiplayer_configure/Create_Server" to="." method="_on_Create_Server_pressed"]
 [connection signal="pressed" from="Multiplayer_configure/Join_Server" to="." method="_on_Join_Server_pressed"]

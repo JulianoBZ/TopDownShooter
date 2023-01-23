@@ -13,6 +13,7 @@ collision_layer = 2
 mass = 0.00102041
 physics_material_override = ExtResource( 4 )
 gravity_scale = 0.0
+continuous_cd = 2
 contacts_reported = 1
 contact_monitor = true
 script = ExtResource( 1 )

@@ -8,7 +8,7 @@ var desired_frame = 2
 var speed = 200
 var dspeed
 var base_speed = 200
-var pos = Vector2()
+#var pos = Vector2()
 var sprinting = false
 export var health = 100
 export var max_health = 100
@@ -44,9 +44,9 @@ onready var shift_timer = get_node("ShiftSkill/Timer")
 onready var afterimage = preload("res://Scenes/player_afterimage.tscn")
 signal pdeath
 signal respawned
-signal dashing
-signal not_dashing
-signal rushing
+#signal dashing
+#signal not_dashing
+#signal rushing
 var dashing
 onready var DashSound = $DashSound
 var candash = true
@@ -83,7 +83,7 @@ func _ready():
 	#	$TabMenu/VBoxContainer.add_child(plname)
 	#player.connect("pdeath",self,"_on_playerall_pdeath")
 
-func _process(delta):
+func _process(_delta):
 	if is_network_master() && can_move:
 		rpc_unreliable("set_name",Net.n)
 		rpc_unreliable("update_stats",health, max_health,frame)
@@ -115,7 +115,7 @@ func _process(delta):
 		#frame1 = dash
 		if Input.is_action_just_pressed("Sprint") && frame == 1 && candash:
 			#sprinting = true
-			dashing()
+			dash()
 		
 		#frame2 = sprint in physics_process
 		
@@ -175,7 +175,7 @@ func _process(delta):
 		killcount.text = str(kills)
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if is_network_master() && can_move:
 		dspeed = base_speed*2
 		direction = Vector2()
@@ -218,7 +218,11 @@ remote func update_position(pos):
 
 remotesync func death():
 	if lastdamage != null:
-		lastdamage.kills += 1
+		if lastdamage == self:
+			kills -= 1
+		else:
+			lastdamage.kills += 1
+	lastdamage = null
 	deaths += 1
 	var skull = deathskull.instance()
 	skull.position = position
@@ -240,7 +244,7 @@ remotesync func death():
 	set_stats(desired_frame)
 	yield(get_tree().create_timer(0.1),"timeout")
 	$Corpo.disabled = false
-	$KillCount.visible = true
+	$KillCount.visible = false
 	alive = true
 	#$HealthBar.visible = true
 	emit_signal("respawned")
@@ -296,11 +300,11 @@ func set_stats(f):
 		frame = 3
 		texture = q
 
-remote func update_sprite(id,frame):
+remote func update_sprite(id,fr):
 	if Net.playerList.size() == Players.get_child_count():
 		for n in Players.get_children():
 			if str(n.name) == str(id):
-				match frame:
+				match fr:
 					1:
 						get_node("Player/Body").texture = t
 					2:
@@ -310,10 +314,10 @@ remote func update_sprite(id,frame):
 				#n.get_node("Player/Sprite").texture = tex
 	#print(player.get_node("Sprite").texture)
 
-remotesync func update_stats(h,mh,frame):
+remotesync func update_stats(h,mh,fr):
 	health = h
 	max_health = mh
-	match frame:
+	match fr:
 		1:
 			get_node("Player/Body").texture = t
 		2:
@@ -321,7 +325,7 @@ remotesync func update_stats(h,mh,frame):
 		3:
 			get_node("Player/Body").texture = q
 	#get_node("Player/Sprite").texture = texture
-	rpc("update_sprite",get_tree().get_network_unique_id(),frame)
+	rpc("update_sprite",get_tree().get_network_unique_id(),fr)
 	#print(tex)
 
 #func puppet_position_set(new_value):
@@ -344,12 +348,12 @@ func _on_ApplyButton_pressed():
 	camera_lock = false
 
 
-func dashing():
+func dash():
 	#self.sprinting = true
 	player.sprinting = true
 	candash = false
 	var spr = true
-	var c = 0
+	var cc = 0
 	shift_texture.max_value = 25
 	#shift_texture.visible = true
 	while spr:
@@ -357,10 +361,10 @@ func dashing():
 		speed = 1000
 		yield(get_tree().create_timer(0.01),"timeout")
 		shift_texture.value += 1
-		c += 1
-		if c == 3:
-			c = 0
-			rpc("afterimage")
+		cc += 1
+		if cc == 3:
+			cc = 0
+			rpc("afterImage")
 		if shift_texture.value == 25:
 			#shift_texture.visible = false
 			#shift_texture.value = 0
@@ -368,16 +372,16 @@ func dashing():
 			#sprinting = false
 			speed = base_speed
 			trysprint = false
-			not_dashing()
+			not_dash()
 
-remotesync func afterimage():
+remotesync func afterImage():
 	var ai = afterimage.instance()
 	ai.rotation_degrees = player.rotation_degrees + 90
 	ai.position = position
 	Bullets.add_child(ai)
 
 
-func not_dashing():
+func not_dash():
 	var nspr = true
 	self.sprinting = true
 	while nspr:

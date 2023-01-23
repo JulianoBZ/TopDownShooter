@@ -1,13 +1,13 @@
 extends RigidBody2D
 
 onready var flag
-var damage = 10
+var Bdamage = 10
 #Type of bullet
 var type = 1
 var lifespan = 0.5
 var can_bounce = false
 
-var pos = Vector2()
+#var pos = Vector2()
 var rot
 var dir = Vector2()
 onready var trail = preload("res://Scenes/Bullet_Particle.tscn")
@@ -28,15 +28,17 @@ func _on_Bullet_tree_entered():
 
 func _ready():
 	if can_bounce:
-		set_bounce(1.0)
+		physics_material_override.bounce = 1
+		#set_bounce(1.0)
 	#	#contacts_reported = 0
 	else:
-		set_bounce(0)
+		physics_material_override.bounce = 0
+		#set_bounce(0)
 		#contacts_reported = 1
 	$Timer.wait_time = lifespan
 	$Timer.start()
 
-func _process(delta):
+func _process(_delta):
 	#Trail
 	if type == 1 || type == 2:
 		var t = trail.instance()
@@ -56,7 +58,7 @@ func _on_Bullet_body_entered(body):
 	if body.is_in_group("bullet"):
 		body.add_collision_exception_with(body) 
 	
-	if flag != body && body.is_in_group("player"):
+	if body.is_in_group("player"):
 		damage(flag,body)
 	
 	if flag != body && (!body.is_in_group("mapObject") || body.is_in_group("mapObject")) && !can_bounce:
@@ -68,7 +70,7 @@ remote func update_position(pos):
 
 remotesync func damage(attacker: Object,receiver: Object):
 	print(str(attacker)+" damaged "+str(receiver))
-	receiver.health -= damage
+	receiver.health -= Bdamage
 	receiver.lastdamage = attacker
 	queue_free()
 	

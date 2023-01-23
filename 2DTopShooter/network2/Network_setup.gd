@@ -45,7 +45,7 @@ func _ready():
 	myinfo = [0,Global.player_name,"CC0000",0,0]
 	#print(self.get_children())
 
-func _player_connected(id):
+func _player_connected(_id):
 	print("Player: has connected")
 	#rpc("update_player_list_lobby",playerList)
 	#rpc_id(1,"connected",get_tree().get_network_unique_id(),Global.player_name)
@@ -99,13 +99,14 @@ func _on_Create_Server_pressed():
 	#advertiser.serverInfo["port"] = Net.DEFAULT_PORT
 	#print(advertiser.serverInfo)
 	
-func _process(delta):
-	if Gotm.user.display_name == "":
-		Net.n = str(playername.text)
-	else:
-		Net.n = Gotm.user.display_name
-		$Multiplayer_configure/NameText.hide()
-		$Multiplayer_configure/NameLabel.hide()
+func _process(_delta):
+	if (Net.connected || Net.hosting) == false:
+		if Gotm.user.display_name == "":
+			Net.n = str(playername.text)
+		else:
+			Net.n = Gotm.user.display_name
+			$Multiplayer_configure/NameText.hide()
+			$Multiplayer_configure/NameLabel.hide()
 	if Net.gameStart == true:
 		lobby.hide()
 

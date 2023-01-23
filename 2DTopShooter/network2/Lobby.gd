@@ -31,7 +31,7 @@ func ready():
 	print(get_tree().multiplayer.get_network_connected_peers())
 	#playerList.append(myinfo)
 
-func _process(delta):
+func _process(_delta):
 	if Net.hosting:
 		#########
 		#$Debug.show()
@@ -127,7 +127,9 @@ func changed_playerList():
 func _on_StartGame_pressed():
 	rpc("start_game")
 	#$ServerAdvertiser.socketUDP.set_broadcast_enabled(false)
-	Net.lobby_name = "Game Started, do not Join"
+	Gotm.lobby.name += " - Game Started"
+	Gotm.lobby.locked = true
+	
 
 remotesync func start_game():
 	Net.gameStart = true
