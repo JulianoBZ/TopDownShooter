@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://network2/Lobby.gd" type="Script" id=1]
 [ext_resource path="res://addons/LANServerBroadcast/server_advertiser/ServerAdvertiser.gd" type="Script" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://network2/Class-Weapons.gd" type="Script" id=6]
 [ext_resource path="res://network2/ColorOption.gd" type="Script" id=7]
 [ext_resource path="res://network2/OptionButtonKills.gd" type="Script" id=8]
+[ext_resource path="res://network2/Map Selection.gd" type="Script" id=9]
+[ext_resource path="res://network2/TeamOption.gd" type="Script" id=10]
 
 [node name="Lobby" type="Control"]
 anchor_right = 1.0
@@ -20,32 +22,41 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -252.5
-margin_top = -241.0
-margin_right = 252.5
-margin_bottom = 241.0
+margin_left = -252.0
+margin_top = -303.0
+margin_right = 253.0
+margin_bottom = 67.0
+custom_constants/separation = 16
+
+[node name="PlayerListRED" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -252.0
+margin_top = -307.0
+margin_right = -1.0
+margin_bottom = 61.0
+custom_constants/separation = 16
+
+[node name="PlayerListBLUE" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -4.0
+margin_top = -306.0
+margin_right = 253.0
+margin_bottom = 63.0
 custom_constants/separation = 16
 
 [node name="Label - PlayerList" type="Label" parent="."]
-visible = false
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -76.0
-margin_top = 39.0
+margin_top = 24.0
 margin_right = 76.0
-margin_bottom = 96.0
-text = "Server IP"
-align = 1
-valign = 1
-
-[node name="Label - External IP" type="Label" parent="."]
-visible = false
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -76.0
-margin_top = 85.0
-margin_right = 76.0
-margin_bottom = 142.0
+margin_bottom = 81.0
 text = "Player List:"
 align = 1
 valign = 1
@@ -81,12 +92,29 @@ margin_right = 1163.0
 margin_bottom = 105.0
 script = ExtResource( 8 )
 
+[node name="Map Selection" type="OptionButton" parent="."]
+visible = false
+margin_left = 1039.0
+margin_top = 163.0
+margin_right = 1209.0
+margin_bottom = 216.0
+script = ExtResource( 9 )
+
 [node name="Score" type="Label" parent="."]
 margin_left = 979.0
 margin_top = 60.0
 margin_right = 1161.0
 margin_bottom = 108.0
 text = "Score: "
+align = 1
+valign = 1
+
+[node name="Map" type="Label" parent="."]
+margin_left = 945.0
+margin_top = 118.0
+margin_right = 1192.0
+margin_bottom = 166.0
+text = "Map: "
 align = 1
 valign = 1
 
@@ -97,9 +125,9 @@ script = ExtResource( 6 )
 
 [node name="weapon1" type="Label" parent="PlayerLoadout"]
 margin_left = 367.0
-margin_top = 516.0
+margin_top = 508.0
 margin_right = 563.0
-margin_bottom = 557.0
+margin_bottom = 549.0
 text = "Rifle"
 align = 1
 valign = 1
@@ -107,9 +135,9 @@ autowrap = true
 
 [node name="weapon2" type="Label" parent="PlayerLoadout"]
 margin_left = 368.0
-margin_top = 559.0
+margin_top = 563.0
 margin_right = 564.0
-margin_bottom = 600.0
+margin_bottom = 604.0
 text = "Shotgun"
 align = 1
 valign = 1
@@ -117,9 +145,9 @@ autowrap = true
 
 [node name="weapon3" type="Label" parent="PlayerLoadout"]
 margin_left = 368.0
-margin_top = 603.0
+margin_top = 614.0
 margin_right = 564.0
-margin_bottom = 644.0
+margin_bottom = 655.0
 text = "Bow"
 align = 1
 valign = 1
@@ -127,34 +155,34 @@ autowrap = true
 
 [node name="weaponbut1" type="Button" parent="PlayerLoadout"]
 margin_left = 366.0
-margin_top = 521.0
+margin_top = 513.0
 margin_right = 396.0
-margin_bottom = 551.0
+margin_bottom = 543.0
 toggle_mode = true
 pressed = true
 group = ExtResource( 5 )
 
 [node name="weaponbut2" type="Button" parent="PlayerLoadout"]
 margin_left = 366.0
-margin_top = 563.0
+margin_top = 567.0
 margin_right = 396.0
-margin_bottom = 593.0
+margin_bottom = 597.0
 toggle_mode = true
 group = ExtResource( 5 )
 
 [node name="weaponbut3" type="Button" parent="PlayerLoadout"]
 margin_left = 366.0
-margin_top = 607.0
+margin_top = 618.0
 margin_right = 396.0
-margin_bottom = 637.0
+margin_bottom = 648.0
 toggle_mode = true
 group = ExtResource( 5 )
 
 [node name="class1" type="Label" parent="PlayerLoadout"]
 margin_left = 159.0
-margin_top = 483.0
+margin_top = 508.0
 margin_right = 355.0
-margin_bottom = 524.0
+margin_bottom = 549.0
 text = "Light"
 align = 1
 valign = 1
@@ -162,18 +190,18 @@ autowrap = true
 
 [node name="classbut1" type="Button" parent="PlayerLoadout"]
 margin_left = 158.0
-margin_top = 488.0
+margin_top = 513.0
 margin_right = 188.0
-margin_bottom = 518.0
+margin_bottom = 543.0
 toggle_mode = true
 pressed = true
 group = ExtResource( 4 )
 
 [node name="class2" type="Label" parent="PlayerLoadout"]
 margin_left = 159.0
-margin_top = 537.0
+margin_top = 562.0
 margin_right = 355.0
-margin_bottom = 578.0
+margin_bottom = 603.0
 text = "Medium"
 align = 1
 valign = 1
@@ -181,17 +209,17 @@ autowrap = true
 
 [node name="classbut2" type="Button" parent="PlayerLoadout"]
 margin_left = 158.0
-margin_top = 542.0
+margin_top = 567.0
 margin_right = 188.0
-margin_bottom = 572.0
+margin_bottom = 597.0
 toggle_mode = true
 group = ExtResource( 4 )
 
 [node name="class3" type="Label" parent="PlayerLoadout"]
 margin_left = 159.0
-margin_top = 587.0
+margin_top = 612.0
 margin_right = 355.0
-margin_bottom = 628.0
+margin_bottom = 653.0
 text = "Heavy"
 align = 1
 valign = 1
@@ -199,17 +227,17 @@ autowrap = true
 
 [node name="classbut3" type="Button" parent="PlayerLoadout"]
 margin_left = 158.0
-margin_top = 592.0
+margin_top = 617.0
 margin_right = 188.0
-margin_bottom = 622.0
+margin_bottom = 647.0
 toggle_mode = true
 group = ExtResource( 4 )
 
 [node name="Sweapon1" type="Label" parent="PlayerLoadout"]
 margin_left = 578.0
-margin_top = 518.0
+margin_top = 509.0
 margin_right = 774.0
-margin_bottom = 559.0
+margin_bottom = 550.0
 rect_pivot_offset = Vector2( -684, -122 )
 text = "Pistol"
 align = 1
@@ -218,9 +246,9 @@ autowrap = true
 
 [node name="Sweapon2" type="Label" parent="PlayerLoadout"]
 margin_left = 579.0
-margin_top = 561.0
+margin_top = 565.0
 margin_right = 775.0
-margin_bottom = 602.0
+margin_bottom = 606.0
 text = "Revolver"
 align = 1
 valign = 1
@@ -228,28 +256,63 @@ autowrap = true
 
 [node name="Sweaponbut1" type="Button" parent="PlayerLoadout"]
 margin_left = 577.0
-margin_top = 523.0
+margin_top = 514.0
 margin_right = 607.0
-margin_bottom = 553.0
+margin_bottom = 544.0
 toggle_mode = true
 pressed = true
 group = ExtResource( 3 )
 
 [node name="Sweaponbut2" type="Button" parent="PlayerLoadout"]
 margin_left = 577.0
-margin_top = 565.0
+margin_top = 569.0
 margin_right = 607.0
-margin_bottom = 595.0
+margin_bottom = 599.0
 toggle_mode = true
 group = ExtResource( 3 )
 
-[node name="OptionButton" type="OptionButton" parent="PlayerLoadout"]
+[node name="ColorOption" type="OptionButton" parent="PlayerLoadout"]
 margin_left = 827.0
 margin_top = 490.0
 margin_right = 1011.0
 margin_bottom = 535.0
 text = "Color"
 script = ExtResource( 7 )
+
+[node name="TeamOption" type="OptionButton" parent="PlayerLoadout"]
+margin_left = 827.0
+margin_top = 490.0
+margin_right = 1011.0
+margin_bottom = 535.0
+text = "Team"
+script = ExtResource( 10 )
+
+[node name="Primary" type="Label" parent="PlayerLoadout"]
+margin_left = 384.0
+margin_top = 452.0
+margin_right = 465.0
+margin_bottom = 485.0
+text = "Primary"
+align = 1
+valign = 1
+
+[node name="Secondary" type="Label" parent="PlayerLoadout"]
+margin_left = 594.0
+margin_top = 456.0
+margin_right = 686.0
+margin_bottom = 483.0
+text = "Secondary"
+align = 1
+valign = 1
+
+[node name="Frame" type="Label" parent="PlayerLoadout"]
+margin_left = 191.0
+margin_top = 453.0
+margin_right = 263.0
+margin_bottom = 483.0
+text = "Frame"
+align = 1
+valign = 1
 
 [node name="Debug" type="Label" parent="."]
 visible = false

@@ -13,10 +13,6 @@ var oldcolor = ""
 func _ready():
 	add_item("Red")
 	add_item("Blue")
-	add_item("Green")
-	add_item("Pink")
-	add_item("Yellow")
-
 
 func _process(_delta):
 	match get_selected_id():
@@ -24,12 +20,6 @@ func _process(_delta):
 			color = "CC0000"
 		1:
 			color = "000099"
-		2:
-			color = "009900"
-		3:
-			color = "FF00FF"
-		4:
-			color = "FFFF00"
 	
 	Net.color = color
 	
@@ -46,4 +36,3 @@ remotesync func UpdateColor(new_color,id):
 
 func UpdateColor2():
 	rpc("UpdateColor",color,get_tree().get_network_unique_id())
-

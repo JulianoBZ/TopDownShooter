@@ -23,6 +23,7 @@ onready var Pistol = preload("res://assets/Sounds/Pistol.wav")
 onready var shotgunReload = preload("res://assets/Sounds/shotgunReload.wav")
 onready var rifleReload = preload("res://assets/Sounds/rifleReload.wav")
 onready var Thunder = preload("res://assets/Sounds/Thunder.wav")
+onready var AudioPlayer = preload("res://Scenes/AudioStreamPlayer2D.tscn")
 var anim = false
 var speed = 200
 export var fire_rate = 0.3
@@ -212,14 +213,14 @@ func _process(delta):
 		if Input.is_action_just_pressed("Reload") && reloading == false && alive == true:
 			if primary == 1 && Pammo_count < 12 && active_weapon == 1 && Preserve > 0:
 				var c = 0
-				rpc("Reloading",ping)
+				rpc("ReloadingRifle")
 				reload_texture.max_value = 100
 				reloading = true
 				max_recoil = 1
 				reload_texture.visible = true
 				while(reloading):
 					if !ShotSound.is_playing() && c == 0:
-						rpc("Reloading",rifleReload)
+						rpc("ReloadingRifleReload")
 						c = 1
 					yield(get_tree().create_timer(0.01),"timeout")
 					reload_texture.value += 1
@@ -249,7 +250,7 @@ func _process(delta):
 			if primary == 2 && Pammo_count < 8 && active_weapon == 1 && Preserve > 0 && can_fire:
 				reload_texture.max_value = 40
 				reloading = true
-				rpc("Reloading",shotgunReload)
+				rpc("ReloadingShotgun")
 				while(reloading):
 					can_fire = false
 					reload_texture.visible = true
@@ -301,7 +302,7 @@ func _process(delta):
 				can_fire = true
 			#########################################################################################
 			if secondary == 1 && Sammo_count < 15 && active_weapon == 2 && Sreserve > 0:
-				rpc("Reloading",pistolReload)
+				rpc("ReloadingPistol")
 				reload_texture.max_value = 80
 				reloading = true
 				max_recoil = 1
@@ -345,7 +346,7 @@ func _process(delta):
 						reload_texture.value = 0
 						break
 					if reload_texture.value == 60:
-						rpc("Reloading",revolverSpin)
+						rpc("ReloadingRevolver")
 					if reload_texture.value == 100:
 						reload_texture.visible = false
 						reload_texture.value = 0
@@ -370,8 +371,8 @@ func _process(delta):
 		#Rifle
 		if Input.is_action_just_pressed("fire") && can_fire && Pammo_count > 0 && !reloading && !sprinting && primary == 1 && active_weapon == 1:
 			can_fire = false
-			rpc("Shooting",futRifle)
-			rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-1,1)),rifle_damage,false)
+			#rpc("Shooting",futRifle)
+			rpc("spawn_bulletRifle",get_tree().get_network_unique_id(),deg2rad(rand.randf_range(-1,1)),rifle_damage,false)
 			Pammo_count -= 1
 			max_recoil += 1
 			yield(get_tree().create_timer(fire_rate/2),"timeout")
@@ -384,8 +385,8 @@ func _process(delta):
 		#Shotgun
 		if Input.is_action_pressed("fire") && can_fire && Pammo_count > 0 && !sprinting && primary == 2 && active_weapon == 1:
 			can_fire = false
-			rpc("Shooting",shotgun)
-			rpc("spawn_shotgun", get_tree().get_network_unique_id())
+			#rpc("Shooting",shotgun)
+			rpc("spawn_shotgun", get_tree().get_network_unique_id(),shotgun)
 			Pammo_count -= 1
 			can_switch = false
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
@@ -410,9 +411,9 @@ func _process(delta):
 		#Pistol
 		if Input.is_action_just_pressed("fire") && can_fire && Sammo_count > 0 && !reloading && secondary == 1 && active_weapon == 2:
 			if can_fire:
-				rpc("Shooting",Pistol)
+				#rpc("Shooting",Pistol)
 				can_fire = false
-				rpc("spawn_bullet",get_tree().get_network_unique_id(),deg2rad(2),pistol_damage,false)#Stot_recoil)
+				rpc("spawn_bulletPistol",get_tree().get_network_unique_id(),deg2rad(2),pistol_damage,false)#Stot_recoil)
 				Sammo_count -= 1
 				max_recoil += 1
 				yield(get_tree().create_timer(fire_rateP/2),"timeout")
@@ -424,9 +425,9 @@ func _process(delta):
 		#Revolver
 		if Input.is_action_just_pressed("fire") && can_fire && Sammo_count > 0 && !reloading && secondary == 2 && active_weapon == 2:
 			if can_fire:
-				rpc("Shooting",Revolver)
+				#rpc("Shooting",Revolver)
 				can_fire = false
-				rpc("spawn_bullet",get_tree().get_network_unique_id(),0,revolver_damage,true)#Stot_recoil)
+				rpc("spawn_bulletRevolver",get_tree().get_network_unique_id(),0,revolver_damage,true)#Stot_recoil)
 				Sammo_count -= 1
 				max_recoil += 1
 				if alive == true:
@@ -463,7 +464,57 @@ remotesync func spawn_shell(rangeI,rangeS):
 	Bullets.add_child(s)
 	Net.network_object_name_index += 1
 
-remotesync func spawn_bullet(id,tot_recoil,damage,canBounce):
+remotesync func spawn_bullet(id,tot_recoil,damage,canBounce,source):
+	rpc("Shooting",source)
+	print(source)
+	var b = bullet.instance()
+	b.can_bounce = canBounce
+	b.name = "Bullet" + name + str(Net.network_object_name_index)
+	b.flag = get_parent()
+	b.type = 1
+	b.Bdamage = damage
+	b.position = $BulletpointR.get_global_position()
+	b.rotation_degrees = rotation_degrees + tot_recoil
+	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	b.dir = (Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	Bullets.add_child(b)
+	b.set_network_master(id)
+	Net.network_object_name_index += 1
+	
+remotesync func spawn_bulletRifle(id,tot_recoil,damage,canBounce):
+	rpc("Shooting",futRifle)
+	var b = bullet.instance()
+	b.can_bounce = canBounce
+	b.name = "Bullet" + name + str(Net.network_object_name_index)
+	b.flag = get_parent()
+	b.type = 1
+	b.Bdamage = damage
+	b.position = $BulletpointR.get_global_position()
+	b.rotation_degrees = rotation_degrees + tot_recoil
+	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	b.dir = (Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	Bullets.add_child(b)
+	b.set_network_master(id)
+	Net.network_object_name_index += 1
+
+remotesync func spawn_bulletPistol(id,tot_recoil,damage,canBounce):
+	rpc("Shooting",Pistol)
+	var b = bullet.instance()
+	b.can_bounce = canBounce
+	b.name = "Bullet" + name + str(Net.network_object_name_index)
+	b.flag = get_parent()
+	b.type = 1
+	b.Bdamage = damage
+	b.position = $BulletpointR.get_global_position()
+	b.rotation_degrees = rotation_degrees + tot_recoil
+	b.apply_impulse(Vector2(0,0),Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	b.dir = (Vector2(bullet_speed,0).rotated(rotation + tot_recoil))
+	Bullets.add_child(b)
+	b.set_network_master(id)
+	Net.network_object_name_index += 1
+
+remotesync func spawn_bulletRevolver(id,tot_recoil,damage,canBounce):
+	rpc("Shooting",Revolver)
 	var b = bullet.instance()
 	b.can_bounce = canBounce
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
@@ -479,11 +530,12 @@ remotesync func spawn_bullet(id,tot_recoil,damage,canBounce):
 	Net.network_object_name_index += 1
 
 remotesync func spawn_shotgun(id):
+	rpc("Shooting",shotgun)
 	reloading = false
 	var bullets = {"1" : bullet.instance(),"2" : bullet.instance(),"3" : bullet.instance(),"4" : bullet.instance(),
 	"5" : bullet.instance(),"6" : bullet.instance(),"7" : bullet.instance(),"8" : bullet.instance(),
 	"9" : bullet.instance(),"10" : bullet.instance(),"11" : bullet.instance(),"12" : bullet.instance()}
-	var graus = -6
+	var graus = -3.0
 	for x in bullets:
 		bullets[x].name = "Bullet" + name + str(Net.network_object_name_index)
 		bullets[x].type = 2
@@ -494,7 +546,7 @@ remotesync func spawn_shotgun(id):
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].apply_impulse(Vector2(0,0),Vector2(bullet_speed*1.5,0).rotated(rotation + deg2rad(graus)))
 		Bullets.add_child(bullets[x])
-		graus += 1
+		graus += 0.5
 		bullets[x].set_network_master(id)
 		Net.network_object_name_index += 1
 	
@@ -660,7 +712,7 @@ remotesync func revolverReload():
 	WARV.play()
 
 remotesync func Shooting(source):
-	var sound = AudioStreamPlayer2D.new()
+	var sound = AudioPlayer.instance()
 	sound.stream = source
 	sound.position = self.global_position
 	Bullets.add_child(sound)
@@ -668,25 +720,67 @@ remotesync func Shooting(source):
 	#var sfx = load(source)
 	#ShotSound.stream = source
 	#ShotSound.play()
+	print("shooting sound")
 
 remotesync func SecShooting(source):
-	#var sound = AudioStreamPlayer2D.new()
-	#sound.stream = source
-	#sound.position = self.global_position
-	#Bullets.add_child(sound)
-	#sound.play()
-	ShotSound2.stream = source
-	ShotSound2.play()
-
-remotesync func Reloading(source):
-	var sound = AudioStreamPlayer2D.new()
+	var sound = AudioPlayer.instance()
 	sound.stream = source
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
+	#ShotSound2.stream = source
+	#ShotSound2.play()
+	print("secshooting sound")
+
+remotesync func Reloading(source):
+	var sound = AudioPlayer.instance()
+	sound.stream = source
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+	print("reloading sound")
 	#var sfx = load(source)
 	#ShotSound.stream = source
 	#ShotSound.play()
+	
+remotesync func ReloadingRifle():
+	var sound = AudioPlayer.instance()
+	sound.stream = ping
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+
+remotesync func ReloadingRifleReload():
+	var sound = AudioPlayer.instance()
+	sound.stream = rifleReload
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+	print("reloading sound")
+
+remotesync func ReloadingShotgun():
+	var sound = AudioPlayer.instance()
+	sound.stream = shotgunReload
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+	print("reloading sound")
+
+remotesync func ReloadingPistol():
+	var sound = AudioPlayer.instance()
+	sound.stream = pistolReload
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+	print("reloading sound")
+
+remotesync func ReloadingRevolver():
+	var sound = AudioPlayer.instance()
+	sound.stream = revolverSpin
+	sound.position = self.global_position
+	Bullets.add_child(sound)
+	sound.play()
+	print("reloading sound")
 
 func _on_Timer_timeout():
 	reload_texture.visible = false
@@ -701,6 +795,7 @@ func _on_PlayerAll_pdeath():
 
 func _on_PlayerAll_respawned():
 	change_weapon(desired_primary,desired_secondary)
+	rpc("weaponDrawn",active_weapon)
 	if primary == 3:
 		Pammo_count = Pammo_max
 		Preserve = Pammo_max * 12
@@ -713,7 +808,6 @@ func _on_PlayerAll_respawned():
 	visible = true
 	alive = true
 	can_melee = true
-	rpc("weaponDrawn",active_weapon)
 	#primary = desired_primary
 
 func _on_ApplyButton_pressed():

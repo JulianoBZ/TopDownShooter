@@ -7,7 +7,11 @@ onready var network = get_parent()
 var list_last_value
 var playerList_aux = 0
 
+var oldtype = 0
+var type = 0
 var playerList = []
+var playerListRED = []
+var playerListBLUE = []
 var peerinfo = []
 var myinfo = []
 onready var PLU = preload("res://network2/PlayerListUnit.tscn")
@@ -18,8 +22,10 @@ onready var advertiser := get_node(advertiserPath)
 var playerChar = preload("res://Player-All.tscn")
 var FFA1 = preload("res://Maps/FreeForAll1.tscn")
 var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn")
+var WRHCTF = preload("res://Maps/Warehouse_CTF.tscn")
 var rng = RandomNumberGenerator.new()
 
+var map = 0
 var world
 
 onready var connected_player_list = {}
@@ -29,7 +35,6 @@ func ready():
 	list_last_value = network.playerList.size()
 	print(list_last_value)
 	print(get_tree().multiplayer.get_network_connected_peers())
-	#playerList.append(myinfo)
 
 func _process(_delta):
 	if Net.hosting:
@@ -40,89 +45,83 @@ func _process(_delta):
 		for p in Net.playerList:
 			if p[0] == 1:
 				p[3] = 1
+	
+	
 	if Net.hosting:
-		$Debug.text = str(Gotm.lobby)+"-"+str(Gotm.lobby.name)
+		#$Debug.text = str(Gotm.lobby)+"-"+str(Gotm.lobby.name)
 		rpc("update_player_list_lobby",playerList)
-	#print(playerList)
+		rpc("update_player_list_lobbyRED",playerList)
+		rpc("update_player_list_lobbyBLUE",playerList)
+		if $"Map Selection".type == 0:
+			rpc("show_type_0")
+		if $"Map Selection".type == 1:
+			rpc("show_type_1")
 	advertiser.serverInfo["name"] = Net.lobby_name
 	advertiser.serverInfo["port"] = PORT
-	#if Net.connected == true:
-	#	rpc_id(1,"Pconnected",Net.myinfo)
-	#	Net.onLobby = true
-	#	Net.connected = false
-	
-	
-	
-	#if get_tree().get_network_unique_id() != null:
-	#	Net.myinfo = [get_tree().get_network_unique_id(),Global.player_name]
-	#if get_tree().is_network_server():
-	#	if get_tree().get_network_unique_id() == 1 && playerList == []:
-	#		playerList.append(Net.myinfo)
-	
-	#rpc("update_player_list_lobby",playerList)
-	#if get_tree().is_network_server() == false:
-	#	if playerList_aux == 0 && (get_tree().get_network_unique_id() != 1 || get_tree().get_network_unique_id() != null ):
-	#		rpc_id(1,"Pconnected",myinfo)
-			#rpc("update_player_list_lobby",playerList)
-	#		playerList_aux += 1
-	
-	#for p in playerList:
-	#	if p[0] == get_tree().get_network_unique_id():
-	#		playerList_aux += 1
-	#	if playerList_aux == 0:
-	#		rpc_id(1,"Pconnected",[get_tree().get_network_unique_id(),Global.player_name])
-	#	playerList_aux = 0
-	
-	#rpc_id(1,"connected",[get_tree().get_network_unique_id(),Global.player_name])
-	#rpc("update_player_list_lobby",network.playerList)
-	#if list_last_value != network.playerList.size():
 	changed_playerList()
-	#	list_last_value = network.playerList.size()
 	var readycount = 0
 	for p in Net.playerList:
 		if p[3] == 1:
 			readycount += 1
 	if get_tree().is_network_server() && get_parent().peer != null:
 		$OptionButtonKills.show()
+		$"Map Selection".show()
+		rpc("update_lobby_map",$"Map Selection".map_name)
 		rpc("update_lobby_score",$OptionButtonKills.killLimit)
 	if readycount == Net.playerList.size():
 		if get_tree().is_network_server() && get_parent().peer != null:
 			$Score.hide()
 			$StartGame.show()
-			#$"Label - External IP".show()
-			#$"Label - External IP".text = "IP: "+str(Net.external_ip)
 	else:
 		$StartGame.hide()
+	
 
 func changed_playerList():
-	#rpc("update_player_list_lobby",playerList)
-	#if get_tree().get_network_unique_id() == 1:
 	for n in $PlayerList.get_children():
 		n.queue_free()
-	for p in Net.playerList:
+	if $"Map Selection".type == 0:
+		if Net.hosting:
+			type = 0
+			rpc("update_lobby_type",type)
+		for p in Net.playerList:
+			$PlayerListBLUE.hide()
+			$PlayerListRED.hide()
+			
+			var playerunit = PLU.instance()
+			playerunit.get_node("ColorRect/Label").text = str(p[1])
+			#print(str(p[2]))
+			#print(Net.color)
+			playerunit.get_node("ColorRect").color = Color(str(p[2]))
+			if p[3] == 1:
+				playerunit.get_node("ReadyRect").color = Color("5bd700")
+			else:
+				playerunit.get_node("ReadyRect").color = Color("000000")
+			#print(str(playerunit.get_node("Label").text))
+			$PlayerList.add_child(playerunit)
+			#print(str($PlayerList.get_children()))
+			
+		Net.playerList = playerList
 		
-		#var player = Label.new()
-		#var Pcolor = ColorRect.new()
-		#player.text = str(p[1])
-		#Pcolor.color = Color(1,0,0,1)
-		#Pcolor.rect_position = player.rect_position
-		#player.add_child(Pcolor)
-		#$PlayerList.add_child(player)
-		
-		var playerunit = PLU.instance()
-		playerunit.get_node("ColorRect/Label").text = str(p[1])
-		#print(str(p[2]))
-		#print(Net.color)
-		playerunit.get_node("ColorRect").color = Color(str(p[2]))
-		if p[3] == 1:
-			playerunit.get_node("ReadyRect").color = Color("5bd700")
-		else:
-			playerunit.get_node("ReadyRect").color = Color("000000")
-		#print(str(playerunit.get_node("Label").text))
-		$PlayerList.add_child(playerunit)
-		#print(str($PlayerList.get_children()))
-		
-	Net.playerList = playerList
+	if $"Map Selection".type == 1:
+		if Net.hosting:
+			type = 1
+			rpc("update_lobby_type",type)
+		for p in Net.playerList:
+			
+			var playerunit = PLU.instance()
+			playerunit.get_node("ColorRect/Label").text = str(p[1])
+			#print(str(p[2]))
+			#print(Net.color)
+			playerunit.get_node("ColorRect").color = Color(str(p[2]))
+			if p[3] == 1:
+				playerunit.get_node("ReadyRect").color = Color("5bd700")
+			else:
+				playerunit.get_node("ReadyRect").color = Color("000000")
+			#print(str(playerunit.get_node("Label").text))
+			$PlayerList.add_child(playerunit)
+			#print(str($PlayerList.get_children()))
+			
+		Net.playerList = playerList
 
 func _on_StartGame_pressed():
 	rpc("start_game")
@@ -135,9 +134,16 @@ remotesync func start_game():
 	Net.gameStart = true
 	Net.playerList = playerList
 	
+	map = $"Map Selection".map
+	match map:
+		0:
+			world = WRHFFA.instance()
+		1:
+			world = WRHCTF.instance()
+	
 	#FreeForAll
 	#world = FFA1.instance()
-	world = WRHFFA.instance()
+	#world = WRHFFA.instance()
 	
 	
 	#print(Net.playerList)
@@ -172,10 +178,35 @@ remote func Pconnected(PeerInfo):
 	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
 	print(playerList)
+	print(playerListBLUE)
+	print(playerListRED)
 
 remotesync func update_player_list_lobby(list):
 	playerList = list
 	Net.playerList = playerList
+
+remotesync func update_player_list_lobbyRED(list):
+	playerListRED = list
+	Net.playerListRED = playerListRED
+
+remotesync func update_player_list_lobbyBLUE(list):
+	playerListBLUE = list
+	Net.playerListBLUE = playerListBLUE
+
+remotesync func update_lobby_map(map_name):
+	$Map.text = "Map: "+str(map_name)
+
+remotesync func show_type_0():
+	$PlayerLoadout/ColorOption.show()
+	$PlayerLoadout/TeamOption.hide()
+	$PlayerListBLUE.hide()
+	$PlayerListRED.hide()
+
+remotesync func show_type_1():
+	$PlayerLoadout/TeamOption.show()
+	$PlayerLoadout/ColorOption.hide()
+	$PlayerListBLUE.show()
+	$PlayerListRED.show()
 
 func _on_ReadyButton_pressed():
 	if $ReadyButton.text == "Ready":
@@ -208,3 +239,13 @@ func _on_ReadyButton_toggled(button_pressed):
 
 remote func update_lobby_score(score):
 	$Score.text = "Score: "+str(score)
+
+remotesync func update_lobby_type(t):
+	type = t
+	if oldtype != type:
+		$"Map Selection".type = t
+		if type == 0:
+			$PlayerLoadout/ColorOption.UpdateColor2()
+		if type == 1:
+			$PlayerLoadout/TeamOption.UpdateColor2()
+	oldtype = type

@@ -17,6 +17,8 @@ var hosting = false
 var onLobby = false
 var connected = false
 var playerList = []
+var playerListRED = []
+var playerListBLUE = []
 
 var ip_address = "127.0.0.1"
 #var adapter
