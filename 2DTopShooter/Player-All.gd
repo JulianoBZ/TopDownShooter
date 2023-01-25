@@ -24,6 +24,8 @@ var camera_lock = false
 var esc_pressed = false
 #onready var tween = $Tween
 onready var spawns = get_tree().get_root().get_node("/root/Map").get_child(0).spawns
+var RedSpawn
+var BlueSpawn
 var rng = RandomNumberGenerator.new()
 onready var killcount = $KillCount
 onready var Menu = $Esc_Menu/Panel
@@ -56,8 +58,23 @@ var PlayersCharacters
 onready var t = preload("res://assets/t.png")
 onready var c = preload("res://assets/c.png")
 onready var q = preload("res://assets/q.png")
+var team = false
+var RB = 0
 
 func _ready():
+	if get_node("/root/Network_setup/Lobby").type == 1:
+		team = true
+	if team == true:
+		RedSpawn = get_tree().get_root().get_node("/root/Map").get_child(0).RedSpawn
+		BlueSpawn = get_tree().get_root().get_node("/root/Map").get_child(0).BlueSpawn
+		for n in Net.playerList:
+			if get_tree().get_network_unique_id() == n[0]:
+				if str(n[2]) == "CC0000":
+					position = (Map.get_child(0).RedSpawn[str(rng.randi_range(1,RedSpawn.size()))].position)
+					RB = 0
+				if str(n[2]) == "000099":
+					position = (Map.get_child(0).BlueSpawn[str(rng.randi_range(1,BlueSpawn.size()))].position)
+					RB = 1
 	rng.randomize()
 	can_move = true
 	if Global.frame == 1:
@@ -73,7 +90,6 @@ func _ready():
 		Classbut3.pressed = true
 		desired_frame = 3
 	set_stats(frame)
-	
 	
 	#PlayersCharacters = Players.get_children()
 	#for n in PlayersCharacters:
@@ -204,7 +220,6 @@ func _physics_process(_delta):
 		#frame2 = sprint
 		if Input.is_action_pressed("Sprint") && frame == 2:
 			move_and_slide(direction * dspeed)
-			print("sprinting")
 		else:
 			move_and_slide(direction * speed)
 		
@@ -238,7 +253,13 @@ remotesync func death():
 	emit_signal("pdeath")
 	
 	yield(get_tree().create_timer(Map.get_child(0).deathTimer),"timeout")
-	position = Map.get_child(0).spawns[str(rng.randi_range(1,spawns.size()))].position
+	if team == false:
+		position = Map.get_child(0).spawns[str(rng.randi_range(1,spawns.size()))].position
+	if team == true:
+		if RB == 0:
+			position = Map.get_child(0).RedSpawn[str(rng.randi_range(1,RedSpawn.size()))].position
+		if RB == 1:
+			position = Map.get_child(0).BlueSpawn[str(rng.randi_range(1,BlueSpawn.size()))].position
 	health = max_health
 	can_move = true
 	set_stats(desired_frame)

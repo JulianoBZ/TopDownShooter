@@ -24,6 +24,8 @@ onready var shotgunReload = preload("res://assets/Sounds/shotgunReload.wav")
 onready var rifleReload = preload("res://assets/Sounds/rifleReload.wav")
 onready var Thunder = preload("res://assets/Sounds/Thunder.wav")
 onready var AudioPlayer = preload("res://Scenes/AudioStreamPlayer2D.tscn")
+var team = false
+var RB = 0
 var anim = false
 var speed = 200
 export var fire_rate = 0.3
@@ -135,6 +137,10 @@ func _ready():
 		Sporcentagem = 16.666666
 		Sweapon2.pressed = true
 		Sreserve = Sammo_max * clips
+	
+	
+	team = get_parent().team
+	RB = get_parent().RB
 
 
 func _process(delta):
@@ -386,7 +392,7 @@ func _process(delta):
 		if Input.is_action_pressed("fire") && can_fire && Pammo_count > 0 && !sprinting && primary == 2 && active_weapon == 1:
 			can_fire = false
 			#rpc("Shooting",shotgun)
-			rpc("spawn_shotgun", get_tree().get_network_unique_id(),shotgun)
+			rpc("spawn_shotgun", get_tree().get_network_unique_id())
 			Pammo_count -= 1
 			can_switch = false
 			yield(get_tree().create_timer(fire_rate2/2),"timeout")
@@ -472,6 +478,8 @@ remotesync func spawn_bullet(id,tot_recoil,damage,canBounce,source):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
+	b.team = team
+	b.RB = RB
 	b.Bdamage = damage
 	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
@@ -488,6 +496,8 @@ remotesync func spawn_bulletRifle(id,tot_recoil,damage,canBounce):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
+	b.team = team
+	b.RB = RB
 	b.Bdamage = damage
 	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
@@ -504,6 +514,8 @@ remotesync func spawn_bulletPistol(id,tot_recoil,damage,canBounce):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
+	b.team = team
+	b.RB = RB
 	b.Bdamage = damage
 	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
@@ -520,6 +532,8 @@ remotesync func spawn_bulletRevolver(id,tot_recoil,damage,canBounce):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 1
+	b.team = team
+	b.RB = RB
 	b.Bdamage = damage
 	b.position = $BulletpointR.get_global_position()
 	b.rotation_degrees = rotation_degrees + tot_recoil
@@ -539,6 +553,8 @@ remotesync func spawn_shotgun(id):
 	for x in bullets:
 		bullets[x].name = "Bullet" + name + str(Net.network_object_name_index)
 		bullets[x].type = 2
+		bullets[x].team = team
+		bullets[x].RB = RB
 		bullets[x].Bdamage = shotgun_damage
 		bullets[x].rotation_degrees = rotation_degrees
 		bullets[x].flag = get_parent()
@@ -559,6 +575,8 @@ remotesync func spawn_arrow(id,value):
 	b.name = "Bullet" + name + str(Net.network_object_name_index)
 	b.flag = get_parent()
 	b.type = 3
+	b.team = team
+	b.RB = RB
 	if value < 30:
 		b.Bdamage = 30
 		arrow_speed = lerp(arrow_speed,2,30)
@@ -720,7 +738,6 @@ remotesync func Shooting(source):
 	#var sfx = load(source)
 	#ShotSound.stream = source
 	#ShotSound.play()
-	print("shooting sound")
 
 remotesync func SecShooting(source):
 	var sound = AudioPlayer.instance()
@@ -730,7 +747,6 @@ remotesync func SecShooting(source):
 	sound.play()
 	#ShotSound2.stream = source
 	#ShotSound2.play()
-	print("secshooting sound")
 
 remotesync func Reloading(source):
 	var sound = AudioPlayer.instance()
@@ -738,7 +754,6 @@ remotesync func Reloading(source):
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
-	print("reloading sound")
 	#var sfx = load(source)
 	#ShotSound.stream = source
 	#ShotSound.play()
@@ -756,7 +771,6 @@ remotesync func ReloadingRifleReload():
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
-	print("reloading sound")
 
 remotesync func ReloadingShotgun():
 	var sound = AudioPlayer.instance()
@@ -764,7 +778,6 @@ remotesync func ReloadingShotgun():
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
-	print("reloading sound")
 
 remotesync func ReloadingPistol():
 	var sound = AudioPlayer.instance()
@@ -772,7 +785,6 @@ remotesync func ReloadingPistol():
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
-	print("reloading sound")
 
 remotesync func ReloadingRevolver():
 	var sound = AudioPlayer.instance()
@@ -780,7 +792,6 @@ remotesync func ReloadingRevolver():
 	sound.position = self.global_position
 	Bullets.add_child(sound)
 	sound.play()
-	print("reloading sound")
 
 func _on_Timer_timeout():
 	reload_texture.visible = false

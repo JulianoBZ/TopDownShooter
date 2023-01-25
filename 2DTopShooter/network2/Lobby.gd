@@ -7,6 +7,7 @@ onready var network = get_parent()
 var list_last_value
 var playerList_aux = 0
 
+var counter = 0
 var oldtype = 0
 var type = 0
 var playerList = []
@@ -50,15 +51,13 @@ func _process(_delta):
 	if Net.hosting:
 		#$Debug.text = str(Gotm.lobby)+"-"+str(Gotm.lobby.name)
 		rpc("update_player_list_lobby",playerList)
-		rpc("update_player_list_lobbyRED",playerList)
-		rpc("update_player_list_lobbyBLUE",playerList)
 		if $"Map Selection".type == 0:
 			rpc("show_type_0")
 		if $"Map Selection".type == 1:
 			rpc("show_type_1")
-	advertiser.serverInfo["name"] = Net.lobby_name
-	advertiser.serverInfo["port"] = PORT
+	
 	changed_playerList()
+		
 	var readycount = 0
 	for p in Net.playerList:
 		if p[3] == 1:
@@ -66,7 +65,7 @@ func _process(_delta):
 	if get_tree().is_network_server() && get_parent().peer != null:
 		$OptionButtonKills.show()
 		$"Map Selection".show()
-		rpc("update_lobby_map",$"Map Selection".map_name)
+		rpc("update_lobby_map",$"Map Selection".map_name,$"Map Selection".map)
 		rpc("update_lobby_score",$OptionButtonKills.killLimit)
 	if readycount == Net.playerList.size():
 		if get_tree().is_network_server() && get_parent().peer != null:
@@ -77,20 +76,20 @@ func _process(_delta):
 	
 
 func changed_playerList():
-	for n in $PlayerList.get_children():
-		n.queue_free()
-	if $"Map Selection".type == 0:
+	if Net.gameStart == false:
+		for n in $PlayerList.get_children():
+			n.queue_free()
+		for n in $PlayerListRED.get_children():
+			n.queue_free()
+		for n in $PlayerListBLUE.get_children():
+			n.queue_free()
+	if $"Map Selection".type == 0 && Net.gameStart == false:
 		if Net.hosting:
 			type = 0
 			rpc("update_lobby_type",type)
 		for p in Net.playerList:
-			$PlayerListBLUE.hide()
-			$PlayerListRED.hide()
-			
 			var playerunit = PLU.instance()
 			playerunit.get_node("ColorRect/Label").text = str(p[1])
-			#print(str(p[2]))
-			#print(Net.color)
 			playerunit.get_node("ColorRect").color = Color(str(p[2]))
 			if p[3] == 1:
 				playerunit.get_node("ReadyRect").color = Color("5bd700")
@@ -100,28 +99,54 @@ func changed_playerList():
 			$PlayerList.add_child(playerunit)
 			#print(str($PlayerList.get_children()))
 			
-		Net.playerList = playerList
 		
-	if $"Map Selection".type == 1:
+	if $"Map Selection".type == 1 && Net.gameStart == false:
 		if Net.hosting:
 			type = 1
 			rpc("update_lobby_type",type)
-		for p in Net.playerList:
-			
+			#sort_teams()
+	for p in Net.playerList:
+		#var playerunit = PLU.instance()
+		if str(p[2]) == "CC0000":
 			var playerunit = PLU.instance()
 			playerunit.get_node("ColorRect/Label").text = str(p[1])
-			#print(str(p[2]))
-			#print(Net.color)
 			playerunit.get_node("ColorRect").color = Color(str(p[2]))
 			if p[3] == 1:
 				playerunit.get_node("ReadyRect").color = Color("5bd700")
 			else:
 				playerunit.get_node("ReadyRect").color = Color("000000")
+			$PlayerListRED.add_child(playerunit)
+		if str(p[2]) == "000099":
+			var playerunit = PLU.instance()
+			playerunit.get_node("ColorRect/Label").text = str(p[1])
+			playerunit.get_node("ColorRect").color = Color(str(p[2]))
+			if p[3] == 1:
+				playerunit.get_node("ReadyRect").color = Color("5bd700")
+			else:
+				playerunit.get_node("ReadyRect").color = Color("000000")
+			$PlayerListBLUE.add_child(playerunit)
+			##############
+			#playerunit.get_node("ColorRect/Label").text = str(p[1])
+			#playerunit.get_node("ColorRect").color = Color(str(p[2]))
+			#if p[3] == 1:
+			#	playerunit.get_node("ReadyRect").color = Color("5bd700")
+			#else:
+			#	playerunit.get_node("ReadyRect").color = Color("000000")
+			############
+			
 			#print(str(playerunit.get_node("Label").text))
-			$PlayerList.add_child(playerunit)
+			#if playerunit.get_node("ColorRect/Label").text == "CC0000":
+			#	$PlayerListRED.add_child(playerunit)
+			#	Net.playerListRED.append(p)
+			#	print(Net.playerListRED)
+			#if playerunit.get_node("ColorRect/Label").text == "000099":
+			#	$PlayerListBLUE.add_child(playerunit)
+			#	Net.playerListBLUE.append(p)
+			#	print(Net.playerListBLUE)
+				
+			#$PlayerList.add_child(playerunit)
 			#print(str($PlayerList.get_children()))
 			
-		Net.playerList = playerList
 
 func _on_StartGame_pressed():
 	rpc("start_game")
@@ -134,12 +159,12 @@ remotesync func start_game():
 	Net.gameStart = true
 	Net.playerList = playerList
 	
-	map = $"Map Selection".map
-	match map:
-		0:
-			world = WRHFFA.instance()
-		1:
-			world = WRHCTF.instance()
+	#map = $"Map Selection".map
+	#match map:
+	#	0:
+	#		world = WRHFFA.instance()
+	#	1:
+	#		world = WRHCTF.instance()
 	
 	#FreeForAll
 	#world = FFA1.instance()
@@ -166,10 +191,21 @@ remotesync func start_game():
 
 remotesync func instance_player(id,color):
 	#Global.player_name = str(playername.text)
-	var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
-	player_instance.name = str(id)
-	player_instance.get_node('Player').get_node('Body').modulate = color
-	player_instance.set_network_master(id)
+	if type == 0:
+		var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
+		player_instance.name = str(id)
+		player_instance.get_node('Player').get_node('Body').modulate = color
+		player_instance.set_network_master(id)
+	if type == 1:
+		var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
+		player_instance.name = str(id)
+		player_instance.get_node('Player').get_node('Body').modulate = color
+		player_instance.team = true
+		player_instance.set_network_master(id)
+		if color == "CC0000":
+			player_instance.position = (Map.get_child(0).RedSpawn[str(rng.randi_range(1,Map.get_child(0).Ptotspawns))]).position
+		if color == "000099":
+			player_instance.position = (Map.get_child(0).BlueSpawn[str(rng.randi_range(1,Map.get_child(0).Ptotspawns))]).position
 
 remote func Pconnected(PeerInfo):
 	peerinfo = PeerInfo
@@ -178,23 +214,19 @@ remote func Pconnected(PeerInfo):
 	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
 	print(playerList)
-	print(playerListBLUE)
-	print(playerListRED)
 
 remotesync func update_player_list_lobby(list):
 	playerList = list
 	Net.playerList = playerList
 
-remotesync func update_player_list_lobbyRED(list):
-	playerListRED = list
-	Net.playerListRED = playerListRED
-
-remotesync func update_player_list_lobbyBLUE(list):
-	playerListBLUE = list
-	Net.playerListBLUE = playerListBLUE
-
-remotesync func update_lobby_map(map_name):
+remotesync func update_lobby_map(map_name,m):
 	$Map.text = "Map: "+str(map_name)
+	map = m
+	match map:
+		0:
+			world = WRHFFA.instance()
+		1:
+			world = WRHCTF.instance()
 
 remotesync func show_type_0():
 	$PlayerLoadout/ColorOption.show()
@@ -240,12 +272,19 @@ func _on_ReadyButton_toggled(button_pressed):
 remote func update_lobby_score(score):
 	$Score.text = "Score: "+str(score)
 
-remotesync func update_lobby_type(t):
+remote func update_lobby_type(t):
 	type = t
 	if oldtype != type:
 		$"Map Selection".type = t
 		if type == 0:
 			$PlayerLoadout/ColorOption.UpdateColor2()
+			$PlayerList.show()
+			$PlayerListBLUE.hide()
+			$PlayerListRED.hide()
 		if type == 1:
 			$PlayerLoadout/TeamOption.UpdateColor2()
+			$PlayerList.hide()
+			$PlayerListBLUE.show()
+			$PlayerListRED.show()
 	oldtype = type
+
