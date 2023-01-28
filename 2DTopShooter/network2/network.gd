@@ -23,7 +23,6 @@ var playerListBLUE = []
 var ip_address = "127.0.0.1"
 #var adapter
 #var check = "ZeroTier One"
-var lobby = preload("res://network2/Lobby.tscn").instance()
 
 var network_object_name_index = 0 setget network_object_name_index_set
 puppet var puppet_network_object_name_index = 0 setget puppet_network_object_name_index_set
@@ -54,8 +53,8 @@ func _process(_delta):
 	if Net.hosting:
 		update_player_list_lobby(playerList)
 
-func create_server():
-	pass
+#func create_server():
+#	pass
 	###############################
 	#server = NetworkedMultiplayerENet.new()
 	#server.create_server(DEFAULT_PORT,MAX_CLIENTS)
@@ -109,7 +108,7 @@ remote func Pconnected(PeerInfo):
 	var peerinfo
 	peerinfo = PeerInfo
 	print(peerinfo)
-	Net.playerList.append(peerinfo)
+	playerList.append(peerinfo)
 	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
 	print(playerList)

@@ -42,7 +42,7 @@ func _process(_delta):
 				winCounter += 1
 	#print(advertiser.serverInfo)
 
-remotesync func WinGame(winner):
+remotesync func WinGame(_winner):
 	WinSound2.play()
 	yield(get_tree().create_timer(5),"timeout")
 	for each in Net.playerList:

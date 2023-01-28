@@ -8,8 +8,6 @@ var peer = null
 var firetype = 1
 var player = preload("res://Player-All.tscn")
 var world
-var ffa1 = preload("res://Maps/FreeForAll1.tscn").instance()
-var warehouseffa = preload("res://Maps/WareHouse_FFA.tscn").instance()
 var found = preload("res://Scenes/Found_Server.tscn")
 onready var browser = $ServerBrowser
 onready var lobby = $Lobby
@@ -84,8 +82,8 @@ func _on_Create_Server_pressed():
 		lobby.show()
 		#print("Game hosted")
 		myinfo = [get_tree().get_network_unique_id(), Net.n, "CC0000",0,0]
-		lobby.playerList.append(myinfo)
-		print(lobby.playerList)
+		Net.playerList.append(myinfo)
+		print(Net.playerList)
 		print(peer)
 		#myinfo["name"] = Global.player_name
 		#print(myinfo)
@@ -160,6 +158,8 @@ func _on_classbut3_pressed():
 
 func _on_BrowseServer_pressed():
 	browser.show()
+	for n in browser.get_children():
+		n.queue_free()
 	var f = found.instance()
 	#get_tree().change_scene("res://Scenes/ServerBrowser.tscn")
 	var lobbies = yield(fetch.first(), "completed")

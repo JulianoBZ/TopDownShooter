@@ -8,7 +8,6 @@ extends Control
 var count = 0
 
 onready var PLU = preload("res://network2/PlayerListUnit.tscn")
-onready var TabPlayerList = Net.playerList
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,10 +22,9 @@ func _process(_delta):
 				if str(p.name) == str(pl[0]):
 					pl[3] = p.kills
 					pl[4] = p.deaths
-	TabPlayerList = Net.playerList
 	if Net.hosting:
-		TabPlayerList.sort_custom(self,"sort_TabList")
-		rpc("UpdateTabList",TabPlayerList)
+		Net.playerList.sort_custom(self,"sort_TabList")
+		rpc("UpdateTabList",Net.playerList)
 	#for n in $TabList.get_children():
 	#	n.queue_free()
 	#for p in TabPlayerList:
@@ -46,7 +44,7 @@ remotesync func UpdateTabList(list):
 		###############
 		for n in $TabList.get_children():
 			n.queue_free()
-		for p in TabPlayerList:
+		for p in Net.playerList:
 			var playerunit = PLU.instance()
 			playerunit.get_node("ReadyRect").hide()
 			playerunit.get_node("FragRect").show()

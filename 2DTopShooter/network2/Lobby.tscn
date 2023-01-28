@@ -15,7 +15,6 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
-advertiserPath = NodePath("ServerAdvertiser")
 
 [node name="PlayerList" type="VBoxContainer" parent="."]
 anchor_left = 0.5

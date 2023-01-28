@@ -10,7 +10,7 @@ func _ready():
 	add_item("FFA - Warehouse")
 	add_item("CTF - Warehouse")
 
-func _process(delta):
+func _process(_delta):
 	match get_selected_id():
 		0:
 			map = 0

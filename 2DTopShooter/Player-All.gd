@@ -450,7 +450,7 @@ func rushing():
 			break
 		if shift_texture.value == 0:
 			if dashing == true:
-				rpc("DashSound",rushPressure)
+				rpc("DashS",rushPressure)
 			#shift_texture.visible = false
 			#shift_texture.value = 0
 			self.sprinting = false
@@ -484,7 +484,7 @@ remotesync func set_name(Gname):
 #remotesync func UpdateKillList(list):
 #		Net.playerList = list
 
-remotesync func DashSound(source):
+remotesync func DashS(source):
 	var sfx = load(source)
 	DashSound.stream = sfx
 	DashSound.play()

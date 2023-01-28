@@ -5,26 +5,21 @@ const PORT := 3333
 
 onready var network = get_parent()
 var list_last_value
-var playerList_aux = 0
 
 var counter = 0
 var oldtype = 0
 var type = 0
-var playerList = []
 var playerListRED = []
 var playerListBLUE = []
 var peerinfo = []
 var myinfo = []
 onready var PLU = preload("res://network2/PlayerListUnit.tscn")
 
-export (NodePath) var advertiserPath: NodePath
-onready var advertiser := get_node(advertiserPath)
-
 var playerChar = preload("res://Player-All.tscn")
 var FFA1 = preload("res://Maps/FreeForAll1.tscn")
-var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn")
-var WRHCTF = preload("res://Maps/Warehouse_CTF.tscn")
-var rng = RandomNumberGenerator.new()
+var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn").instance()
+var WRHCTF = preload("res://Maps/Warehouse_CTF.tscn").instance()
+onready var rng = RandomNumberGenerator.new()
 
 var map = 0
 var world
@@ -38,26 +33,24 @@ func ready():
 	print(get_tree().multiplayer.get_network_connected_peers())
 
 func _process(_delta):
+	if Input.is_action_just_pressed("Debug"):
+		OS.dump_memory_to_file("MemoryDump")
 	if Net.hosting:
-		#########
-		#$Debug.show()
-		#########
 		$ReadyButton.hide()
 		for p in Net.playerList:
 			if p[0] == 1:
 				p[3] = 1
 	
-	
 	if Net.hosting:
 		#$Debug.text = str(Gotm.lobby)+"-"+str(Gotm.lobby.name)
-		rpc("update_player_list_lobby",playerList)
+		rpc("update_player_list_lobby",Net.playerList)
 		if $"Map Selection".type == 0:
 			rpc("show_type_0")
 		if $"Map Selection".type == 1:
 			rpc("show_type_1")
 	
-	changed_playerList()
-		
+	if Net.gameStart == false:
+		changed_playerList()
 	var readycount = 0
 	for p in Net.playerList:
 		if p[3] == 1:
@@ -157,19 +150,6 @@ func _on_StartGame_pressed():
 
 remotesync func start_game():
 	Net.gameStart = true
-	Net.playerList = playerList
-	
-	#map = $"Map Selection".map
-	#match map:
-	#	0:
-	#		world = WRHFFA.instance()
-	#	1:
-	#		world = WRHCTF.instance()
-	
-	#FreeForAll
-	#world = FFA1.instance()
-	#world = WRHFFA.instance()
-	
 	
 	#print(Net.playerList)
 	world.winkills = $OptionButtonKills.killLimit
@@ -186,11 +166,8 @@ remotesync func start_game():
 			instance_player(pl_id, each[2])
 		if pl_id == get_tree().get_network_unique_id():
 			instance_player(get_tree().get_network_unique_id(),each[2])
-	#yield(get_tree().create_timer(1),'timeout')
-	#get_node("/root/Network_setup").gameEnded()
 
 remotesync func instance_player(id,color):
-	#Global.player_name = str(playername.text)
 	if type == 0:
 		var player_instance = Global.instance_node_at_location(playerChar, Players, (Map.get_child(0).spawns[str(rng.randi_range(1,Map.get_child(0).totspawns))]).position)
 		player_instance.name = str(id)
@@ -213,20 +190,19 @@ remote func Pconnected(PeerInfo):
 	Net.playerList.append(peerinfo)
 	#rpc("update_player_list_lobby",playerList)
 	#print(PeerInfo)
-	print(playerList)
+	print(Net.playerList)
 
 remotesync func update_player_list_lobby(list):
-	playerList = list
-	Net.playerList = playerList
+	Net.playerList = list
 
 remotesync func update_lobby_map(map_name,m):
 	$Map.text = "Map: "+str(map_name)
 	map = m
 	match map:
 		0:
-			world = WRHFFA.instance()
+			world = WRHFFA
 		1:
-			world = WRHCTF.instance()
+			world = WRHCTF
 
 remotesync func show_type_0():
 	$PlayerLoadout/ColorOption.show()
