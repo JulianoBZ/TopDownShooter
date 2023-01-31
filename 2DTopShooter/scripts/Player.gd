@@ -185,7 +185,6 @@ func _process(delta):
 		#Look at mouse position
 		if can_look:
 			look_at(get_global_mouse_position())
-			rpc_unreliable("update_rotation", rotation_degrees)
 		
 		#Sprinting
 		sprinting = get_parent().sprinting
@@ -868,3 +867,8 @@ remotesync func melee(id):
 	mh.set_network_master(id)
 	Net.network_object_name_index += 1
 	#yield(get_tree().create_timer(0.3),"timeout")
+
+
+func _on_Network_tick_rate_timeout():
+	if is_network_master():
+		rpc_unreliable("update_rotation",rotation_degrees)

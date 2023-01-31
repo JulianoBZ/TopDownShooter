@@ -33,8 +33,6 @@ func ready():
 	print(get_tree().multiplayer.get_network_connected_peers())
 
 func _process(_delta):
-	if Input.is_action_just_pressed("Debug"):
-		OS.dump_memory_to_file("MemoryDump")
 	if Net.hosting:
 		$ReadyButton.hide()
 		for p in Net.playerList:
@@ -181,8 +179,10 @@ remotesync func instance_player(id,color):
 		player_instance.set_network_master(id)
 		if color == "CC0000":
 			player_instance.position = (Map.get_child(0).RedSpawn[str(rng.randi_range(1,Map.get_child(0).Ptotspawns))]).position
+			player_instance.RB = 0
 		if color == "000099":
 			player_instance.position = (Map.get_child(0).BlueSpawn[str(rng.randi_range(1,Map.get_child(0).Ptotspawns))]).position
+			player_instance.RB = 1
 
 remote func Pconnected(PeerInfo):
 	peerinfo = PeerInfo

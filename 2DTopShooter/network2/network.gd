@@ -10,6 +10,7 @@ var server = null
 var client = null
 var gameStart = false
 
+var posarr = []
 var n = ""
 var color = "CC0000"
 var myinfo = [0,n,color,0,0]

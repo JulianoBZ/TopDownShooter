@@ -359,6 +359,8 @@ text = "Apply"
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
 [connection signal="timeout" from="ShiftSkill/Timer" to="Player" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Network_tick_rate" to="." method="_on_Network_tick_rate_timeout"]
+[connection signal="timeout" from="Network_tick_rate" to="Player" method="_on_Network_tick_rate_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="." method="_on_ApplyButton_pressed"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="Player" method="_on_ApplyButton_pressed"]
 

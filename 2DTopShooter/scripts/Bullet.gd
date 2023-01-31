@@ -60,17 +60,17 @@ func _on_Bullet_body_entered(body):
 	if body.is_in_group("bullet"):
 		body.add_collision_exception_with(body) 
 	
-	if body.is_in_group("player") && team == false:
+	if body.is_in_group("player"):
 		damage(flag,body)
 	
 	if flag != body && (!body.is_in_group("mapObject") || body.is_in_group("mapObject")) && !can_bounce:
 		queue_free()
 	
 
-remote func update_position(pos):
+remotesync func update_position(pos):
 	global_position = pos
 
-remotesync func damage(attacker: Object,receiver: Object):
+func damage(attacker: Object,receiver: Object):
 	if attacker.RB == receiver.RB && attacker.team == true:
 		queue_free()
 	else:
@@ -78,7 +78,6 @@ remotesync func damage(attacker: Object,receiver: Object):
 		receiver.health -= Bdamage
 		receiver.lastdamage = attacker
 		queue_free()
-
 
 #remote func last_damage(attacker: Object,receiver: Object):
 #	print(attacker , " " , receiver)

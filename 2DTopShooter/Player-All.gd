@@ -17,12 +17,12 @@ var alive = true
 var direction = Vector2()
 var lastdir = Vector2()
 onready var camera = get_node("Camera2D")
-#puppet var puppet_position = Vector2(0,0) #setget puppet_position_set
+puppet var puppet_position = Vector2(0,0) #setget puppet_position_set
 #puppet var puppet_direction = Vector2()
 var can_move = true
 var camera_lock = false
 var esc_pressed = false
-#onready var tween = $Tween
+onready var tween = $Tween
 onready var spawns = get_tree().get_root().get_node("/root/Map").get_child(0).spawns
 var RedSpawn
 var BlueSpawn
@@ -60,6 +60,7 @@ onready var c = preload("res://assets/c.png")
 onready var q = preload("res://assets/q.png")
 var team = false
 var RB = 0
+var tickvar = 0
 
 func _ready():
 	if get_node("/root/Network_setup/Lobby").type == 1:
@@ -223,13 +224,14 @@ func _physics_process(_delta):
 		else:
 			move_and_slide(direction * speed)
 		
-		rpc_unreliable("update_position",position)
-#	else:
-#		if not tween.is_active():
-#			move_and_slide(puppet_direction * speed)
+		#rpc_unreliable("update_position",position)
+		
+		#if not $Network_tick_rate.is_active():
+		#	rpc_unreliable("update_position",position)
 
 remote func update_position(pos):
-	position = pos
+	#position = pos
+	position = position.linear_interpolate(pos,0.4)
 
 remotesync func death():
 	if lastdamage != null:
@@ -349,11 +351,10 @@ remotesync func update_stats(h,mh,fr):
 	rpc("update_sprite",get_tree().get_network_unique_id(),fr)
 	#print(tex)
 
-#func puppet_position_set(new_value):
-#	puppet_position = new_value
-#	
-#	tween.interpolate_property(self, "global_position",global_rotation,puppet_position,0.1)
-#	tween.start()
+func puppet_position_set(p1,p2):
+	
+	tween.interpolate_property(self, "global_position",p1,p2,0.1)
+	tween.start()
 
 
 func _on_ApplyButton_pressed():
@@ -505,3 +506,14 @@ remotesync func DashS(source):
 					break
 			pcounter = 0
 	candash = true
+
+
+func _on_Network_tick_rate_timeout():
+	if is_network_master() && Net.gameStart:
+		rpc_unreliable("update_position",position)
+
+remote func interpol(p1,p2):
+	for n in Players.get_children():
+		if str(n.name) == str(p1[0]):
+			n.position.linear_interpolate(p2[1],0.4)
+
