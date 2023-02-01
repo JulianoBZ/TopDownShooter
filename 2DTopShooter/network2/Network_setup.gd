@@ -70,6 +70,7 @@ func _on_Create_Server_pressed():
 		Net.lobby_name = servername.text
 	hide_UI_show_Lobby()
 	peer = NetworkedMultiplayerENet.new()
+	#print(peer)
 	var result = peer.create_server(PORT)
 	if result == OK:
 		Gotm.host_lobby()
@@ -84,7 +85,7 @@ func _on_Create_Server_pressed():
 		myinfo = [get_tree().get_network_unique_id(), Net.n, "CC0000",0,0]
 		Net.playerList.append(myinfo)
 		print(Net.playerList)
-		print(peer)
+		#print(peer)
 		#myinfo["name"] = Global.player_name
 		#print(myinfo)
 		#print(playerList)
@@ -112,7 +113,8 @@ func _on_Join_Server_pressed():
 	if server_ip_address.text != "":
 		Net.ip_address = "127.0.0.1"
 		Net.join_server()
-		hide_UI_show_Lobby()
+		if Net.connected:
+			hide_UI_show_Lobby()
 		#if Net.connecting == true:
 		#	multiplayer_config_ui.hide()
 		#	device_ip_address.hide()

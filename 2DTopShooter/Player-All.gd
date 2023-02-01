@@ -193,7 +193,7 @@ func _process(_delta):
 
 
 func _physics_process(_delta):
-	if is_network_master() && can_move:
+	if get_tree().network_peer != null && is_network_master() && can_move:
 		dspeed = base_speed*2
 		direction = Vector2()
 		sprinting = false
@@ -517,3 +517,19 @@ remote func interpol(p1,p2):
 		if str(n.name) == str(p1[0]):
 			n.position.linear_interpolate(p2[1],0.4)
 
+
+
+func _on_Disconnect_pressed():
+	get_tree().network_peer = null
+	Net.playerList.clear()
+	Net.hosting = false
+	Net.onLobby = false
+	Net.connected = false
+	print("Desconectado do servidor")
+	#get_tree().quit()
+	#client = null
+	get_node("/root/Network_setup").gameEnded()
+	get_node("/root/Network_setup/Lobby").visible = false
+	get_node("/root/Network_setup/Lobby/ReadyButton").pressed = false
+	get_node("/root/Network_setup").visible = true
+	get_node("/root/Network_setup/Multiplayer_configure").visible = true

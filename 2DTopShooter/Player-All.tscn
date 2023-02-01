@@ -355,6 +355,13 @@ margin_right = 514.0
 margin_bottom = 435.0
 text = "Apply"
 
+[node name="Disconnect" type="Button" parent="Esc_Menu/Panel"]
+margin_left = 32.0
+margin_top = 367.0
+margin_right = 136.0
+margin_bottom = 418.0
+text = "Disconnect"
+
 [connection signal="pdeath" from="." to="Player" method="_on_PlayerAll_pdeath"]
 [connection signal="respawned" from="." to="Player" method="_on_PlayerAll_respawned"]
 [connection signal="timeout" from="TextureProgress/Timer" to="Player" method="_on_Timer_timeout"]
@@ -363,5 +370,6 @@ text = "Apply"
 [connection signal="timeout" from="Network_tick_rate" to="Player" method="_on_Network_tick_rate_timeout"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="." method="_on_ApplyButton_pressed"]
 [connection signal="pressed" from="Esc_Menu/Panel/ApplyButton" to="Player" method="_on_ApplyButton_pressed"]
+[connection signal="pressed" from="Esc_Menu/Panel/Disconnect" to="." method="_on_Disconnect_pressed"]
 
 [editable path="Player"]

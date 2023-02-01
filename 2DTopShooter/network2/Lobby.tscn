@@ -320,6 +320,13 @@ margin_top = 82.0
 margin_right = 264.0
 margin_bottom = 160.0
 
+[node name="Disconnect" type="Button" parent="."]
+margin_left = 62.0
+margin_top = 33.0
+margin_right = 226.0
+margin_bottom = 96.0
+text = "Back/Disconnect"
+
 [connection signal="pressed" from="StartGame" to="." method="_on_StartGame_pressed"]
 [connection signal="toggled" from="ReadyButton" to="." method="_on_ReadyButton_toggled"]
 [connection signal="pressed" from="PlayerLoadout/weaponbut1" to="PlayerLoadout" method="_on_weaponbut1_pressed"]
@@ -330,3 +337,4 @@ margin_bottom = 160.0
 [connection signal="pressed" from="PlayerLoadout/classbut3" to="PlayerLoadout" method="_on_classbut3_pressed"]
 [connection signal="pressed" from="PlayerLoadout/Sweaponbut1" to="PlayerLoadout" method="_on_Sweaponbut1_pressed"]
 [connection signal="pressed" from="PlayerLoadout/Sweaponbut2" to="PlayerLoadout" method="_on_Sweaponbut2_pressed"]
+[connection signal="pressed" from="Disconnect" to="." method="_on_Disconnect_pressed"]

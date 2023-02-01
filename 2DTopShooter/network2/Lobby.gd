@@ -17,8 +17,8 @@ onready var PLU = preload("res://network2/PlayerListUnit.tscn")
 
 var playerChar = preload("res://Player-All.tscn")
 var FFA1 = preload("res://Maps/FreeForAll1.tscn")
-var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn").instance()
-var WRHCTF = preload("res://Maps/Warehouse_CTF.tscn").instance()
+var WRHFFA = preload("res://Maps/WareHouse_FFA.tscn")
+var WRHCTF = preload("res://Maps/Warehouse_CTF.tscn")
 onready var rng = RandomNumberGenerator.new()
 
 var map = 0
@@ -150,8 +150,9 @@ remotesync func start_game():
 	Net.gameStart = true
 	
 	#print(Net.playerList)
-	world.winkills = $OptionButtonKills.killLimit
-	Map.add_child(world)
+	var w = world.instance()
+	w.winkills = $OptionButtonKills.killLimit
+	Map.add_child(w)
 	#print(world.winkills)
 	#visible = false
 	#self.queue_free()
@@ -264,3 +265,19 @@ remote func update_lobby_type(t):
 			$PlayerListRED.show()
 	oldtype = type
 
+
+
+func _on_Disconnect_pressed():
+	get_tree().network_peer = null
+	Net.playerList.clear()
+	Net.hosting = false
+	Net.onLobby = false
+	Net.connected = false
+	print("Desconectado do servidor")
+	#get_tree().quit()
+	#client = null
+	get_node("/root/Network_setup").gameEnded()
+	get_node("/root/Network_setup/Lobby").visible = false
+	get_node("/root/Network_setup/Lobby/ReadyButton").pressed = false
+	get_node("/root/Network_setup").visible = true
+	get_node("/root/Network_setup/Multiplayer_configure").visible = true
